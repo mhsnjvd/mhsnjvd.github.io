@@ -14,10 +14,7 @@ html, body{
 
 
 a{
-    /*
-	color:#CE181F;
-    */
-
+    font-family:'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 	text-decoration: none;
 	font-weight: bold;
 }
@@ -36,9 +33,9 @@ h3{
 
 
 p{
-	/*font-family:'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;*/
-    font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif
-	color:#8e8361;
+	font-family:'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    /*font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif
+	color:#8e8361;*/
 	line-height:1.2em;
     margin-bottom:1.5em;
 }
