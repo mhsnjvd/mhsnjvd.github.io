@@ -1,0 +1,297 @@
+/** BASIC */
+
+body {
+	margin: 0px;
+	padding: 0px;
+	font-size: 12px;
+	color: #000;
+    background-color: #FFF;
+   /*font-family: 'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;       */
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+	font-style: italic
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	color: none;
+}
+
+h1 {
+/*	font-family: 'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;  */
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+h2 {
+	font-size: 14px;
+	text-transform: uppercase;
+	margin-bottom:0px;
+}
+
+h2.bigger {
+	font-size: 18px;
+	text-transform: uppercase;
+}
+
+h3 {
+	margin: 0px;
+	padding: 0px;
+	font-size: 11px;
+	text-transform: uppercase;
+}
+
+p, ol, ul {
+	margin-top: 0px;
+}
+
+.hr1 {
+	clear: both;
+	margin: 10px 0px 10px 0px;
+	border: 1px dashed #4d506d;
+}
+
+.hr1 hr {
+	display: none;
+}
+
+table
+{ 
+margin-left: auto;
+margin-right: auto;
+}
+
+td 
+{ 
+  padding:0;
+} 
+
+
+/** WRAPPER */
+
+#wrapper {
+	/*font-family: 'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+	width: 715px;
+	margin: 0px auto;
+	padding: 0px;
+	padding-left: 32px;
+	padding-right: 30px;
+	color: #000;
+	background: url('../images/bg_body.gif') repeat-y;
+	background-color: #FFF;
+	height: auto;
+}
+
+#headimg {
+/*	font-family: 'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    width: 715px;
+	margin: 0px auto;
+	padding: 0px;
+	padding-left: 30px;
+	padding-right: 30px;
+	color: #000;
+	background-color: #FFF;
+	height: 12px;
+	background: url('../images/bg_head.gif') no-repeat;
+}
+
+#footimg {
+	width: 715px;
+	margin: 0px auto;
+	padding: 0px;
+	padding-left: 32px;
+	padding-right: 30px;
+	color: #000;
+	background-color: #FFF;
+	height: 12px;
+	background: url('../images/bg_footer.gif') no-repeat;
+}
+
+/** HEADER */
+
+#myheader {
+	margin-bottom: 0px;
+	padding: 0px;
+	padding-bottom: 15px;
+	padding-top: 8px;
+	text-align: center;
+	height: 25px;
+}
+
+#myheader h1 {
+	margin: 0px;
+	padding: 0px;
+	font-size: 30px;
+}
+
+#myheader h2 {
+	margin: 0px;
+	padding: 0px;
+	font-size: 12px;
+	text-transform: lowercase;
+}
+
+/** LOGO */
+
+td.rheader { 
+  font-family: sans-serif;
+  line-height: 120%;
+  color: #002147;
+  padding: 0px;
+  text-align: right;
+  vertical-align: bottom; 
+  letter-spacing: 0em;
+}
+
+td.rheader a.headerA { 
+  text-decoration: none;
+  font-size: 18px;
+  color:#002147;
+  }
+
+td.rheader a.headerB { 
+  text-decoration: none;
+  font-size: 18px;
+  color:#887B1B;
+}
+
+td.lheader { 
+  font-family: sans-serif;
+  line-height: 120%;
+  color: #002147;
+  padding: 0px;
+  text-align: left;
+  vertical-align: top; 
+  letter-spacing: 0em;
+}
+
+td.lheader a.headerA { 
+  font-size: 18px;
+  text-decoration: none;
+  color:#002147;
+  }
+
+td.lheader a.headerB { 
+  font-size: 18px;
+  text-decoration: none;
+  color:#887B1B;
+}
+
+/** MAIN-MENU */
+
+#main-menu {
+	margin: 4px 4px 4px 4px;
+	background: orange;
+	text-transform: uppercase;
+	font-size: 12px;
+	text-align: center;
+}
+
+#main-menu ul {
+	margin: 0px;
+	padding: 7px 0px 7px 0px;
+	background: transparent;
+	list-style: none;
+}
+
+#main-menu li {
+	display: inline;
+}
+
+#main-menu a {
+	padding: 0px 8px 0px 15px;
+	background: transparent url(../images/bullets.gif) no-repeat 
+left 
+center;
+	text-decoration: none;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+
+#main-menu .first a {
+	background: none;
+}
+
+#main-menu a:hover {
+        color:blue;
+/*      background: transparent url(../images/bullets_hover.gif) no-repeat left center; */
+        background: transparent url(../images/bullets.gif) no-repeat left center;
+}
+
+/* Round corners */
+
+b.rtop, b.rbottom { /* Setting the corner color, use different color for different layout */
+    display:block;
+    background: #FFF
+} 
+b.rtop b, b.rbottom b { /* Setting the strip size and background color */
+    display:block;
+    height: 1px; 
+    overflow: hidden; 
+    background: blue;
+}
+
+b.r1 {margin: 0 2px;}
+b.r2 {margin: 0 1px;}
+b.r3 {margin: 0 0px;}
+b.rtop b.r4, b.rbottom b.r4{
+    margin: 0px 0px; 
+    height: 1px;
+}
+
+/** CONTENT */
+
+#content {
+	padding: 0px 20px 5px 20px;
+}
+
+#guideindex {
+	float: left;
+        line-height: 150%;
+	margin: 5px 20px 20px 30px;
+}
+
+#content li{
+	padding: 10px 10px 10px 10px;
+}
+
+/** FOOTER */
+
+#footer {
+	clear: both;
+	padding: 10px 10px 5px 10px;
+}
+
+#footer ul {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+	text-align: center;
+}
+
+#footer li {
+	display: inline;
+}
+
+#footer a {
+	padding: 0px 0px;
+	color: #777;
+	text-decoration:none;
+}
+
+#footer p {
+	text-align: center;
+	font-size: 12px;
+	color: #AAA;
+	line-height: 150%;
+	margin-bottom:5px;
+}
+
+
+
+
