@@ -10,11 +10,17 @@
 html, body{
 	background-color:#FFFFFF;
 	height:100%;
+    margin-top: 10px;
+    margin-right: 100px;
+    margin-left: 100px;
+    margin-bottom: 10px;
+
+
 }
 
 
 a{
-    font-family:'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    	font-family:'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 	text-decoration: none;
 	font-weight: bold;
 }
