@@ -94,6 +94,7 @@
       </div>
     </nav>
 
+
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
@@ -184,111 +185,201 @@
                 </tr>
               </tbody>
             </table>
+          </div>         
+          <h2 class="sub-header">KPI RAG Parameters</h2>
+          <div class="containter-fluid">            
+            <div>
+            <script type="text/javascript" src="js/bootstrap-filestyle.min.js"> </script>
+            <script type="text/javascript">
+                $(":file").filestyle();
+            </script>         
+            </div>          
           </div>
-          <h2 class="sub-header">RAG Graphics</h2>
-          <div class="containter">
-
-            <div id="ragChart"></div>
-
-            <script src="js/d3.min.js"></script>
-            <script>
-
-              var kpi = 
-              {
-               name : "First Kpi",
-               frequency : 4,
-               unit : "k",
-               type : "cumulative",
-               quarterName : ["Q1", "Q2", "Q2", "Q4"],
-               targetValue : [30, 60, 100, 120],
-               actualValue : [39, 62, 110, 115],
-               foreCastValue : [30, 60, 100, 120],
-               yearlyTarget : 120,
-               yearlyForeCast : 120,
-               ragThreshold : [[0.94, 0.98], [.94, .98]],
-               comments : "This is a very importanct kpi, ok?"
-             };
-
-             dataset = kpi.targetValue;
-
-             (function(d3) {
-               'use strict';
-
-               var quarter = [
-               { label: 'First Quarter', angle: 10 },
-               { label: 'Second Quarter', angle: 10 },
-               { label: 'Third Quarter', angle: 10 },
-               { label: 'Fourth Quarter', angle: 10 }
-               ];
-
-               var width = 360;
-               var height = 360;
-               var radius = Math.min(width, height) / 2;
-               var donutWidth = 100;
-
-               var color = d3.scale.category20b();
-
-               var svg = d3.select('#ragChart')
-               .append('svg')
-               .attr('width', width)
-               .attr('height', height)
-               .append('g')
-               .attr('transform', 'translate(' + (width / 2) +
-                 ',' + (height / 2) + ')');
-
-               var arc = d3.svg.arc()
-               .innerRadius(radius - donutWidth)
-               .outerRadius(radius);
-
-               var pie = d3.layout.pie()
-               .value(function(d) { return d.angle; })
-               .sort(null);
-
-               var path = svg.selectAll('path')
-               .data(pie(quarter))
-               .enter()
-               .append('path')
-               .attr('d', arc)
-               .attr('fill', function(d, i) { 
-                 return color(d.data.label);
-               });
-
-               var kpiText = svg.selectAll('text')
-               .data(kpi.name)
-               .enter()
-               .append('text');
-
-               kpiText.text("kpi");
-
-               svg.append("a")
-              .attr("xlink:href", function(d) {return "cool.html";});
-
-             })(window.d3);
-           </script>
-         </div>
-
-         <h2 class="sub-header">Some more RAG Graphics</h2>
-         <div class="containter">            
-          <div id="#chart"></div>
-          <script src="js/d3.min.js" type="text/javascript"></script>
-          <script type="text/javascript">
-
-             var i; 
-             for ( i = 0; i < 10; i++)
-             {
-              document.write(i);
-             }
-
-          </script>
-
-        </div>
       </div>
     </div>
-
   </div>
 
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h2 class="sub-header">KPI Visualisation</h2>
+          <div class="row placeholders">
+            <div id ="barChart" class="col-md-6 col-xs-3 placeholder">
+            <!--<img data-src="holder.js/200x200?bg=#DC143C" class="img-responsive" alt="generic placeholder thumbnail"> -->
+              <h4 id="kpiName"></h4>
+              <span class="text-muted">Performance of the KPI over the four quarters</span>
+              <p> <br> <br> </p>
+             <script src="js/d3.min.js" type="text/javascript"></script>
+             <script type="text/javascript">               
+                //Width and height
+                var w = 200;
+                var h = 200;
+                
+                var kpi = 
+                        {
+                         name : "Growth in statutory income (£m, Cumulative)",
+                         frequency : 4,
+                         unit : "k",
+                         type : "cumulative",
+                         quarterName : ["Q1", "Q2", "Q2", "Q4"],
+                         targetValue : [43.7, 87.1, 131.4, 171.6],
+                         actualValue : [43.2, 82.8, 125.8, 176.3],
+                         foreCastValue : [30, 60, 100, 120],
+                         yearlyTarget : 120,
+                         yearlyForeCast : 120,
+                         ragThreshold : [[0.94, 0.98], [.94, .98]],
+                         comments : "We achieved a 3.6% growth in statutory income. We want to grow annual income by £13m or 4% as per the budget. Q1 target growth is £3.25m"                       
+                       };
+            
+                  if ( kpi.actualValue.length != kpi.targetValue.length )
+                  {
+                    console.log( "Target values not of the same length as actual values.")
+                  }
+                  
+                  var dataSet = [ kpi.actualValue, kpi.targetValue ];
+
+                  var i;
+                  var dataSet = [];
+                  dataSet = kpi;
+                  
+                  var dataMax = d3.max(dataSet.actualValue);
+                  var tempMax = d3.max(dataSet.targetValue);
+                  
+                  var dataMin = d3.min(dataSet.actualValue);                  
+                  var tempMin = d3.min(dataSet.targetValue);
+                  
+                  dataMax = d3.max([tempMax, dataMax]);
+                  dataMin = d3.min([tempMin, dataMin]);
+
+                  if ( dataMin > 0 )
+                  {
+                    dataMin = 0;
+                  }
+
+                  var dataset = d3.range(dataSet.frequency);
+                  var xScale = d3.scale.ordinal()
+                          .domain(d3.range(kpi.frequency))
+                          .rangeRoundBands([0, w], 0.2);
+
+                  var yScale = d3.scale.linear()
+                          .domain([dataMin, dataMax])
+                          .range([0, h]);
+                  
+                    //Create SVG element
+                    var svg = d3.select("#barChart")
+                          .append("svg")
+                          .attr("width", w)
+                          .attr("height", h)                                             
+
+                    //Create bars
+                    svg.selectAll("rect")
+                       .data(dataset)
+                       .enter()
+                       .append("rect")
+                       .attr("x", function(d, i) {
+                          return xScale(i);
+                       })
+                       .attr("y", function(d) {
+                          return h - yScale(d);
+                       })
+                       .attr("width", xScale.rangeBand())
+                       .attr("height", function(d) {
+                          return yScale(d);
+                       })
+                       .attr("fill", function(d) {
+                        return "rgb(0, 0, " + (d * 10) + ")";
+                       });
+
+                    //Create labels
+                    svg.selectAll("text")
+                       .data(dataset)
+                       .enter()
+                       .append("text")
+                       .text(function(d) {
+                          return d;
+                       })
+                       .attr("text-anchor", "middle")
+                       .attr("x", function(d, i) {
+                          return xScale(i) + xScale.rangeBand() / 2;
+                       })
+                       .attr("y", function(d) {
+                          return h - yScale(d) + 14;
+                       })
+                       .attr("font-family", "sans-serif")
+                       .attr("font-size", "11px")
+                       .attr("fill", "white");
 
 
+
+
+                    //On click, update with new data      
+                    d3.select("svg")
+                      .on("click", function() {
+
+                        //New values for dataset
+                        var numValues = dataset.length;               //Count original length of dataset
+                        var maxValue = 100;                     //Highest possible new value
+                        dataset = [];                         //Initialize empty array
+                        for (var i = 0; i < numValues; i++) {           //Loop numValues times
+                          var newNumber = Math.floor(Math.random() * maxValue); //New random integer (0-100)
+                          dataset.push(newNumber);                //Add new number to array
+                        }
+                        
+                        //Update scale domain
+                        //Recalibrate the scale domain, given the new max value in dataset
+                        yScale.domain([0, d3.max(dataset)]);
+
+                        //Update all rects
+                        svg.selectAll("rect")
+                           .data(dataset)
+                           .transition()
+                           .delay(function(d, i) {
+                             return i / dataset.length * 1000;
+                           })
+                           .duration(500)
+                           .attr("y", function(d) {
+                              return h - yScale(d);
+                           })
+                           .attr("height", function(d) {
+                              return yScale(d);
+                           })
+                           .attr("fill", function(d) {
+                            //return "pink";
+                            //return "rgb(255, 0, 157)";//dark pink
+                            //return "orange";
+                            //return "green";
+                            return "rgb(0, 0, " + (d * 10) + ")";
+                           })
+
+                        //Update all labels
+                        svg.selectAll("text")
+                           .data(dataset)
+                           .transition()
+                           .delay(function(d, i) {
+                             return i / dataset.length * 1000;
+                           })
+                           .duration(500)
+                           .text(function(d) {
+                              return d;
+                           })
+                           .attr("x", function(d, i) {
+                              return xScale(i) + xScale.rangeBand() / 2;
+                           })
+                           .attr("y", function(d) {
+                              return h - yScale(d) + 14;
+                           });                                  
+                      });
+
+              </script>
+              
+            </div>
+            <div id = "commentBox" class="col-md-6 col-xs-3 placeholder">
+              <h4>Comments</h4>
+              <span class="text-muted">KPI Explanation</span>
+              <script type="text/javascript">
+                d3.select("#commentBox").append("p").text(kpi.comments)
+                d3.select("#kpiName").text(kpi.name)
+              </script>
+            </div>            
+          </div>
 
     <!-- bootstrap core javascript
     ================================================== -->
