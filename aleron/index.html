@@ -52,7 +52,20 @@
     h1 {                                                            /* NEW */
       font-size: 14px;                                              /* NEW */
       text-align: center;                                           /* NEW */
-    }                                                               /* NEW */
+    } 
+
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        font-family: sans-serif;
+        font-size: 11px;
+    }                                                              /* NEW */
   </style>
 
   <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
@@ -212,6 +225,7 @@
                 //Width and height
                 var w = 200;
                 var h = 200;
+                var padding = 0;
                 
                 var kpi = 
                         {
@@ -307,8 +321,18 @@
                        .attr("font-size", "11px")
                        .attr("fill", "white");
 
+                  var xAxis = d3.svg.axis()
+                  .scale(xScale)
+                  .orient("bottom");
 
+                  svg.append("g")
+                  .attr("class", "axis") //Assign "axis" class
+                  .attr("transform", "translate(0," + (h - padding) + ")")
+                  .call(xAxis);
 
+            
+
+                  
 
                     //On click, update with new data      
                     d3.select("svg")
@@ -365,7 +389,7 @@
                            })
                            .attr("y", function(d) {
                               return h - yScale(d) + 14;
-                           });                                  
+                           });                             
                       });
 
               </script>
