@@ -17,57 +17,6 @@
   <!-- Custom styles for this template -->
   <link href="css/dashboard.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/normalize.css">
-  <style>
-    #chart {
-      height: 360px;
-      margin: 0 auto;                                               /* NEW */
-      position: relative;
-      width: 360px;
-    }
-    .tooltip {
-      background: #eee;
-      box-shadow: 0 0 5px #999999;
-      color: #333;
-      display: none;
-      font-size: 12px;
-      left: 130px;
-      padding: 10px;
-      position: absolute;
-      text-align: center;
-      top: 95px;
-      width: 80px;
-      z-index: 10;
-    }
-    .legend {
-      font-size: 12px;
-    }
-    rect {
-      cursor: pointer;                                              /* NEW */
-      stroke-width: 2;
-    }
-    rect.disabled {                                                 /* NEW */
-      fill: transparent !important;                                 /* NEW */
-    }                                                               /* NEW */
-    h1 {                                                            /* NEW */
-      font-size: 14px;                                              /* NEW */
-      text-align: center;                                           /* NEW */
-    } 
-
-
-    .axis path,
-    .axis line {
-      fill: none;
-      stroke: black;
-      shape-rendering: crispEdges;
-    }
-
-    .axis text {
-        font-family: sans-serif;
-        font-size: 11px;
-    }                                                              /* NEW */
-  </style>
-
   <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
   <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
   <!-- <script src="js/ie-emulation-modes-warning.js"></script> -->
@@ -125,11 +74,10 @@
             <li><a href="">People</a></li>
           </ul>
           <ul class="nav nav-sidebar">
-            <li><a href="">Impact</a></li>
-            <li><a href="">People</a></li>
-            <li><a href="">Finance</a></li>
-            <li><a href="">Busines</a></li>
-            <li><a href="">SBP</a></li>
+            <li><a href="./impact.html">Impact</a></li>
+            <li><a href="./people.html">People</a></li>
+            <li><a href="./finance.html">Finance</a></li>
+            <li><a href="./risk.html">Risk</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -137,24 +85,32 @@
 
           <div class="row placeholders">
             <div class="col-xs-6 col-sm-3 placeholder">
+              <a href="./people.html">
               <img data-src="holder.js/200x200?bg=#DC143C" class="img-responsive" alt="generic placeholder thumbnail">
               <h4>People</h4>
               <span class="text-muted">People make the difference</span>
+              </a>
             </div>
             <div class="col-xs-6 col-sm-3 placeholder">
+              <a href="./finance.html">
               <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="generic placeholder thumbnail">
               <h4>Finance</h4>
               <span class="text-muted">Plan carefully</span>
+              </a>
             </div>
             <div class="col-xs-6 col-sm-3 placeholder">
+              <a href="./impact.html">
               <img data-src="holder.js/200x200?bg=#FF7F50" class="img-responsive" alt="generic placeholder thumbnail">
               <h4>Impact</h4>
               <span class="text-muted">Impact matters</span>
+              </a>
             </div>
             <div class="col-xs-6 col-sm-3 placeholder">
+              <a href="./risk.html">
               <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="generic placeholder thumbnail">
               <h4>Risk</h4>
               <span class="text-muted">something else</span>
+              </a>
             </div>
           </div>
 
@@ -329,6 +285,16 @@
                   .attr("class", "axis") //Assign "axis" class
                   .attr("transform", "translate(0," + (h - padding) + ")")
                   .call(xAxis);
+
+                  var line = d3.svg.line()
+                  .x(function(d) {
+                                    return x(d.date);
+                                 })
+                  .y(function(d) {
+                                return y0(d.accidents);
+                                  })
+    .interpolate("cardinal")
+    .tension(0.9);
 
             
 
