@@ -154,9 +154,9 @@ d3.csv("data/crashes.csv", function(error, data) {
             div.transition()
                 .duration(50)
                 .style("opacity", .9);
-            div.html("<h3>"+ formatTime(d.date) + "</h3>" + "<br/>" +"<p>Revenue: " +  "<strong>"+ d.deaths + "</strong>"+ " million £" + "</p>")
-                .style("left", (d3.event.pageX) + 10+"px")
-                .style("top", (d3.event.pageY - 28) + "px");
+            div.html("<h3>"+ formatTime(d.date) + "</h3>" + "<br/>" +"<p>Revenue: " +  "<strong>"+  "£" + d.deaths + "</strong>"+ " m." + "</p>")
+                .style("left", (d3.event.pageX - 300 ) +"px")
+                .style("top", (d3.event.pageY -28) + "px");
         })
         .on("mouseout", function(d) {
             div.transition()
@@ -174,7 +174,7 @@ d3.csv("data/crashes.csv", function(error, data) {
         .style("display", "none");
 
     focus.append("circle")
-        .attr("r", 4.5);
+        .attr("r", 1.5);
 
     focus.append("text")
         .attr("x", 9)
@@ -206,8 +206,8 @@ d3.csv("data/crashes.csv", function(error, data) {
         div.transition()
             .duration(50)
             .style("opacity", .9);
-        div.html("<h3>"+ formatTime(d.date) + "</h3>" + "<br/>" +"<p>Profit: " + "<strong>"+d.accidents + "</strong>" + " million £" + "</p>")
-            .style("left", (d3.event.pageX) + "px")
+        div.html("<h3>"+ formatTime(d.date) + "</h3>" + "<br/>" +"<p>Profit: " + "<strong>"+ "£" + d.accidents + "</strong>" + " m." + "</p>")
+            .style("left", (d3.event.pageX - 300) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
     }
 });
