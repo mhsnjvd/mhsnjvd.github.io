@@ -381,8 +381,23 @@
                 d3.select("#kpiName").text(kpi.name)
               </script>
             </div>            
-          </div>
+         </div>
+         
+          <!-- FOOTER -->
+          <footer>
+            <p class="pull-right"><a href="#">Back to top</a></p>
+            <p>&copy; <span id="idFooter">2014 Company, Inc.</span> &middot;
+            <a id="idURL" href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+          </footer>
 
+          <script src="./js/defs.js"></script>
+          <script type="text/javascript">
+               document.getElementById("idFooter").innerHTML =
+               companyName;
+               document.getElementById("idURL").href =
+               companyURL;
+          </script>
+ 
     <!-- bootstrap core javascript
     ================================================== -->
     <!-- placed at the end of the document so the pages load faster -->
