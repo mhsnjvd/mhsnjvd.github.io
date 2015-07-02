@@ -15,7 +15,6 @@
     <script type="text/javascript">
         //Update the icon
         document.getElementById("idIcon").href = companyIconURL;
-
         //Update the title
         document.getElementById("idPageTitle").innerHTML = companyName + " | " + clientName;
     </script>
@@ -37,32 +36,44 @@
 ================================================== -->
   <body>
 
+   <div class="navbar-wrapper">
+      <div class="container">
 
-       <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Aleron Dashboard</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a href="#">Help</a></li>
-          </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
-        </div>
+        <nav class="navbar navbar-inverse navbar-static-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <!--<a class="navbar-brand" href="#">Project name</a> -->
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="http://www.aleron.org">Home</a></li>
+                <li><a href="./dashboard.html">Dashboard</a></li>
+	            <li><a href="#">Settings</a></li>
+	            <li><a href="#">Profile</a></li>
+	            <li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
+	            <li><a href="#">Help</a></li>
+                <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<span class="caret"></span></a>
+	                  <ul class="dropdown-menu">
+	            		<li><a href="./dashboard.html">Dashboard</a></li>
+	            		<li><a href="#">Settings</a></li>
+	            		<li><a href="#">Profile</a></li>
+	            		<li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
+	            		<li><a href="#">Help</a></li>
+	                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
       </div>
-    </nav>
+    </div>     
 
 
     <!-- Carousel
@@ -72,36 +83,29 @@
       <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
         <li data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
       </ol>
       <div class="carousel-inner" role="listbox">
         <div class="item active">
-          <img class="first-slide" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="First slide">
+          <img class="first-slide" src="./images/images.png" alt="First slide">
           <div class="container">
             <div class="carousel-caption">
+              <!--
               <h1>Example headline.</h1>
               <p>Note: If you're viewing this page via a <code>file://</code> URL, the "next" and "previous" Glyphicon buttons on the left and right might not load/display properly due to web browser security rules.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
+              -->
+              <p><a class="btn btn-lg btn-primary" href="http://www.aleron.org" role="button">Aleron</a></p> 
             </div>
           </div>
         </div>
         <div class="item">
-          <img class="second-slide" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Second slide">
+          <img class="second-slide" src="./images/children.jpg" alt="Second slide">
           <div class="container">
             <div class="carousel-caption">
+                <!--
               <h1>Another example headline.</h1>
               <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <img class="third-slide" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Third slide">
-          <div class="container">
-            <div class="carousel-caption">
-              <h1>One more for good measure.</h1>
-              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
+              -->
+              <p><a class="btn btn-lg btn-primary" href="http://www.aleron.org" role="button">Aleron</a></p> 
             </div>
           </div>
         </div>
