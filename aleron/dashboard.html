@@ -12,10 +12,10 @@
   <title>Aleron | Performance Dashboard</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="css/dashboard.css" rel="stylesheet">
+  <link href="./css/dashboard.css" rel="stylesheet">
 
   <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
   <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -74,16 +74,17 @@
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
             <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-            <li><a href="#">Reports</a></li>
-            <li><a href="#">Analytics</a></li>
-            <li><a href="#">Export</a></li>
+            <li><a href="./reports.html">Reports</a></li>
+            <li><a href="./analytics.html">Analytics</a></li>
+            <li><a href="./export.html">Export</a></li>
           </ul>
           <ul class="nav nav-sidebar">
-            <li><a href="./help.html">Help(Guidance)</a></li>
-            <li><a href="./summary.html">Executive Summary</a></li>
-            <li><a href="./riskregister.html">Risk Register</a></li>
-            <li><a href="./mitigation.html">Risk Mitigations</a></li>
-            <li><a href="./people.html">People</a></li>
+          	<li><a href="./kpi.html">KPI Analysis</a></li>
+          	<li><a href="./riskregister.html">Risk Registers</a></li>
+          	<li><a href="./management.html">Management Info</a></li>
+          	<li><a href="./mitigation.html">Risk Mitigations</a></li>
+          	<li><a href="./summary.html">Executive Summary</a></li>            
+            <li><a href="./help.html">Help(Guidance)</a></li>                                                
           </ul>
           <ul class="nav nav-sidebar">
             <li><a href="./impact.html">Impact</a></li>
@@ -95,18 +96,17 @@
          
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-        <div class="containter">        
-			<div class="control-group">			
-			<button type="button" class="btn btn-default btn-lg">
-  				<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span> Upload  						
+        <div class="containter">            
+		    <div class="control-group">			
+		    <p><h4>Upload your data file:</h4> <button type="button" class="btn btn-primary btn-lg">
+  				<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span> .xls(x) 						
 			</button>			
-
-
+			<br><br><br>
+			</p>
 			</div>
-			<br>
+			
          </div>
           <h1 class="page-header">Aleron Performance Dashboard</h1>
-
           <div class="row placeholders">
             <div class="col-xs-6 col-sm-3 placeholder">
               <a href="./people.html">
@@ -405,7 +405,7 @@
           <script src="./js/defs.js"></script>
           <script type="text/javascript">
                document.getElementById("idFooter").innerHTML =
-               companyName;
+               companyName + " 2015";
                document.getElementById("idURL").href =
                companyURL;
           </script>

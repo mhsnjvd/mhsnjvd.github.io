@@ -5,7 +5,7 @@
 // The global variables will be named with underscores.
 
 var companyName = "Aleron Group";
-var companyURL = "http://www.alerongroup.com";
+var companyURL = "http://www.aleron.org";
 var clientName = "Bernardos";
 var companyIconURL = "./favicon.jpg";
 
@@ -23,6 +23,5 @@ for ( i = 0;i < nBckGrounds; i++ )
 {
     bckGroundURL.push(i);
 }
-console.write(bckGroundURL);
 
 
