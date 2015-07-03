@@ -9,15 +9,15 @@
   <meta name="author" content="">
   <link rel="icon" href="favicon.jpg">
 
-  <title>Aleron | Performance Dashboard</title>
+  <title>Aleron | Impact Analysis</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="css/dashboard.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="styles/base.css" />
-  <link rel="stylesheet" type="text/css" href="styles/project.css" />
+  <link href="./css/dashboard.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="./styles/base.css" />
+  <link rel="stylesheet" type="text/css" href="./styles/project.css" />
 
 
   <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
@@ -46,15 +46,27 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a href="#">Help</a></li>
+              <li class="active"><a href="http://www.aleron.org">Home</a></li>
+                <li><a href="./dashboard.html">Dashboard</a></li>
+              <li><a href="#">Settings</a></li>
+              <li><a href="#">Profile</a></li>
+              <li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
+              <li><a href="#">Help</a></li>
+                <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                  <li><a href="./dashboard.html">Dashboard</a></li>
+                  <li><a href="#">Settings</a></li>
+                  <li><a href="#">Profile</a></li>
+                  <li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
+                  <li><a href="#">Help</a></li>
+                    </ul>
+                </li>         
           </ul>
+          <!--
           <form class="navbar-form navbar-right">
             <input type="text" class="form-control" placeholder="Search...">
           </form>
+          -->          
         </div>
       </div>
     </nav>
@@ -117,7 +129,7 @@
     ================================================== -->
     <!-- placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
     
     <!-- just to make our placeholder images work. don't actually copy the next line! -->
     <!--<script src="js/vendor/holder.min.js"></script> -->
