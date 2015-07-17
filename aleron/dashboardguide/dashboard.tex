@@ -1,0 +1,122 @@
+\documentclass[a4paper]{article}
+%\usepackage{fullpage}
+%\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{float}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{tikz}
+\hypersetup{ colorlinks=true, urlcolor=blue}
+
+\usepackage{datetime}
+
+\sloppy
+\definecolor{lightgray}{gray}{0.5}
+\setlength{\parindent}{0pt}
+
+
+\usepackage[sc]{mathpazo}
+\linespread{1.05}         % Palatino needs more leading (space between lines)
+\usepackage[T1]{fontenc}
+\usepackage{pxfonts}
+
+
+%------------------------------------------------------------
+
+\begin{document}
+\title{The Aleron Performance Dashboard}
+%\\Requirements, Design and Challenges}
+\author{Mohsin Javed}
+\date{July 16, 2015\footnote{Last Modified: \currenttime, \today }}
+%Version: \version
+\maketitle
+\section*{The Aleron Performance Dashboard}
+Our dashboard will be a tool available on the web for
+quantitative and qualitative analysis of key performance
+indicators (KPIs) and data provided by our clients. The aim
+of the dashboard is to provide an automated way for our
+clients to upload their data on the web and to visualize it,
+again on the web with key and critical factors of the data
+highlighted via the analysis we perform.
+
+
+\section*{Technologies Used}
+There are 4 state of the art key technologies we are using
+to build our dashboard:
+\begin{itemize}
+\item
+\href{https://en.wikipedia.org/wiki/Bootstrap_(front-end_framework)}{\textbf{Bootstrap}}:
+Developed and used by twitter. It is a tool
+for designing front end of responsive websites. A responsive
+website looks pretty whether one views it on a huge desktop
+screen or on a smart phone. As of 2015, Bootstrap is the
+most starred project on \href{https://github.com/}{GitHub}.
+This basically means that if there were a facebook of the
+tech world, Bootstrap would have the most likes!
+\item \href{http://uk.mathworks.com/}{\textbf{MATLAB}}: Arguably, the
+best tool for technical computing. Ideal for performing
+quick analysis on all kinds of data and comes with a lot of
+built in mathematical power. We will use MATLAB to perform
+key quantitative analysis on the data provided by our
+clients.
+\item
+\href{https://en.wikipedia.org/wiki/JavaScript}{\textbf{JavaScript}}: 
+The language of the web. Whenever we go
+online, we almost surely use JavaScript. JavaScript enables
+the web browser to perform various actions and tasks. Our
+dashboard will use JavaScript to receive data and perform
+the necessary processing before it can be visualized. 
+\item \href{http://d3js.org}{\textbf{d3}}: The coolest tool out there
+for data visualization. d3 stands for data driven documents
+and the name says it all. \href{http://d3js.org}{d3} is also 
+used by the New York Times for creating rich graphics and
+visualisation of all sorts. We will use this tool for
+creating the real magic for our dashboard.
+\end{itemize}
+
+
+\section*{How it works}
+Here is a mock example of how the dashboard will (should)
+work.
+
+\subsection*{Key Steps}
+\begin{enumerate}
+
+\item Our client logs in on our dashboard website and
+provides us two lists:
+\begin{itemize}
+   \item A list of KPI, i.e.\ the names of all the key
+   performance indicators.  
+   \item A list of names and email addresses identifying
+   people responsible for each of the  KPIs.
+\end{itemize}
+
+\item Based on the lists provided above, we will then
+automatically prepare excel sheets with the KIP headings and
+email these to the corresponding email addresses. 
+
+\item These individuals will then (hopefully) send back their excel files
+populated with relevant data. 
+
+\item Once all data is received, it will be processed by our
+analytic engine designed in MATLAB.
+
+\item Processed data will then be picked up and sent on the
+web using JavaScript.
+
+\item Our data visualization tool (d3) will be ready to
+display it on the web.
+
+\item We will then notify our client to sit back, relax and
+enjoy the show.
+\end{enumerate}
+
+\bibliographystyle{plain}
+\bibliography{../../../../citations/bibliobooks,../../../../citations/bibliopapers}
+\end{document}
+
