@@ -50,7 +50,7 @@
     <div class="container">
 
       <div class="blog-header" dir="rtl">
-        <h1 class="blog-title">کنارہ</h1>
+        <h1 class="blog-title">   کنارہ   </h1>
         <!-- <h1 class="blog-title">کنارہ</h1> -->
         <p class="lead blog-description">ہمارا مقصد کچھ خاص نہیں، ہم کچھ ریاضی، شاعری، ٹیکنولوجی اور موسیقی کے بارے میں باتیں کریں گے۔ بس ہلکی پھلکی گپ شپ، ٹینشن نہیں لینی۔</p>
       </div>
@@ -64,8 +64,8 @@
             <p class="blog-post-meta">یکم جنوری، ۲۰۱۵<a href="#">محسن</a></p>
 
             <p>
-            میری کوشش یہ ہے کہ اردو میں لکھوں، دیکھیے کیا بنتا ہے۔ میں ابھی تک اردو رسم الخط کے استعمال
-            سے متعلقہ تمام تکنیکی گتھیاں سلجھا نہیں پایا ہوں پر امید ہے کہ جلد ہی یہ مسئلہ حل ہو جائے گا۔
+            میری کوشش یہ ہے کہ اردو میں لکھوں، دیکھیے کیا بنتا ہے۔ میں ابھی تک اردو رسم  الخط کے استعمال
+            سے متعلقہ تمام تکنیکی گتھیاں سلجھا نہیں پایا ہوں،  پر امید ہے کہ جلد ہی یہ مسئلہ حل ہو جائے گا۔
             </p>
             <hr>
             <p>ہم ہوئے تم ہوئے کہ میر ہوئے 
@@ -150,6 +150,16 @@
       </div><!-- /.row -->
 
     </div><!-- /.container -->
+
+    <script src="../js/d3.min.js"></script>
+    <script type="text/javascript">
+        d3.select("body").style("background-color", "white");
+        console.log("This is d3!");
+        d3.select("body").selectAll("p")
+            .data([4, 8, 15, 16, 23, 42])
+              .enter().append("p")
+                  .text(function(d) { return "I’m number " + d + "!"; });
+    </script>
 
     <footer class="blog-footer">
       <p>Blog for <a href="http://zindajaved.com">zindajaved</a> by <a href="https://github.com/mhsnjvd">@mohsin</a>.</p>
