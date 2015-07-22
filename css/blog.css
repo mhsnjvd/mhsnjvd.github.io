@@ -9,7 +9,7 @@ body {
 
 .urdu {
   font-family: 'Jameel Noori nastaleeq', 'Alvi Lahori Nastaleeq', 'Alvi Nastaleeq', 'Genericons', ' Helvetica Neue', Helvetica, Arial, sans-serif;
-  dir: "rtl";
+  direction: rtl;
 }
 h1, .h1,
 h2, .h2,
