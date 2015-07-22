@@ -463,17 +463,48 @@
                    </svg>
                </div>
 
+               <div id="mydiv">
+                   <script src="./js/d3.min.js"></script>
+                   <script type="text/javascript">
+                       var myId = document.getElementById("mydiv"); 
+                       var h = 200;
+                       var w = 500;
+                       var dataSet = [ 5, 10, 20, 15, 18];
+                       console.log("trying d3...");
+                       console.log(myId);
+                       var svg = d3.select(myId).append("svg").attr("height", h).attr("width", w);
+                       svg.style("background-color", "pink");
+                       var circles = svg.selectAll("circle").data(dataSet).enter().append("circle");
+                       circles.attr("cx", function(d, i){
+                               return (i*50)+25;
+                               });
+                       circles.attr("cy", h/2);
+                       circles.attr("r", function(d){
+                               return d;
+                               });
+                       /*
+                       d3.select(document.getElementById("mydiv")).append("p").text("I am a paragrph");
+                       d3.select(document.getElementById("mydiv")).append("p").text("I am a paragrph");
+                       var str = "I am a paragrph too!!!";
+                       d3.select(document.getElementById("mydiv")).selectAll("p").data(dataSet).enter().append("p")
+                       .text( function(d, i){return "I am paragrph #" + i + " with data = " + d;});
+                       var data = [];
+                       for( var i = 0; i < 20; i++ )
+                        {
+                            data.push(Math.random()*30);
+                        }
+                       */
+                   </script>
+               </div>
 
-          </div>
+            </div>
           </div>          
 
           
         </div>
       </div>
     </div>
-
-
-                  
+                      
 
          
           <!-- FOOTER -->
@@ -499,7 +530,8 @@
     <!-- just to make our placeholder images work. don't actually copy the next line! -->
     <!--<script src="js/vendor/holder.min.js"></script> -->
     <script src="./js/holder.min.js"></script>
-    <scritp scr="./js/d3.min.js"></script>
+    <!-- This doesn't work, include d3 with the JavaScript -->
+    <!-- <script scr="./js/d3.min.js"></script> -->
     <!-- ie10 viewport hack for surface/desktop windows 8 bug -->
     <script src="js/ie10-viewport-bug-workaround.js"></script>
   </body>
