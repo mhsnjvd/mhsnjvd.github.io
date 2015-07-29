@@ -482,10 +482,12 @@
                        circles.attr("r", function(d){
                                return d;
                                });
+                       circles.attr("fill", "yellow");
+                       circles.attr("stroke", "blue");
                        /*
-                       d3.select(document.getElementById("mydiv")).append("p").text("I am a paragrph");
-                       d3.select(document.getElementById("mydiv")).append("p").text("I am a paragrph");
-                       var str = "I am a paragrph too!!!";
+                       d3.select(document.getElementById("mydiv")).append("p").text("I am a paragraph");
+                       d3.select(document.getElementById("mydiv")).append("p").text("I am a paragraph");
+                       var str = "I am a paragraph too!!!";
                        d3.select(document.getElementById("mydiv")).selectAll("p").data(dataSet).enter().append("p")
                        .text( function(d, i){return "I am paragrph #" + i + " with data = " + d;});
                        var data = [];
@@ -496,6 +498,42 @@
                        */
                    </script>
                </div>
+
+
+                <div id="mySecondDiv">
+                   <script type="text/javascript">
+                       var myId = document.getElementById("mySecondDiv"); 
+                       var h = 200;
+                       var w = 500;
+                       var dataSet = [];
+                       for ( var i = 0; i < 20; i++ )
+                       {
+                           dataSet.push( Math.random()*30 );
+                       }
+                       var svg = d3.select(myId).append("svg").attr("height", h).attr("width", w);
+                       svg.style("background-color", "yellow");
+                       var rects = svg.selectAll("rect").data(dataSet).enter().append("rect");
+                       rects.attr("x", function(d, i){
+                               return (i*50)+25;
+                               });
+                       rects.attr("width", function(d, i){
+                               return 10 + "px";
+                               });
+                       /*
+                       d3.select(document.getElementById("mydiv")).append("p").text("I am a paragraph");
+                       d3.select(document.getElementById("mydiv")).append("p").text("I am a paragraph");
+                       var str = "I am a paragraph too!!!";
+                       d3.select(document.getElementById("mydiv")).selectAll("p").data(dataSet).enter().append("p")
+                       .text( function(d, i){return "I am paragrph #" + i + " with data = " + d;});
+                       var data = [];
+                       for( var i = 0; i < 20; i++ )
+                        {
+                            data.push(Math.random()*30);
+                        }
+                       */
+                   </script>
+               </div>
+               
 
             </div>
           </div>          

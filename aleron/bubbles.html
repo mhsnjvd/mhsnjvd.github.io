@@ -136,7 +136,7 @@
 
          <div class="row">
              <div class="col-md-12" id="mainBubble">
-                 <svg height="579" width="1000" class="mainBubbleSVG">
+                 <svg height="600" width="1100" class="mainBubbleSVG">
                  </svg>
              </div>
          </div>
@@ -148,8 +148,7 @@
    var oR = 0;
    var nTop = 0;
     
-   var svgContainer = d3.select("#mainBubble")
-      .style("height", h+"px");
+   var svgContainer = d3.select("#mainBubble").style("height", h+"px");
     
    var svg = d3.select("#mainBubble").append("svg")
         .attr("class", "mainBubbleSVG")
@@ -224,7 +223,7 @@
                 .attr("cx", function(d,i) {return (oR*(3*(iB+1)-1) + oR*1.5*Math.cos((i-1)*45/180*3.1415926));})
                 .attr("cy", function(d,i) {return ((h+oR)/3 +        oR*1.5*Math.sin((i-1)*45/180*3.1415926));})
                 .attr("cursor","pointer")
-                .style("opacity",0.5)
+                .style("opacity",0.0) //Initial opacity set to 0.0 to hide them
                 .style("fill", "#eee")
                 .on("click", function(d,i) {
                 window.open(d.address);                 
@@ -244,9 +243,9 @@
  
             childBubbles.append("text")
                 .attr("class", "childBubbleText" + iB)
-                .attr("x", function(d,i) {return (oR*(3*(iB+1)-1) + oR*1.5*Math.cos((i-1)*45/180*3.1415926));})
-                .attr("y", function(d,i) {return ((h+oR)/3 +        oR*1.5*Math.sin((i-1)*45/180*3.1415926));})
-                .style("opacity",0.5)
+                .attr("x", function(d,i) {return (oR*(3*(iB+1)-1) + oR*1.5*Math.cos((i-1)*45/180*Math.PI));})
+                .attr("y", function(d,i) {return ((h+oR)/3 +        oR*1.5*Math.sin((i-1)*45/180*Math.PI));})
+                .style("opacity",0.0) //Initial opacity set to 0 to hide them
                 .attr("text-anchor", "middle")
             .style("fill", function(d,i) { return colVals(iB); }) // #1f77b4
                 .attr("font-size", 6)
@@ -296,11 +295,11 @@
                 .attr("x", function(d,i) {return (oR*(3*(k+1)-1) + oR*1.5*Math.cos((i-1)*45/180*3.1415926));})
                 .attr("y", function(d,i) {return ((h+oR)/3 +        oR*1.5*Math.sin((i-1)*45/180*3.1415926));})
             .attr("font-size", 6)
-                .style("opacity",0.5);
+                .style("opacity",0.0); //One way to hide and bubbles
  
         t.selectAll(".childBubble" + k)
                 .attr("r",  function(d) {return oR/3.0;})
-            .style("opacity",0.5)
+            .style("opacity",0.0) // One way to hide text and bubbbles
                 .attr("cx", function(d,i) {return (oR*(3*(k+1)-1) + oR*1.5*Math.cos((i-1)*45/180*3.1415926));})
                 .attr("cy", function(d,i) {return ((h+oR)/3 +        oR*1.5*Math.sin((i-1)*45/180*3.1415926));});
                      
