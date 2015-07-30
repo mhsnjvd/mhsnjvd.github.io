@@ -37,7 +37,7 @@
       .axis line {
               fill: none;
               stroke: grey;
-              stroke-width: 1;
+              stroke-width: 2;
               shape-rendering: crispEdges; }
   </style>
 
@@ -132,7 +132,7 @@
              var width  = 800;
              var padding = 10;
              var topMargin = 20;
-             var rightMargin = 20;
+             var rightMargin = 30;
              var bottomMargin = 40;
              var leftMargin = 20;
 
@@ -244,12 +244,7 @@
             .attr("class", "line")
             .attr("d", valueLine(lineData));
 
-            // Add the valueline path.
-            lineGraph.append("path")
-            .attr("class", "line")
-            .attr("d", valueLine(lineData));
-
-
+          
             var circles = svg.append("g")
             .attr("transform", "translate("+margin.left+","+margin.top+")");
 
@@ -259,8 +254,23 @@
             .append("circle")
             .attr("cx", function(d){ return xLineScale(d.x);})
             .attr("cy", function(d){ return yScale(d.y);})
-            .attr("r", 4)
-            .attr("fill", "red")
+            .attr("r", 6)
+            .attr("fill", "red");
+            //.on("mouseover", circleMouseOver)
+            //.on("mouseout", circleMouseOut);
+
+            var hiddenCircles = svg.append("g")
+            .attr("transform", "translate("+margin.left+","+margin.top+")");
+
+            hiddenCircles.selectAll("circle")
+            .data(lineData)
+            .enter()
+            .append("circle")
+            .attr("cx", function(d){ return xLineScale(d.x);})
+            .attr("cy", function(d){ return yScale(d.y);})
+            .attr("r", 20)
+            .attr("fill", "black")
+            .attr("opacity", 0.0)
             .on("mouseover", circleMouseOver)
             .on("mouseout", circleMouseOut);
 
@@ -272,6 +282,7 @@
                circle.transition()
                    .duration(250)
                    .attr("fill", "black")
+                   .attr("opacity", 1)
                    .attr("r", 8);
            }
            
@@ -280,8 +291,9 @@
                circle = d3.select(this);
                circle.transition()
                    .duration(250)
+                   .attr("opacity", 0.0)
                    .attr("fill", "red")
-                   .attr("r", 4);
+                   .attr("r", 20);
            }
          </script>
 

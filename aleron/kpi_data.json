@@ -1,0 +1,66 @@
+[ 
+   {
+      "name": "First KPI",
+      "category": "finance",
+      "timePeriod": "quarterly",
+      "unit": "million",
+      "type": "cumulative",
+      "targetValue": [4, 3, 2, 1],
+      "actualValue": [3, 2, 1, 1],
+      "foreCastValue": [4, 4, 4, 4],
+      "yearlyTarget": 16,
+      "yearlyForecast": 20
+   },
+
+   {
+      "name": "Second KPI",
+      "category": "finance",
+      "timePeriod": "quarterly",
+      "unit": "million",
+      "type": "cumulative",
+      "targetValue": [4, 3, 2, 1],
+      "actualValue": [3, 2, 1, 1],
+      "foreCastValue": [4, 4, 4, 4],
+      "yearlyTarget": 16,
+      "yearlyForecast": 20
+   },
+
+   {
+      "name": "Third KPI",
+      "category": "finance",
+      "timePeriod": "quarterly",
+      "unit": "million",
+      "type": "cumulative",
+      "targetValue": [4, 3, 2, 1],
+      "actualValue": [3, 2, 1, 1],
+      "foreCastValue": [4, 4, 4, 4],
+      "yearlyTarget": 16,
+      "yearlyForecast": 20
+   },
+
+   {
+      "name": "Fourth KPI",
+      "category": "finance",
+      "timePeriod": "quarterly",
+      "unit": "million",
+      "type": "cumulative",
+      "targetValue": [4, 3, 2, 1],
+      "actualValue": [3, 2, 1, 1],
+      "foreCastValue": [4, 4, 4, 4],
+      "yearlyTarget": 16,
+      "yearlyForecast": 20
+   },
+   
+   {
+      "name": "Fifth KPI",
+      "category": "finance",
+      "timePeriod": "quarterly",
+      "unit": "million",
+      "type": "cumulative",
+      "targetValue": [4, 3, 2, 1],
+      "actualValue": [3, 2, 1, 1],
+      "foreCastValue": [4, 4, 4, 4],
+      "yearlyTarget": 16,
+      "yearlyForecast": 20
+   }
+]

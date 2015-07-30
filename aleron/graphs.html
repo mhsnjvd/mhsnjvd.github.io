@@ -34,8 +34,12 @@ body{
     margin:50px auto;
 }
 */
-path {  stroke: #fff; }
-path:hover {  opacity:0.9; }
+path {  
+        stroke: pink; 
+        stroke-width: 2;
+        fill: none; 
+}
+path:hover {  opacity:0.5; }
 rect:hover {  fill:blue; }
 .axis {  font: 10px sans-serif; }
 .legend tr{    border-bottom:1px solid grey; }
@@ -226,7 +230,21 @@ function dashboard(id, fData){
             .attr("x", function(d) { return x(d[0])+x.rangeBand()/2; })
             .attr("y", function(d) { return y(d[1])-5; })
             .attr("text-anchor", "middle");
-        
+
+
+        //Create a line graph on top of it:
+        var line = d3.svg.line()
+                   .x( function(d, i){ return x(d[0]) + x.rangeBand()/2; } )
+                   .y( function(d, i){ return y(d[1]); } )
+
+        var lineSvg = hGsvg.append("g")
+            .attr("transform", "translate(" + hGDim.l + "," + hGDim.t + ")");
+
+        lineSvg.append("path")
+        .attr("class", "line")
+        .attr("d", line(fD))
+            
+
         function mouseover(d){  // utility function to be called on mouseover.
             // filter for selected state.
             var st = fData.filter(function(s){ return s.State == d[0];})[0],
@@ -434,8 +452,8 @@ dashboard('#dashboard',freqData);
     .data(dataSet)
     .enter()
     .append("text")
-    .attr("x", function(d, i){ return 10*d[0] + 150; })
-    .attr("y", function(d, i){ return 9*d[1] + 50; })
+    .attr("x", function(d, i){ return xScale(d[0]) + 7; })
+    .attr("y", function(d, i){ return yScale(d[1]) - 7; })
     .text(function(d,i)
             { 
                 var x = Math.round(d[0]);
