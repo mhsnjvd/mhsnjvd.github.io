@@ -244,6 +244,12 @@
             .attr("class", "line")
             .attr("d", valueLine(lineData));
 
+            // Add the valueline path.
+            lineGraph.append("path")
+            .attr("class", "line")
+            .attr("d", valueLine(lineData));
+
+
             var circles = svg.append("g")
             .attr("transform", "translate("+margin.left+","+margin.top+")");
 

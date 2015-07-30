@@ -7,7 +7,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
+    <link rel="icon" href="../images/favicon.ico">
 
     <title>Music</title>
 
@@ -111,6 +111,62 @@
        </p>
     </div><!-- /.container -->
 
+        <p><br><br><br></p>
+
+    <div class="container"> 
+        <div class="row" >
+            <div class="col-md-12" id="instruments">
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var instrumentList = [ {name: "Sitar", image:"../images/sitar.jpg"},
+                        {name: "Sarangi", image:"../images/sarangi.jpg"},
+                        {name: "Sarod", image:"../images/sarod.jpg"},
+                        {name: "Bansuri", image:"../images/bansuri.jpg"},
+                        {name: "Shehnai", image:"../images/shehnai.jpg"},
+                        {name: "Tabla", image:"../images/tabla.jpg"}];
+        var height = 600;
+        var width = 800;
+        var nInstruments = instrumentList.length;
+        var padding = {t: 20, r: 20, b:20, l:20};
+        var center = [width, height]/2;
+        var maxPadding = d3.max(Object.keys(padding).map( function(key){ return padding[key]; }));
+        // Radius of the big imaginary circle:
+        var R = d3.min([width, height])/2 - maxPadding;
+        // Shrink factor: let's go for the golden ratio :)
+        var R = R/1.4;
+        // Radius of the smaller bubble circles
+        var r = R/5;
+        // Equal spacing between objects on the imaginary circle
+        // Leave space of an object between two objects
+        var angleSpacing = 1./(2*nInstruments);
+        // centre of the figure:
+        var origin = [width/2, height/2];
+        var svg = d3.select("#instruments")
+        .append("svg")
+        .attr("height", height)
+        .attr("width", width)
+        svg.style("background-color", "whitesmoke");
+
+        var circles = svg.selectAll("circle")
+        .data(instrumentList)
+        .enter()
+        .append("circle")
+        .attr("cx", function(d, i) { return origin[0] + R*Math.cos(2*Math.PI*2*i*angleSpacing); })
+        .attr("cy", function(d, i) { return origin[1] + R*Math.sin(2*Math.PI*2*i*angleSpacing); })
+        .attr("r", r)
+        .attr("fill", "blue");
+
+        circles.selectAll("text")
+        .enter()
+        .append("text")
+        .text( function(d) { return d.name; } )
+        .attr("text-anchor", "middle");
+
+
+    </script>
 
 
 
@@ -128,7 +184,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+    <!-- <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script> -->
   </body>
 </html>
 
