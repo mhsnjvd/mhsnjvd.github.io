@@ -396,7 +396,7 @@ dashboard('#dashboard',freqData);
      var width = 800;
      var padding = 25;
      var svg = d3.select(document.getElementById("scatter")).append("svg").attr("height", height).attr("width", width);
-     svg.style("background-color", "pink");
+     svg.style("background-color", "whitesmoke");
 
      var i = 0;
      var j = 0;
@@ -474,7 +474,7 @@ svg.append("g").attr("class", "axis").attr("transform", "translate(" + padding +
     }
 
     var bar = d3.select(document.getElementById("bar")).append("svg").attr("height", height).attr("width", width);
-    bar.style("background-color", "pink");
+    bar.style("background-color", "whitesmoke");
 
     yScale = d3.scale.linear();
     yMin = d3.min(dataSet);
@@ -493,6 +493,7 @@ svg.append("g").attr("class", "axis").attr("transform", "translate(" + padding +
     .enter()
     .append("rect")
     .attr("width", 20)
+    .attr("fill", "steelblue")
     .attr("x", function(d, i){ return xScale(i);})
     .attr("y", function(d){ return height - yScale(d); })
     .attr("height", function(d){ return yScale(d); } );
