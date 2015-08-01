@@ -127,13 +127,7 @@
         
             <div id="first">
             </div>
-         
-         <script type="text/javascript">
-         
-                   
-        </script>
-
-
+             
 
          <script type="text/javascript">
            function histogram(id, dataSet)
@@ -330,28 +324,19 @@
 
 
             var count = 0;
-            var csvData = [];
-            d3.csv( "./kpi_data.csv", function(error, d)
+            var kpiData = [];
+            d3.csv( "./kpi_data.csv", function(d)
             { 
-              console.log("inside the d3 csv function");
-              csvData = d; 
-              console.log("csvData length inside d3 csv function = " + csvData.length)
-              return; 
-            } );         
-            console.log("csvData length outside d3 csv function = " + csvData.length)         
-            for( var i = 0; i < csvData.length; i++ )
-            {
-              console.log( csvData[i].name );
-            }
-            count = count + 1;
-            console.log(count);
-            //alert(csvData[0].name) ;
+              kpiData = d;
+              visualizeKPIData();
+              return;
+            } );                                 
 
-         </script>
+         function visualizeKPIData()
+         {
+             alert(kpiData[0].name);
 
-         <script type="text/javascript">
-
-         console.log("second script: csvData length outside d3 csv function = " + csvData.length)         
+         }
 
          </script>
          
