@@ -121,9 +121,92 @@
                 </div>
          </div>
 
-            <div id="first">
+         <div class-"row placeholders">
+             <div class="col-xs-6 col-sm-6 placeholder">
+                 <div class="btn-group">
+                     <input type="file" id="dataFile" />                                         
+                 </div>
+             </div>
 
+             <div class="col-xs-6 col-sm-6 placeholder">
+                 <div class="btn-group">
+                     <input type="button" id="browseButton" value="Update Data" onclick="UpdateFunction()"/>                     
+                 </div>
+             </div>
+
+             <div id="dvCSV">
+
+             </div>
+            
+            <div id="first">
             </div>
+
+            <script type="text/javascript">            
+
+            </script>
+
+         <script type="text/javascript">
+         var count = 0;
+         data = [];
+         d3.csv( "./kpi_data.csv", function(error, d){ data = d; return; } );         
+         console.log(data);
+         var name = [];
+         name = data.map( function(d) { return d.name; })
+         alert(name);
+         /*
+         function UploadFunction()
+         {
+              /*
+              d3.csv("./kpi_data.csv", function(data) 
+              {
+                  console.log(data);
+
+              }); 
+              */              /*
+              var dataFile = document.getElementById("dataFile");
+              var data = [];
+              count = count + 1;
+              console.log("This is count #: ", + count);
+              console.log("Initial state of data:\n");
+              console.log(data);
+              data = Upload();              
+              console.log(data[0]);
+         }
+         */
+
+        
+        /*
+       function Upload() 
+        {          
+           var dataFile = document.getElementById("dataFile");
+           var data = [];
+
+           console.log("The value of data inside the function:\n");
+           console.log(data);
+           
+           if (typeof (FileReader) != "undefined") 
+           {
+                var reader = new FileReader();                
+                console.log("The value of dataFile:\n");
+                console.log(dataFile);
+                reader.readAsText(dataFile.files[0]);                
+                data.push(reader.result);
+                console.log("value of data just before return:\n");
+                console.log(data);
+                console.log("The value of reader.result:\n");
+                console.log(reader.result);
+                return data;
+            } 
+            else 
+            {
+                alert("This browser does not support HTML5.");
+            }
+          
+         }
+         */          
+        </script>
+
+
 
          <script type="text/javascript">
            function histogram(id, dataSet)

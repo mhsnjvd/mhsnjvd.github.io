@@ -1,0 +1,6 @@
+name,category,timePeriod,unit,type,targetValue/0,targetValue/1,targetValue/2,targetValue/3,actualValue/0,actualValue/1,actualValue/2,actualValue/3,foreCastValue/0,foreCastValue/1,foreCastValue/2,foreCastValue/3,yearlyTarget,yearlyForecast
+First KPI,finance,quarterly,million,cumulative,4,3,2,1,3,2,1,1,4,4,4,4,16,20
+Second KPI,finance,quarterly,million,cumulative,4,3,2,1,3,2,1,1,4,4,4,4,16,20
+Third KPI,finance,quarterly,million,cumulative,4,3,2,1,3,2,1,1,4,4,4,4,16,20
+Fourth KPI,finance,quarterly,million,cumulative,4,3,2,1,3,2,1,1,4,4,4,4,16,20
+Fifth KPI,finance,quarterly,million,cumulative,4,3,2,1,3,2,1,1,4,4,4,4,16,20
