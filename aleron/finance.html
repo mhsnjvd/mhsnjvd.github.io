@@ -315,18 +315,19 @@
                  actual: [1, 3, 2, 4],
                  forecast: [1, 3, 2, 1]};
                  */
+            /*
             dataSet = [ {quarter: "first", target: 3.2, actual: 3.0, foreCast: 2.9},
                         {quarter: "second", target: 2.2, actual: 2.5, foreCast: 2.9},
                         {quarter: "third", target: 3.4, actual: 3.6, foreCast: 3.9},
-                        {quarter: "fourth", target: 2.4, actual: 3.4, foreCast: 2.5} ];
-
-            histogram("#first", dataSet);
-
+                        {quarter: "fourth", target: 2.4, actual: 3.4, foreCast: 2.5} ];            
+            */
 
             var count = 0;
+            // Global variable to store the CSV file
             var kpiData = [];
             d3.csv( "./kpi_data.csv", function(d)
             { 
+              // Copy the data read into the global variable:
               kpiData = d;
               visualizeKPIData();
               return;
@@ -334,9 +335,59 @@
 
          function visualizeKPIData()
          {
-             alert(kpiData[0].name);
+            var nKPI = kpiData.length ;
+
+            //get a KPI
+            var thisKPI = processKPI(kpiData[0]); 
+            var kpiHeading = d3.select("#first").append("p").html(thisKPI.name);
+            var dataSet = makeHistogramData(thisKPI);
+            histogram("#first", dataSet);            
+         }
+
+         function makeHistogramData(kpi)
+         {
+              var dataSet = [];
+              N = kpi.actualValue.length;
+              for ( var i = 0; i < N; i++)
+              {
+                   var temp = {};
+                   temp.quarter = "quarter " + (i+1);
+                   temp.target = kpi.targetValue[i];
+                   temp.actual = kpi.actualValue[i];
+                   temp.foreCast = kpi.foreCastValue[i];
+                   dataSet.push(temp);
+              }
+              return dataSet;
 
          }
+
+         function processKPI(kpiRaw)
+         {
+             var kpi = kpiRaw;             
+             if ( kpi.timePeriod == "quarterly" )
+             { 
+                  kpi.actualValue = [];
+                  kpi.targetValue = [];
+                  kpi.foreCastValue = [];
+                  for ( var i = 0; i < 4; i++ )
+                  {
+                    var s = "actualValue/" + i;
+                    kpi.actualValue.push( kpiRaw[s]);
+                    delete kpiRaw[s];
+                    s = "targetValue/" + i;
+                    kpi.targetValue.push( kpiRaw[s]);
+                    delete kpiRaw[s];
+                    s = "foreCastValue/" + i;
+                    kpi.foreCastValue.push( kpiRaw[s]);
+                    delete kpiRaw[s];
+                  }
+                  return kpi;                  
+             }               
+             else
+             {
+                 console.log("Unknown period: " + kpi.timePeriod );
+             }           
+         } 
 
          </script>
          

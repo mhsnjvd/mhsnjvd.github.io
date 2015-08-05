@@ -205,7 +205,9 @@
         .attr("dominant-baseline", "middle")
         .attr("alignment-baseline", "middle")
             .text(function(d) {return d.name})      
-            .on("mouseover", function(d,i) {return activateBubble(d,i);});
+            .on("mouseover", function(d,i) {return activateBubble(d,i);})
+            .on("click", function(d,i) {
+                window.open(d.address);});
          
          
         for(var iB = 0; iB < nTop; iB++)
