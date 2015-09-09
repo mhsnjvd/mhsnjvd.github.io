@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="favicon.jpg">
+
+  <title>Aleron | Children Services Data Drilling</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="./css/dashboard.css" rel="stylesheet">
+
+  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+  <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+  <!-- <script src="js/ie-emulation-modes-warning.js"></script> -->
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <![endif]-->
+  <script type="text/javascript" src="./js/d3.min.js"></script>
+  <style>
+      path { 
+          stroke: orange;
+          stroke-width: 2;
+          fill: none; }
+
+      .axis path,
+      .axis line {
+              fill: none;
+              stroke: grey;
+              stroke-width: 2;
+              shape-rendering: crispEdges; }
+  </style>
+
+  </head>
+
+    <body>
+
+     <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Aleron Dashboard</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+              <li class="active"><a href="http://www.aleron.org">Home</a></li>
+                <li><a href="./dashboard.html">Dashboard</a></li>
+	            <li><a href="#">Settings</a></li>
+	            <li><a href="#">Profile</a></li>
+	            <li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
+	            <li><a href="#">Help</a></li>
+                <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<span class="caret"></span></a>
+	                  <ul class="dropdown-menu">
+	            		<li><a href="./dashboard.html">Dashboard</a></li>
+	            		<li><a href="#">Settings</a></li>
+	            		<li><a href="#">Profile</a></li>
+	            		<li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
+	            		<li><a href="#">Help</a></li>
+	                  </ul>
+                </li>         
+          </ul>
+          <!--
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+          -->
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+            <li><a href="./reports.html">Reports</a></li>
+            <li><a href="./analytics.html">Analytics</a></li>
+            <li><a href="./export.html">Export</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+          	<li><a href="./kpi.html">KPI Analysis</a></li>
+          	<li><a href="./riskregister.html">Risk Registers</a></li>
+          	<li><a href="./management.html">Management Info</a></li>
+          	<li><a href="./mitigation.html">Risk Mitigations</a></li>
+          	<li><a href="./summary.html">Executive Summary</a></li>            
+            <li><a href="./help.html">Help(Guidance)</a></li>                                                
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="./impact.html">Impact</a></li>
+            <li><a href="./people.html">People</a></li>
+            <li><a href="./finance.html">Finance</a></li>
+            <li><a href="./risk.html">Risk</a></li>
+          </ul>
+        </div>
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">Child Services Data Analysis</h1> 
+
+         <div id="id0" class="row placeholders">
+             <div  class="col-xs-6 col-sm-6 placeholder">                 
+               <select id="regionSelector" onchange="regionSelectFunction()">
+                   <option value="Select Region">Select Region</option>
+               </select>
+             </div>
+        
+             <div  class="col-xs-6 col-sm-6 placeholder">                 
+               <select id="localitySelector" onchange="localitySelectFunction()">
+                   <option value="Select Locality">Select Locality</option>
+               </select>
+             </div>
+             
+        </div>
+
+        <div id="id1" class="row placeholders">
+             <div  class="col-xs-6 col-sm-6 placeholder">                 
+               <select id="propertySelector" onchange="propertySelectFunction()">
+                   <option value="Select Property">Select Property</option>
+                   <option value="summary">Summary</option>
+               </select>
+                 
+
+             </div>
+        
+             <div  class="col-xs-6 col-sm-6 placeholder">                 
+                 <p id="localitySummary">
+                 </p>
+             </div>
+
+        </div>
+        
+       <div id="id2" class="row placeholders">
+             <div  class="col-xs-6 col-sm-6 placeholder">                 
+                 <div class="btn-group" role="group" aria-label="...">
+                       <button type="button" class="btn btn-default">Left</button>
+                       <button type="button" class="btn btn-default">Middle</button>
+                       <button type="button" class="btn btn-default">Right</button>
+                 </div>
+             </div>
+
+             <div  class="col-xs-6 col-sm-6 placeholder">                 
+             </div>
+        
+             <!--
+            <div id="first">
+            </div>
+            -->
+        </div>
+
+        <div id="id3" class="row placeholders">
+             <div  class="col-xs-12 col-sm-12 placeholder">                 
+             </div>
+        
+             <!--
+            <div id="first">
+            </div>
+            -->
+        </div>
+
+        <div id="id4" class="row placeholders">
+             <div  class="col-xs-12 col-sm-12 placeholder">                 
+             </div>
+        
+             <!--
+            <div id="first">
+            </div>
+            -->
+        </div>
+
+        <div id="id5" class="row placeholders">
+             <div  class="col-xs-12 col-sm-12 placeholder">                 
+             </div>
+        </div>
+
+        <div id="id6" class="row placeholders">
+             <div  class="col-xs-12 col-sm-12 placeholder">                 
+             </div>
+             
+        </div>
+
+            <script type="text/javascript" src="./js/histogram.js">
+            </script>
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+         <script type="text/javascript">
+
+            function regionSelectFunction() 
+            {
+                 var region = document.getElementById("regionSelector").value;
+                 var count = 0;
+                 currentRegion = [];
+                 for ( i = 0; i < kpiData.length; i++ )
+                 {
+                     if ( kpiData[i].Region == region )
+                     {
+                         currentRegion.push(kpiData[i]);
+                     }
+                 }
+                 var regionPara = document.getElementById("regionSummary");
+                 regionPara.innerHTML = "This region has " + (currentRegion.length) + " entries.";
+                 return;
+            }
+
+            function localitySelectFunction() 
+            {
+                 var locality = document.getElementById("localitySelector").value;
+                 currentLocality = [];
+                 for ( i = 0; i < kpiData.length; i++ )
+                 {
+                     if ( kpiData[i].Locality == locality )
+                     {
+                         currentLocality.push(kpiData[i]);
+                     }
+                 }
+                 var localityPara = document.getElementById("localitySummary");
+                 localityPara.innerHTML = "This locality has " + (currentLocality.length) + " entries.";
+                 return;
+            }
+
+            function propertySelectFunction() 
+            {
+                 var property = document.getElementById("propertySelector").value;
+                 return;
+            }
+
+            /* **********************************************
+            // Function to make a list of options
+            /* ********************************************** */
+            function makeOptionList( optionObjectID, options )
+            {
+               for( var i = 0; i < options.length; i++ )
+               {
+                  var el = document.createElement("option");
+                  el.textContent = options[i];
+                  el.value = options[i];
+                  optionObjectID.appendChild(el);
+               }
+            }
+
+            //////////////////////////////////////////////////
+            //////////////////////////////////////////////////
+            var count = 0;
+            // Global variable to store the CSV file
+            var kpiData = [];
+            var localityList = [];
+            var regionList = [];
+            var propertyList = [];
+            var currentRegion = [];
+            var currentLocality = [];
+
+            // Upload the data file and process it:
+            d3.csv( "./csdata/Financials_File.csv", function(d)
+            { 
+              // Copy the data read into the global variable:
+              kpiData = d;
+              localityList = kpiData.map(function(d){ return d.Locality;});
+              regionList = kpiData.map(function(d) { return d.Region; });
+              propertyList = Object.getOwnPropertyNames(kpiData[0]);
+              propertyList = propertyList.slice(4);
+
+              // unique must have a sorted input, so we sort it 
+              // before passing it to $.unique:
+              localityList = $.unique(localityList.sort());
+              regionList = $.unique(regionList.sort());
+
+              // Add Regions to the drop down list:
+              makeOptionList(document.getElementById("regionSelector"), regionList);
+              // Add Localities to the drop down list:
+              makeOptionList(document.getElementById("localitySelector"), localityList);
+              // Add properties to the property selector:
+              makeOptionList(document.getElementById("propertySelector"), propertyList);
+            });                                 
+
+            var contractsData = []
+            d3.csv( "./csdata/Contracts_signed_file.csv", function(d)
+            { 
+              // Copy the data read into the global variable:
+              contractsData = d;
+
+            });
+
+            var salesData = []
+            d3.csv( "./csdata/Sales_opportunities_file.csv", function(d)
+            { 
+              // Copy the data read into the global variable:
+              salesData = d;
+
+            });
+
+            var fte01Data = [];
+            var fte02Data = [];
+            d3.csv( "./csdata/FTE 01Qtr_ 1_1516.csv", function(d)
+            { 
+              // Copy the data read into the global variable:
+              fte01Data = d;
+
+            });
+
+            d3.csv( "./csdata/FTE 02Qtr_ 1_1516.csv", function(d)
+            { 
+              // Copy the data read into the global variable:
+              fte02Data = d;
+
+            });
+
+         </script>
+         
+          <!-- FOOTER -->
+          <footer>
+            <p class="pull-right"><a href="#">Back to top</a></p>
+            <p>&copy; <span id="idFooter"> 2015, Inc.</span> &middot;
+            <a id="idURL" href="#">Privacy</a> &middot; <a href="idURL">Terms</a></p>
+          </footer>
+
+          <script src="./js/defs.js"></script>
+          <script type="text/javascript">
+               document.getElementById("idFooter").innerHTML =
+               companyName + " 2015";
+               document.getElementById("idURL").href =
+               companyURL;
+          </script>
+ 
+    <!-- bootstrap core javascript
+    ================================================== -->
+    <!-- placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <!-- just to make our placeholder images work. don't actually copy the next line! -->
+    <!--<script src="js/vendor/holder.min.js"></script> -->
+    <script src="./js/holder.min.js"></script>
+    <!-- ie10 viewport hack for surface/desktop windows 8 bug: 
+    I am not includeing the following line, windows, oh my dear windows and ie
+    <script src="./js/ie10-viewport-bug-workaround.js"></script>
+    -->
+  </body>
+  </html>
