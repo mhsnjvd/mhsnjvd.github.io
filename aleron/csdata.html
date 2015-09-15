@@ -130,9 +130,7 @@
              <div  class="col-xs-6 col-sm-6 placeholder">                 
                <select id="propertySelector" onchange="propertySelectFunction()">
                    <option value="Select Property">Select Property</option>
-                   <option value="summary">Summary</option>
                </select>
-                 
 
              </div>
         
@@ -144,91 +142,188 @@
         </div>
         
        <div id="id2" class="row placeholders">
-             <div  class="col-xs-6 col-sm-6 placeholder">                 
+             <div  class="col-xs-4 col-sm-4 placeholder">                 
                  <div class="btn-group" role="group" aria-label="...">
-                       <button type="button" class="btn btn-default">Left</button>
-                       <button type="button" class="btn btn-default">Middle</button>
-                       <button type="button" class="btn btn-default">Right</button>
+                       <button type="button" class="btn btn-default" onclick="regionBtnClick()">Regional</button>
                  </div>
              </div>
 
-             <div  class="col-xs-6 col-sm-6 placeholder">                 
+             <div  class="col-xs-4 col-sm-4 placeholder">                 
+                 <div class="btn-group" role="group" aria-label="...">
+                       <button type="button" class="btn btn-default" onclick="localityBtnClick()">Locality</button>
+                 </div>
              </div>
         
-             <!--
-            <div id="first">
+             <div  class="col-xs-4 col-sm-4 placeholder">                 
+                 <div class="btn-group" role="group" aria-label="...">
+                       <button type="button" class="btn btn-default" onclick="propertyBtnClick()">Property</button>
+                 </div>
+             </div>
+        </div>
+        <div  class="row placeholders">
+            <div id="regionSummaryPara" class="col-xs-6 col-sm-6 placeholder">
             </div>
-            -->
-        </div>
-
-        <div id="id3" class="row placeholders">
-             <div  class="col-xs-12 col-sm-12 placeholder">                 
-             </div>
-        
-             <!--
-            <div id="first">
+            <div class="col-xs-6 col-sm-6 placeholder">
             </div>
-            -->
         </div>
 
-        <div id="id4" class="row placeholders">
-             <div  class="col-xs-12 col-sm-12 placeholder">                 
-             </div>
-        
-             <!--
-            <div id="first">
-            </div>
-            -->
-        </div>
-
-        <div id="id5" class="row placeholders">
-             <div  class="col-xs-12 col-sm-12 placeholder">                 
+        <div class="row placeholders">
+             <div class="col-xs-12 col-sm-12 placeholder">                 
+                 <svg id="histSVG" height="400" width="800"></svg>
              </div>
         </div>
 
-        <div id="id6" class="row placeholders">
-             <div  class="col-xs-12 col-sm-12 placeholder">                 
+        <div class="row placeholders">
+             <div class="col-xs-12 col-sm-12 placeholder">                 
+                 <svg id="plotSVG" height="400" width="800"></svg>
              </div>
-             
         </div>
 
-            <script type="text/javascript" src="./js/histogram.js">
-            </script>
+        <div class="row placeholders">
+             <div class="col-xs-12 col-sm-12 placeholder">                 
+                 <svg id="incExpPlot" height="400" width="800"></svg>
+             </div>
+        </div>
+
+        <script type="text/javascript" src="./js/quarterlyhist.js"></script>
+        <script type="text/javascript"> 
+            /////////////////////////////////////////////
+            //          Global variables               //
+            /////////////////////////////////////////////
+
+            // Global variable to store the CSV file
+            var financialsData = [];
+            var localityList = [];
+            var regionList = [];
+            var propertyList = [];
+            var currentRegionData = [];
+            var currentLocalityData = [];
 
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-         <script type="text/javascript">
+            // Sums a given property in an Array, each array element
+            // is assumed to have that property
+            function sumArrayProperty( data, property)
+            {
+                var sum = 0;
+                var s   = 0;
+                var badEntries = 0;
+                for ( var i = 0; i < data.length; i++ )
+                {
+                    // Try to convert each entry to a number:
+                    s = Number(data[i][property]);
+                    // check for NaNs:
+                    if ( isNaN(s) )
+                    {
+                        badEntries = badEntries + 1;
+                    }
+                    else
+                    {
+                        sum = sum + s;
+                    }
+                }
+                //alert("Total Entires: " + data.length + "\nMissing/Bad Entries: " + badEntries );
+                return sum;
+            }
+
 
             function regionSelectFunction() 
             {
                  var region = document.getElementById("regionSelector").value;
-                 var count = 0;
-                 currentRegion = [];
-                 for ( i = 0; i < kpiData.length; i++ )
+                 // Initialize region data and locality list:
+                 currentRegionData = [];
+                 localityList = [];
+                 for ( i = 0; i < financialsData.length; i++ )
                  {
-                     if ( kpiData[i].Region == region )
+                     if ( financialsData[i].Region == region )
                      {
-                         currentRegion.push(kpiData[i]);
+                         currentRegionData.push(financialsData[i]);
                      }
                  }
-                 var regionPara = document.getElementById("regionSummary");
-                 regionPara.innerHTML = "This region has " + (currentRegion.length) + " entries.";
+
+                 // Get the list of localities:
+                 localityList = currentRegionData.map(function(d){ return d["Locality"]; } );
+                 // Get unique elements only:
+                 localityList = localityList.filter( function(d, i, thisArray){ return thisArray.indexOf(d) === i; });
+                 // Sort it:
+                 localityList = localityList.sort();
+
+                 // empty the existing selection box
+                 var localitySelectorID = document.getElementById("localitySelector");
+                 while (localitySelectorID.hasChildNodes()) 
+                 {  
+                     localitySelectorID.removeChild(localitySelectorID.firstChild);
+                 }
+
+                 // make a new select option box with the new localities
+                 // Add a dummy option at the top of the list:
+                 localityList.unshift( "Select Locality" );
+                 makeOptionList( localitySelectorID, localityList );
+
+                 var histSVG = document.getElementById("histSVG");
+
+                 /* Dummy random data
+                 var histData = [];
+                 var N = 10;
+                 for ( var i = 0; i < N; i++ )
+                 {
+                     histData.push( {x: Math.random(), y: Math.random()} );
+                 }
+                 */
+
+
+                 var histData = {};
+                 histData.data = [100, 200, 300, 400];
+                 histData.unit = "million £";
+                 histData.cumulative = true;
+                 histData.currentTime = "Q1";
+
+                 // Clear SVG figure using D3 and set the background
+                 svg = d3.select(histSVG)
+                 svg.selectAll("*").remove();
+                 svg.style("background-color", "whitesmoke"); 
+
+                 // Plot the histogram:
+                 var targetHistogram = plotQuarterlyHistogram(histSVG, histData);
+                 
+                 // Plot the line on top of it:
+                 var incomeLineGraph = plotQuarterlyLine(histSVG, histData);
+                 incomeLineGraph.style("stroke-dasharray", ("3, 3"));
+                 incomeLineGraph.style("stroke", "green");
+                 var incomeCircles = plotQuarterlyCircles(histSVG, histData);
+
+                 // Plot another line on top of this:
+                 histData.data = [90, 220, 305, 390];
+                 var actualLineGraph = plotQuarterlyLine(histSVG, histData);
+                 var actualCircles = plotQuarterlyCircles(histSVG, histData);
+                 actualCircles.selectAll("circle").attr("fill", "pink");
+
+
+                 
+                 //var regionPara = document.getElementById("regionSummary");
+                 //regionPara.innerHTML = "This region has " + (currentRegionData.length) + " entries.";
+                 
+                 // *************************
+                 // *************************
+                 // Hehehehhehehe
+                 // *************************
+                 // *************************
+                 //regionBtnClick();
                  return;
             }
 
             function localitySelectFunction() 
             {
                  var locality = document.getElementById("localitySelector").value;
-                 currentLocality = [];
-                 for ( i = 0; i < kpiData.length; i++ )
+                 currentLocalityData = [];
+                 for ( i = 0; i < currentRegionData.length; i++ )
                  {
-                     if ( kpiData[i].Locality == locality )
+                     if ( currentRegionData[i].Locality == locality )
                      {
-                         currentLocality.push(kpiData[i]);
+                         currentLocalityData.push(currentRegionData[i]);
                      }
                  }
                  var localityPara = document.getElementById("localitySummary");
-                 localityPara.innerHTML = "This locality has " + (currentLocality.length) + " entries.";
+                 localityPara.innerHTML = "This locality has " + (currentLocalityData.length) + " entries.";
                  return;
             }
 
@@ -238,9 +333,59 @@
                  return;
             }
 
+            function regionBtnClick()
+            {
+                var region = document.getElementById("regionSelector").value;
+                //var property = document.getElementById("propertySelector").value;
+                var histData = [];
+                // The properties we are interested in start from index 5:
+                for ( var i = 5; i < propertyList.length; i++ )
+                {
+                    xi = propertyList[i];
+                    yi = sumArrayProperty(currentRegionData, xi);
+                    histData.push({x: xi, y: yi});
+                }
+                var paraDiv = d3.select(document.getElementById("regionSummaryPara"));
+                paraDiv.selectAll("*").remove();
+                paraDiv.append("p").html( "Data Summary: " + region );
+                debugger;
+                paraDiv.selectAll("p")
+                .data(histData)
+                .enter()
+                .append("p")
+                .text( function(d)
+                       { 
+                           var str = d.x + ": " + d.y;
+                           return str;
+                       });
+
+               // Income, expenditure, budget 
+
+                var histSVG = document.getElementById("histSVG");
+                d3.select(histSVG).selectAll("*").remove();
+                histogram(histSVG, histData);
+                return ;
+            }
+
+            function localityBtnClick()
+            {
+
+
+            }
+
+            function propertyBtnClick()
+            {
+
+
+            }
+
+
             /* **********************************************
             // Function to make a list of options
             /* ********************************************** */
+            // Appends option specified in the options array
+            // to a select object whose ID is 
+            // passed in optionObjectID
             function makeOptionList( optionObjectID, options )
             {
                for( var i = 0; i < options.length; i++ )
@@ -252,38 +397,25 @@
                }
             }
 
-            //////////////////////////////////////////////////
-            //////////////////////////////////////////////////
-            var count = 0;
-            // Global variable to store the CSV file
-            var kpiData = [];
-            var localityList = [];
-            var regionList = [];
-            var propertyList = [];
-            var currentRegion = [];
-            var currentLocality = [];
-
+            
             // Upload the data file and process it:
             d3.csv( "./csdata/Financials_File.csv", function(d)
             { 
               // Copy the data read into the global variable:
-              kpiData = d;
-              localityList = kpiData.map(function(d){ return d.Locality;});
-              regionList = kpiData.map(function(d) { return d.Region; });
-              propertyList = Object.getOwnPropertyNames(kpiData[0]);
-              propertyList = propertyList.slice(4);
+              financialsData = d;
+              regionList = financialsData.map(function(d) { return d.Region; });
+              propertyList = Object.getOwnPropertyNames(financialsData[0]);
 
               // unique must have a sorted input, so we sort it 
-              // before passing it to $.unique:
-              localityList = $.unique(localityList.sort());
-              regionList = $.unique(regionList.sort());
+              regionList = regionList.filter( function(d, i, thisArray){ return thisArray.indexOf(d) === i; });
+              regionList = regionList.sort();
 
               // Add Regions to the drop down list:
               makeOptionList(document.getElementById("regionSelector"), regionList);
               // Add Localities to the drop down list:
               makeOptionList(document.getElementById("localitySelector"), localityList);
-              // Add properties to the property selector:
-              makeOptionList(document.getElementById("propertySelector"), propertyList);
+              // Add properties to the property selector, the first 4 are not needed:
+              makeOptionList(document.getElementById("propertySelector"), propertyList.slice(4));
             });                                 
 
             var contractsData = []
