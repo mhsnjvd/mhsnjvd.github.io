@@ -132,7 +132,11 @@ function plotQuarterlyHistogram(svgID, dataSet)
     svg.append("g")
     .attr("class", "y axis")
     .attr("transform", "translate(" + margin.left + ",0)")
-    .call(yAxis);
+    .call(yAxis)
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .style("text-anchor", "start")
+    .text(dataSet.unit);
     
     return bars;
 }// End of function plotQuarterlyHistogram()
