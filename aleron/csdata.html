@@ -84,7 +84,7 @@
     </nav>
 
     <div class="container-fluid">
-      <div class="row">
+          <!--
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
             <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
@@ -107,83 +107,128 @@
             <li><a href="./risk.html">Risk</a></li>
           </ul>
         </div>
+        -->
 
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Child Services Data Analysis</h1> 
+        <!-- Row starts here *********************** -->
+        <div class="row">
+            <!-- Columsn starts here *********************** -->
 
-         <div id="id0" class="row placeholders">
-             <div  class="col-xs-6 col-sm-6 placeholder">                 
-               <select id="regionSelector" onchange="regionSelectFunction()">
-                   <option value="Select Region">Select Region</option>
-               </select>
-             </div>
+            <!-- First column starts here *********************** -->
+            <div class="col-sm-12">
+              <h1 class="page-header">Children Services Data Analysis</h1> 
+
+              <!-- Start a row -->
+              <div id="id0" class="row">
+                
+                 <div  class="col-xs-3 col-sm-3">                 
+                   <select id="regionSelector" onchange="regionSelectFunction()">
+                       <option value="Select Region">Select Region</option>
+                   </select>
+                 </div>
         
-             <div  class="col-xs-6 col-sm-6 placeholder">                 
-               <select id="localitySelector" onchange="localitySelectFunction()">
-                   <option value="Select Locality">Select Locality</option>
-               </select>
-             </div>
-             
-        </div>
+                 <div  class="col-xs-3 col-sm-3">                 
+                   <select id="localitySelector" onchange="localitySelectFunction()">
+                       <option value="Select Locality">Select Locality</option>
+                   </select>
+                 </div>
 
-        <div id="id1" class="row placeholders">
-             <div  class="col-xs-6 col-sm-6 placeholder">                 
+                 <div  class="col-xs-3 col-sm-3">                 
+                   <select id="costCentreSelector" onchange="costCentreSelectFunction()">
+                       <option value="Select Cost Centre">Select Cost Centre</option>
+                   </select>
+                 </div>
+
+                 <div  class="col-xs-3 col-sm-3">                 
+                   <select id="funderSelector" onchange="funderSelectFunction()">
+                      <option value="Select Cost Centre">Select Funder</option>
+                   </select>
+                 </div>
+
+              </div>
+              <!-- End a row -->
+
+            </div>
+            <!-- Columns finish here *********************** -->
+
+        </div>
+        <!-- Row ends here *********************** -->
+
+
+    </div>
+    <!-- Container fluid div ends here *********************** -->
+
+
+    <!-- Start another containter fulid *********************** -->
+    <div class="container-fluid">
+        <!-- Add some padding -->
+        <br>
+        <br>
+
+        <!-- Row starts here *********************** -->
+        <div class="row">
+             <!-- First column starts here *********************** -->
+             <div  class="col-xs-8 col-sm-8">                 
                <select id="propertySelector" onchange="propertySelectFunction()">
                    <option value="Select Property">Select Property</option>
                </select>
-
              </div>
         
-             <div  class="col-xs-6 col-sm-6 placeholder">                 
+             <!-- Second column starts here *********************** -->
+             <div  class="col-xs-4 col-sm-4">                 
                  <p id="localitySummary">
                  </p>
              </div>
 
         </div>
-        
-       <div id="id2" class="row placeholders">
-             <div  class="col-xs-4 col-sm-4 placeholder">                 
+        <!-- Row ends here *********************** -->
+
+
+        <!-- Add some padding -->
+        <br>
+        <br>
+
+        <!-- Row starts here *********************** -->
+        <div class="row">
+             <div  class="col-xs-6 col-sm-6">                 
                  <div class="btn-group" role="group" aria-label="...">
                        <button type="button" class="btn btn-default" onclick="regionBtnClick()">Regional</button>
                  </div>
-             </div>
 
-             <div  class="col-xs-4 col-sm-4 placeholder">                 
                  <div class="btn-group" role="group" aria-label="...">
                        <button type="button" class="btn btn-default" onclick="localityBtnClick()">Locality</button>
                  </div>
-             </div>
-        
-             <div  class="col-xs-4 col-sm-4 placeholder">                 
+
                  <div class="btn-group" role="group" aria-label="...">
                        <button type="button" class="btn btn-default" onclick="propertyBtnClick()">Property</button>
                  </div>
              </div>
+
+             <div  class="col-xs-6 col-sm-6">                 
+             </div>
         </div>
-        <div  class="row placeholders">
-            <div id="regionSummaryPara" class="col-xs-6 col-sm-6 placeholder">
+        <!-- Row ends here *********************** -->
+        
+        <!-- Row starts here *********************** -->
+        <div  class="row">
+            <div id="dataSummaryPara" class="col-xs-6 col-sm-6 placeholder">
             </div>
             <div class="col-xs-6 col-sm-6 placeholder">
             </div>
         </div>
+        <!-- Row ends here *********************** -->
 
-        <div class="row placeholders">
-             <div class="col-xs-12 col-sm-12 placeholder">                 
-                 <svg id="histSVG" height="400" width="800"></svg>
+        <!-- Row starts here *********************** -->
+        <div class="row">
+             <div class="col-xs-6 col-sm-6">                 
+                 <svg id="quarterlySVG" height="400" width="600"></svg>
+             </div>
+
+             <div class="col-xs-6 col-sm-6">                 
+                 <svg id="funderSVG" height="400" width="600"></svg>
              </div>
         </div>
+        <!-- Row ends here *********************** -->
 
-        <div class="row placeholders">
-             <div class="col-xs-12 col-sm-12 placeholder">                 
-                 <svg id="plotSVG" height="400" width="800"></svg>
-             </div>
-        </div>
-
-        <div class="row placeholders">
-             <div class="col-xs-12 col-sm-12 placeholder">                 
-                 <svg id="incExpPlot" height="400" width="800"></svg>
-             </div>
-        </div>
 
         <script type="text/javascript" src="./js/quarterlyhist.js"></script>
         <script type="text/javascript"> 
@@ -193,12 +238,15 @@
 
             // Global variable to store the CSV file
             var financialsData = [];
-            var localityList = [];
+            var funderList = [];
             var regionList = [];
+            var localityList = [];
+            var costCentreList = [];
             var propertyList = [];
             var currentRegionData = [];
+            var currentFunderData = [];
             var currentLocalityData = [];
-
+            var currentCostCentreData = [];
 
             // Sums a given property in an Array, each array element
             // is assumed to have that property
@@ -224,107 +272,123 @@
                 //alert("Total Entires: " + data.length + "\nMissing/Bad Entries: " + badEntries );
                 return sum;
             }
+            
+            // Returns an object with four fields, each is an array of length 4
+            // one entry for each quarter.
+            function computeQuarterlyData(dataArray)
+            {
+                var data = {};
+                data.income = [];
+                data.budget = [];
+                data.actual = [];
+                data.previous = [];
 
+                var property = [];
+
+                for ( var i = 0; i < 4; i++ )
+                {
+                    property = "Q" + (i+1) + " Income";
+                    data.income[i] = sumArrayProperty( dataArray, property);
+
+                    property = "Q" + (i+1) + " Budget";
+                    data.budget[i] = sumArrayProperty( dataArray, property);
+                    
+                    property = "Q" + (i+1) + " Actual";
+                    data.actual[i] = sumArrayProperty( dataArray, property);
+
+                    property = "Q" + (i+1) + " Previous";
+                    data.previous[i] = sumArrayProperty( dataArray, property);
+                }
+                return data;
+            }
 
             function regionSelectFunction() 
             {
                  var region = document.getElementById("regionSelector").value;
                  // Initialize region data and locality list:
-                 currentRegionData = [];
-                 localityList = [];
-                 for ( i = 0; i < financialsData.length; i++ )
-                 {
-                     if ( financialsData[i].Region == region )
-                     {
-                         currentRegionData.push(financialsData[i]);
-                     }
-                 }
+                 currentRegionData = financialsData.filter( function(d) { return d.Region === region; } );
 
-                 // Get the list of localities:
-                 localityList = currentRegionData.map(function(d){ return d["Locality"]; } );
-                 // Get unique elements only:
-                 localityList = localityList.filter( function(d, i, thisArray){ return thisArray.indexOf(d) === i; });
-                 // Sort it:
-                 localityList = localityList.sort();
-
-                 // empty the existing selection box
-                 var localitySelectorID = document.getElementById("localitySelector");
-                 while (localitySelectorID.hasChildNodes()) 
-                 {  
-                     localitySelectorID.removeChild(localitySelectorID.firstChild);
-                 }
-
-                 // make a new select option box with the new localities
-                 // Add a dummy option at the top of the list:
+                 // Update localities
+                 localityList = getUniqueList(currentRegionData, "Locality");
                  localityList.unshift( "Select Locality" );
-                 makeOptionList( localitySelectorID, localityList );
+                 updateSelector( document.getElementById("localitySelector"), localityList );
 
-                 var histSVG = document.getElementById("histSVG");
+                 // Update Cost Centres
+                 costCentreList= getUniqueList(currentRegionData,"Cost Centres");
+                 costCentreList.unshift( "Select Cost Centre" );
+                 updateSelector( document.getElementById("costCentreSelector"), costCentreList);
 
-                 /* Dummy random data
-                 var histData = [];
-                 var N = 10;
-                 for ( var i = 0; i < N; i++ )
-                 {
-                     histData.push( {x: Math.random(), y: Math.random()} );
-                 }
-                 */
+                 // Update localities
+                 funderList = getUniqueList(currentRegionData, "Funder");
+                 funderList.unshift( "Select Funder" );
+                 updateSelector( document.getElementById("funderSelector"), funderList );
 
+                 var data = computeQuarterlyData( currentRegionData );
 
-                 var histData = {};
-                 histData.data = [100, 200, 300, 400];
-                 histData.unit = "million £";
-                 histData.cumulative = true;
-                 histData.currentTime = "Q1";
+                 createVisualisation(data);
 
-                 // Clear SVG figure using D3 and set the background
-                 svg = d3.select(histSVG)
-                 svg.selectAll("*").remove();
-                 svg.style("background-color", "whitesmoke"); 
-
-                 // Plot the histogram:
-                 var targetHistogram = plotQuarterlyHistogram(histSVG, histData);
-                 
-                 // Plot the line on top of it:
-                 var incomeLineGraph = plotQuarterlyLine(histSVG, histData);
-                 incomeLineGraph.style("stroke-dasharray", ("3, 3"));
-                 incomeLineGraph.style("stroke", "green");
-                 var incomeCircles = plotQuarterlyCircles(histSVG, histData);
-
-                 // Plot another line on top of this:
-                 histData.data = [90, 220, 305, 390];
-                 var actualLineGraph = plotQuarterlyLine(histSVG, histData);
-                 var actualCircles = plotQuarterlyCircles(histSVG, histData);
-                 actualCircles.selectAll("circle").attr("fill", "pink");
-
-
-                 
-                 //var regionPara = document.getElementById("regionSummary");
-                 //regionPara.innerHTML = "This region has " + (currentRegionData.length) + " entries.";
-                 
-                 // *************************
-                 // *************************
-                 // Hehehehhehehe
-                 // *************************
-                 // *************************
-                 //regionBtnClick();
                  return;
             }
 
             function localitySelectFunction() 
             {
                  var locality = document.getElementById("localitySelector").value;
-                 currentLocalityData = [];
-                 for ( i = 0; i < currentRegionData.length; i++ )
-                 {
-                     if ( currentRegionData[i].Locality == locality )
-                     {
-                         currentLocalityData.push(currentRegionData[i]);
-                     }
-                 }
-                 var localityPara = document.getElementById("localitySummary");
-                 localityPara.innerHTML = "This locality has " + (currentLocalityData.length) + " entries.";
+                 currentLocalityData = currentRegionData.filter( function(d) { return d.Locality === locality; } );
+                     
+                 // Update Cost Centres
+                 costCentreList= getUniqueList(currentLocalityData,"Cost Centres");
+                 costCentreList.unshift( "Select Cost Centre" );
+                 updateSelector( document.getElementById("costCentreSelector"), costCentreList);
+
+                 var data = computeQuarterlyData( currentLocalityData );
+                 createVisualisation(data);
+                 
                  return;
+            }
+
+            function createVisualisation(data)
+            {
+                 var svg = d3.select(document.getElementById("quarterlySVG"));
+                 svg.selectAll("*").remove();
+                 svg.style("background-color", "whitesmoke"); 
+
+                 var quarterlyPlotData = { incomeBudget: [], incomeActual: [], incomePrevious: [], expenditure: [], unit: "Million £", cumulative: true, currentTime: "Q4" };
+
+                 quarterlyPlotData.incomeBudget = data.budget;
+                 quarterlyPlotData.incomePrevious = data.previous;
+                 quarterlyPlotData.incomeActual = data.actual;
+                 quarterlyPlotData.expenditure = data.income;
+                 quarterlyPlotData.unit = "million £";
+                 quarterlyPlotData.cumulative = true;
+                 quarterlyPlotData.currentTime = "Q4";
+
+                 plotQuarterlyData(svg, quarterlyPlotData);
+                 showDataSummary(data);
+            }
+
+            function showDataSummary(data)
+            {
+                var paraDiv = d3.select(document.getElementById("dataSummaryPara"));
+                paraDiv.selectAll("*").remove();
+                paraDiv.append("p").html( "Data Summary: " + region );
+                debugger;
+                paraDiv.selectAll("p")
+                .data(histData)
+                .enter()
+                .append("p")
+                .text( function(d)
+                       { 
+                           var str = d.x + ": " + d.y;
+                           return str;
+                       });
+
+               // Income, expenditure, budget 
+
+                var quarterlySVG = document.getElementById("quarterlySVG");
+                d3.select(quarterlySVG).selectAll("*").remove();
+                histogram(quarterlySVG, histData);
+                return ;
+   
             }
 
             function propertySelectFunction() 
@@ -361,11 +425,87 @@
 
                // Income, expenditure, budget 
 
-                var histSVG = document.getElementById("histSVG");
-                d3.select(histSVG).selectAll("*").remove();
-                histogram(histSVG, histData);
+                var quarterlySVG = document.getElementById("quarterlySVG");
+                d3.select(quarterlySVG).selectAll("*").remove();
+                histogram(quarterlySVG, histData);
                 return ;
             }
+
+
+            function updateSelector( selectorID, optionList )
+            {
+                 // empty the existing selection box
+                 while ( selectorID.hasChildNodes() ) 
+                 {  
+                     selectorID.removeChild(selectorID.firstChild);
+                 }
+                 
+                 for( var i = 0; i < optionList.length; i++ )
+                 {
+                      var el = document.createElement("option");
+                      el.textContent = optionList[i];
+                      el.value = optionList[i];
+                      selectorID.appendChild(el);
+                 }
+            }
+
+            // Looks at array data and returns for each element the 
+            // property specified by property and returns a 
+            // sorted list of elements under that property:
+            function getUniqueList( data, property)
+            {
+                 // Get the list of elements with the property:
+                 var list = data.map(function(d){ return d[property]; } );
+                 // Get unique elements only:
+                 list = list.filter( function(d, i, thisArray){ return thisArray.indexOf(d) === i; });
+                 // Sort it:
+                 list = list.sort();
+                 return list; 
+            }
+
+            function funderSelectFunction() 
+            {
+                 var funder = document.getElementById("funderSelector").value;
+                 // Initialize region data and locality list:
+                 currentFunderData = [];
+                 localityList = [];
+                 for ( i = 0; i < financialsData.length; i++ )
+                 {
+                     if ( financialsData[i].Funder == funder )
+                     {
+                         currentFunderData.push(financialsData[i]);
+                     }
+                 }
+
+                 // Get the list of localities supported by this funder
+                 localityList = getUniqueList(currentFunderData, "Locality");
+                 regionList = getUniqueList(currentFunderData, "Region");
+                 
+                 // update the existing selection box
+                 updateSelctor( document.getElementById("localitySelector"), localityList );
+                 updateSelctor( document.getElementById("regionSelector"), regionList );
+
+
+                 // Get the list of cost centres:
+                 costCentreList = currentRegionData.map(function(d){ return d["Cost Centres"]; } );
+                 // Get unique elements only:
+                 costCentreList = costCentreList.filter( function(d, i, thisArray){ return thisArray.indexOf(d) === i; });
+                 // Sort it:
+                 costCentreList = costCentreList.sort();
+
+
+                 // update the existing selection box
+                 updateSelctor( document.getElementById("costCentreSelector"), costCentreList );
+                 
+
+                 createVisualisation();
+
+                 //var regionPara = document.getElementById("regionSummary");
+                 //regionPara.innerHTML = "This region has " + (currentRegionData.length) + " entries.";
+                 
+                 return;
+            }
+
 
             function localityBtnClick()
             {
@@ -395,27 +535,36 @@
                   el.value = options[i];
                   optionObjectID.appendChild(el);
                }
+               return;
             }
 
             
             // Upload the data file and process it:
-            d3.csv( "./csdata/Financials_File.csv", function(d)
+            d3.csv( "./csdata/Financials_File_Funders.csv", function(d)
             { 
               // Copy the data read into the global variable:
               financialsData = d;
-              regionList = financialsData.map(function(d) { return d.Region; });
+              regionList = getUniqueList(financialsData, "Region");
+              localityList = getUniqueList(financialsData, "Locality");
+              funderList = getUniqueList(financialsData, "Funder");
               propertyList = Object.getOwnPropertyNames(financialsData[0]);
 
-              // unique must have a sorted input, so we sort it 
-              regionList = regionList.filter( function(d, i, thisArray){ return thisArray.indexOf(d) === i; });
-              regionList = regionList.sort();
-
               // Add Regions to the drop down list:
-              makeOptionList(document.getElementById("regionSelector"), regionList);
+              regionList.unshift("Select Region");
+              updateSelector( document.getElementById("regionSelector"), regionList );
+              
+              // Add Funders to the drop down list:
+              funderList.unshift("Select Funder");
+              updateSelector(document.getElementById("funderSelector"), funderList);
+
               // Add Localities to the drop down list:
-              makeOptionList(document.getElementById("localitySelector"), localityList);
+              localityList.unshift("Select Locality");
+              updateSelector( document.getElementById("localitySelector"), localityList );
+
               // Add properties to the property selector, the first 4 are not needed:
-              makeOptionList(document.getElementById("propertySelector"), propertyList.slice(4));
+              propertyList = propertyList.slice(4,15);
+              propertyList.unshift("Select Property");
+              updateSelector(document.getElementById("propertySelector"), propertyList);
             });                                 
 
             var contractsData = []

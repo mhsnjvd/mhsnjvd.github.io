@@ -1,3 +1,52 @@
+// d3 selected svg and data with a specific format
+function plotQuarterlyData( svg, quarterlyPlotData)
+{
+     // Get the h and w:
+     var height = svg.attr("height");
+     var width  = svg.attr("width");
+
+     // Define the margins:
+     var margin = defineMargins(height, width);
+
+     // Define x-data and get y data from data set:
+     var xData = ["Q1", "Q2", "Q3", "Q4"];
+
+     var data = [];
+     data = data.concat(quarterlyPlotData.incomeBudget);
+     data = data.concat(quarterlyPlotData.incomeActual);
+     data = data.concat(quarterlyPlotData.incomePrevious);
+     data = data.concat(quarterlyPlotData.expenditure);
+
+     var minyData = d3.min(data);
+     var maxyData = d3.max(data); 
+
+     // Add some cushion for the data to look nice:
+     minyData = minyData - 0.5*(maxyData - minyData);
+     if ( minyData <= 0 )
+     {
+         minyData = 0;
+     }
+     
+
+     // x scale and width gap:
+     var xScale = quarterlyXScale([margin.left, width - margin.right], .6);
+     // y scale
+     var yScale = quarterlyYScale([minyData, maxyData], [height-margin.top, margin.bottom]);
+     // h scale
+     var hScale = quarterlyYScale([minyData, maxyData], [0, height-margin.top -  margin.bottom]);
+
+     var histogramPlot = plotQuarterlyHistogram( svg, margin, xData,  quarterlyPlotData.incomeActual, xScale, yScale, hScale);
+     var xAxis = plotQuarterlyXAxis(svg, margin, xData, xScale );
+     var yAxis = plotQuarterlyYAxis(svg, margin, yScale, quarterlyPlotData.unit);
+     var linePlot1 = plotQuarterlyLine( svg, margin, xData,  quarterlyPlotData.incomePrevious, xScale, yScale, hScale);
+     var circles1 = plotQuarterlyCircles( svg, margin, xData,  quarterlyPlotData.incomePrevious, xScale, yScale);
+     var linePlot2 = plotQuarterlyLine( svg, margin, xData,  quarterlyPlotData.expenditure, xScale, yScale);
+     var circles2 = plotQuarterlyCircles( svg, margin, xData,  quarterlyPlotData.expenditure, xScale, yScale);
+     var linePlot3 = plotQuarterlyLine( svg, margin, xData,  quarterlyPlotData.incomeBudget, xScale, yScale);
+     var circles3 = plotQuarterlyCircles( svg, margin, xData,  quarterlyPlotData.incomeBudget, xScale, yScale);
+     return;
+}
+
 // Get the y-scale:
 // domain: A 2 element array;
 // range : A 2 element array;
@@ -33,60 +82,19 @@ function defineMargins(height, width)
      return margin;
 }
 
-// Takes  an SVG element and makes a histogram for 
-// Quarterly data using data given in dataSet. 
-// The dataSet is an object with the following
-// fields:
-//    data: array of length 4, data for each quarter, positive numbers
-//    unit: which is a string representing unit
-//    cumulative: either true or false
-//    currentTime: can be Q1 to Q4, i.e. the quarter up till and
-//    including which the values are actual, the remaining 
-//    are forecasts
-
-function plotQuarterlyHistogram(svgID, dataSet)
+// Takes  a d3 selected SVG element and makes a histogram for 
+// Quarterly data using data given 
+//
+function plotQuarterlyHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
 {
-     // Select the SVG object:
-     var svg = d3.select(svgID);
-     var height = svg.attr("height");
-     var width  = svg.attr("width");
-
-     // Define the margins:
-     var margin = defineMargins(height, width);
-
-     // Define x-data and get y data from data set:
-     var xData = ["Q1", "Q2", "Q3", "Q4"];
-     var yData = dataSet.data;
-     var unit  = dataSet.unit;
-     var cumulative = dataSet.cumulative;
-
-
-     var minyData = d3.min(yData);
-     var maxyData = d3.max(yData); 
-
-     // Add some cushion for the data to look nice:
-     minyData = minyData - 0.5*(maxyData - minyData);
-     if ( minyData <= 0 )
-     {
-         minyData = 0;
-
-     }
-
-     // x scale and width gap:
-     var xScale = quarterlyXScale([margin.left, width - margin.right], .6);
-     // y scale
-     var yScale = quarterlyYScale([minyData, maxyData], [height-margin.top, margin.bottom]);
-     // h scale
-     var hScale = quarterlyYScale([minyData, maxyData], [0, height-margin.top -  margin.bottom]);
-     
-    // Draw the rectangles: 
+     // Draw the rectangles: 
      var bars = svg.selectAll("rect")
     .data(yData)
     .enter()
     .append("rect")
     .attr("x", function(d, i) { return xScale(i); })
     .attr("y", function(d) { return yScale(d);})
-    .attr("height", function(d) { return hScale(d); })
+    .attr("height", function(d) { return heightScale(d); })
     .attr("width", function(d) { return xScale.rangeBand(); })
     .attr("fill", "steelblue");
 
@@ -95,7 +103,7 @@ function plotQuarterlyHistogram(svgID, dataSet)
             {
                 d3.select(this)
                 .transition()
-                .duration(150)
+                .duration(500)
                 .attr("fill", "blue");
                 return;
             });
@@ -104,10 +112,17 @@ function plotQuarterlyHistogram(svgID, dataSet)
             {
                 d3.select(this)
                 .transition()
-                .duration(250)
+                .duration(500)
                 .attr("fill", "steelblue");
                 return;
             });
+    return bars;
+}
+
+function plotQuarterlyXAxis(svg, margin, xData, xScale, xLabel)
+{
+    height = svg.attr("height");
+    width = svg.attr("width");
    // Define the axes
     var xAxis = d3.svg.axis()
         .scale(xScale)
@@ -115,18 +130,24 @@ function plotQuarterlyHistogram(svgID, dataSet)
         .ticks(4)
         .tickFormat(function(d, i) { return xData[i]; });
 
-    var yAxis = d3.svg.axis()
-        .scale(yScale)
-        .orient("left").ticks(6);
-
-    // Add the X Axis
+       // Remove X Axis text
+    //svg.call(xAxis).selectAll("text").remove();
+    
+     // Add the X Axis
     svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(0," + (height-margin.bottom) + ")")
     .call(xAxis);
 
-    // Remove X Axis text
-    //svg.call(xAxis).selectAll("text").remove();
+
+    return xAxis;
+}
+
+function plotQuarterlyYAxis(svg, margin, yScale, yLabel)
+{
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient("left").ticks(6);
 
     // Add the Y Axis
     svg.append("g")
@@ -136,10 +157,10 @@ function plotQuarterlyHistogram(svgID, dataSet)
     .append("text")
     .attr("transform", "rotate(-90)")
     .style("text-anchor", "start")
-    .text(dataSet.unit);
-    
-    return bars;
-}// End of function plotQuarterlyHistogram()
+    .text(yLabel);
+
+    return yAxis;
+}
 
 
 // Takes  an SVG element and makes a quarterly line
@@ -153,35 +174,12 @@ function plotQuarterlyHistogram(svgID, dataSet)
 //    including which the values are actual, the remaining 
 //    are forecasts
 
-function plotQuarterlyLine(svgID, dataSet)
+function plotQuarterlyLine( svg, margin, xData, yData, xScale, yScale)
 {
-     var svg = d3.select(svgID);
      var height = svg.attr("height");
      var width  = svg.attr("width");
-     var margin = defineMargins(height, width);
-
-     // x and y data from data set:
-     var xData = ["Q1", "Q2", "Q3", "Q4"];
-     var yData = dataSet.data;
-     var unit  = dataSet.unit;
-     var cumulative = dataSet.cumulative;
-
-     var minyData = d3.min(yData);
-     var maxyData = d3.max(yData); 
-
-     // Add some cushion for the data to look nice:
-     minyData = minyData - 0.5*(maxyData - minyData);
-     if ( minyData <= 0 )
-     {
-         minyData = 0;
-     }
-     
-     // x scale and width gap:
-     var xScale = quarterlyXScale([margin.left, width - margin.right], 0.6);
-     // y scale
-     var yScale = quarterlyYScale([minyData, maxyData], [height-margin.top, margin.bottom]);
-
-    // Define the line
+    
+       // Define the line
     var line = d3.svg.line()
     .x( function(d, i){ return xScale(i) + xScale.rangeBand()/2; })
     .y( function(d, i){ return yScale(d)-margin.bottom; });
@@ -198,33 +196,11 @@ function plotQuarterlyLine(svgID, dataSet)
     return lineGraph;
 } // End of function plotQuarterlyLine
 
-function plotQuarterlyCircles(svgID, dataSet)
+function plotQuarterlyCircles(svg, margin, xData, yData, xScale, yScale)
 {
-     var svg = d3.select(svgID);
-     var height = svg.attr("height");
-     var width  = svg.attr("width");
-     var margin = defineMargins(height, width);
 
-     // x and y data from data set:
-     var xData = ["Q1", "Q2", "Q3", "Q4"];
-     var yData = dataSet.data;
-     var unit  = dataSet.unit;
-     var cumulative = dataSet.cumulative;
-
-     var minyData = d3.min(yData);
-     var maxyData = d3.max(yData); 
-
-     // Add some cushion for the data to look nice:
-     minyData = minyData - 0.5*(maxyData - minyData);
-     if ( minyData <= 0 )
-     {
-         minyData = 0;
-     }
-     
-     // x scale and width gap:
-     var xScale = quarterlyXScale([margin.left, width - margin.right], 0.6);
-     // y scale
-     var yScale = quarterlyYScale([minyData, maxyData], [height-margin.top, margin.bottom]);
+    var height = svg.attr("height");
+    var width  = svg.attr("width");
 
     var circles = svg.append("g")
     .attr("transform", "translate("+ 0 +","+margin.top+")");
