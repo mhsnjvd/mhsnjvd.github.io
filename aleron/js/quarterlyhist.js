@@ -44,6 +44,9 @@ function plotQuarterlyData( svg, quarterlyPlotData)
      var circles2 = plotQuarterlyCircles( svg, margin, xData,  quarterlyPlotData.expenditure, xScale, yScale);
      var linePlot3 = plotQuarterlyLine( svg, margin, xData,  quarterlyPlotData.incomeBudget, xScale, yScale);
      var circles3 = plotQuarterlyCircles( svg, margin, xData,  quarterlyPlotData.incomeBudget, xScale, yScale);
+
+     svg = d3.select(document.getElementById("funderSVG"));
+     plotPieChart( svg, [1, 2,3 ] );
      return;
 }
 
@@ -84,7 +87,6 @@ function defineMargins(height, width)
 
 // Takes  a d3 selected SVG element and makes a histogram for 
 // Quarterly data using data given 
-//
 function plotQuarterlyHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
 {
      // Draw the rectangles: 
@@ -242,3 +244,82 @@ function circleMouseOut(d)
        .attr("fill", "red")
        .attr("r", mouseOutRadius);
 }
+
+
+
+// function to handle pieChart.
+function plotPieChart(svg, pieData)
+{
+        var pC ={};
+        var width = svg.attr("width");
+        var hieght = svg.attr("height");
+
+        var pieDim ={w: width, h: height};
+        pieDim.r = Math.min(pieDim.w, pieDim.h) / 2.5;
+                
+        // create svg for pie chart.
+        var pieSVG = svg.append("g")
+                       .attr("transform", "translate("+pieDim.w/2+","+pieDim.h/2+")");
+        
+        // create function to draw the arcs of the pie slices.
+        var arc = d3.svg.arc()
+            .outerRadius(pieDim.r - 10)
+            .innerRadius(0);
+
+        // Dummy Data:
+        pieData = [];
+        pieData = [ {name: "mohsin", value: 20},  {name: "javed", value: 80},  
+                    {name: "bilal", value: 10},  {name: "hafeez", value: 15},  
+                    {name: "akbar", value: 32},  {name: "mannan", value: 40} 
+                  ];  
+
+        // create a function to compute the pie slice angles.
+        var pie = d3.layout.pie().sort(null).value(function(d) { return d.value; });
+        var color = d3.scale.category20();
+
+        // Draw the pie slices.
+        pieSVG.selectAll("path")
+        .data(pie(pieData))
+        .enter()
+        .append("path")
+        .attr("d", arc)
+        .each(function(d) { this._current = d; })
+        .style("fill", function(d, i) { return color(d.data.name); })
+        .on("mouseover",mouseover).on("mouseout",mouseout);
+
+        return pC;
+}
+
+        /*
+        // create function to update pie-chart. This will be used by histogram.
+        pC.update = function(nD)
+        {
+            piesvg.selectAll("path")
+            .data(pie(nD))
+            .transition().duration(500)
+            .attrTween("d", arcTween);
+        }        
+
+
+        // Utility function to be called on mouseover a pie slice.
+        function mouseover(d){
+            // call the update function of histogram with new data.
+            hG.update(fData.map(function(v){ 
+                return [v.State,v.freq[d.data.type]];}),segColor(d.data.type));
+        }
+        //Utility function to be called on mouseout a pie slice.
+        function mouseout(d){
+            // call the update function of histogram with all data.
+            hG.update(fData.map(function(v){
+                return [v.State,v.total];}), barColor);
+        }
+
+
+        // Animating the pie-slice requiring a custom function which specifies
+        // how the intermediate paths should be drawn.
+        function arcTween(a) {
+            var i = d3.interpolate(this._current, a);
+            this._current = i(0);
+            return function(t) { return arc(i(t));    };
+        }    
+        */

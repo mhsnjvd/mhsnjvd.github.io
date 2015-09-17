@@ -117,30 +117,48 @@
             <div class="col-sm-12">
               <h1 class="page-header">Children Services Data Analysis</h1> 
 
+              <h3 >Operational Data</h3> 
+
               <!-- Start a row -->
-              <div id="id0" class="row">
-                
+              <div class="row">
                  <div  class="col-xs-3 col-sm-3">                 
-                   <select id="regionSelector" onchange="regionSelectFunction()">
-                       <option value="Select Region">Select Region</option>
-                   </select>
+                     Select Region
+                 </div>
+        
+                 <div  class="col-xs-3 col-sm-3">                 
+                     Select Locality
+                 </div>
+
+                 <div  class="col-xs-3 col-sm-3">                 
+                     Select Cost Centre
+                 </div>
+
+                 <div  class="col-xs-3 col-sm-3">                 
+                     Select Funder
+                 </div>
+
+              </div>
+              <!-- End a row -->
+
+              <!-- Start a row -->
+              <div class="row">
+                 <div  class="col-xs-3 col-sm-3">                 
+                       <select id="regionSelector" onchange="regionSelectFunction()">
+                       </select>
                  </div>
         
                  <div  class="col-xs-3 col-sm-3">                 
                    <select id="localitySelector" onchange="localitySelectFunction()">
-                       <option value="Select Locality">Select Locality</option>
                    </select>
                  </div>
 
                  <div  class="col-xs-3 col-sm-3">                 
                    <select id="costCentreSelector" onchange="costCentreSelectFunction()">
-                       <option value="Select Cost Centre">Select Cost Centre</option>
                    </select>
                  </div>
 
                  <div  class="col-xs-3 col-sm-3">                 
                    <select id="funderSelector" onchange="funderSelectFunction()">
-                      <option value="Select Cost Centre">Select Funder</option>
                    </select>
                  </div>
 
@@ -153,10 +171,8 @@
         </div>
         <!-- Row ends here *********************** -->
 
-
     </div>
     <!-- Container fluid div ends here *********************** -->
-
 
     <!-- Start another containter fulid *********************** -->
     <div class="container-fluid">
@@ -169,7 +185,6 @@
              <!-- First column starts here *********************** -->
              <div  class="col-xs-8 col-sm-8">                 
                <select id="propertySelector" onchange="propertySelectFunction()">
-                   <option value="Select Property">Select Property</option>
                </select>
              </div>
         
@@ -188,6 +203,7 @@
         <br>
 
         <!-- Row starts here *********************** -->
+        <!--
         <div class="row">
              <div  class="col-xs-6 col-sm-6">                 
                  <div class="btn-group" role="group" aria-label="...">
@@ -206,28 +222,106 @@
              <div  class="col-xs-6 col-sm-6">                 
              </div>
         </div>
+        -->
         <!-- Row ends here *********************** -->
+        <br>
+        <br>
         
-        <!-- Row starts here *********************** -->
-        <div  class="row">
-            <div id="dataSummaryPara" class="col-xs-6 col-sm-6 placeholder">
-            </div>
-            <div class="col-xs-6 col-sm-6 placeholder">
-            </div>
-        </div>
-        <!-- Row ends here *********************** -->
 
         <!-- Row starts here *********************** -->
         <div class="row">
              <div class="col-xs-6 col-sm-6">                 
-                 <svg id="quarterlySVG" height="400" width="600"></svg>
+                 <svg id="quarterlySVG" height="400" width="600" style="background-color: whitesmoke"></svg>
              </div>
 
              <div class="col-xs-6 col-sm-6">                 
-                 <svg id="funderSVG" height="400" width="600"></svg>
+                 <svg id="funderSVG" height="400" width="600" style="background-color: whitesmoke"></svg>
              </div>
         </div>
         <!-- Row ends here *********************** -->
+
+        <!-- Row starts here *********************** -->
+        <div  class="row">
+
+            <div id="dataSummaryPara" class="col-xs-6 col-sm-6 placeholder">
+            </div>
+
+            <div class="col-xs-6 col-sm-6 placeholder">
+            </div>
+
+        </div>
+        <!-- Row ends here *********************** -->
+
+        <h2 id="dataSummaryHeading" class="sub-header">Data Summary</h2>
+          <div class="table-responsive">
+            <table id="dataSummaryTable" class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Quantity</th>
+                  <th>Q1</th>
+                  <th>Q2</th>
+                  <th>Q3</th>
+                  <th>Q4</th>
+                  <th>FY</th>
+                  <th>Budget</th>
+                  <th>Variation</th>
+                  <th>Variation (%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Income</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>Expenditure</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>Budget</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>Previous</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+            </tbody>
+            </table>
+          </div>
+
+      </div>
+      <!-- Container fluid ends here -->
+
+
+
 
 
         <script type="text/javascript" src="./js/quarterlyhist.js"></script>
@@ -310,23 +404,19 @@
 
                  // Update localities
                  localityList = getUniqueList(currentRegionData, "Locality");
-                 localityList.unshift( "Select Locality" );
                  updateSelector( document.getElementById("localitySelector"), localityList );
 
                  // Update Cost Centres
                  costCentreList= getUniqueList(currentRegionData,"Cost Centres");
-                 costCentreList.unshift( "Select Cost Centre" );
                  updateSelector( document.getElementById("costCentreSelector"), costCentreList);
 
                  // Update localities
                  funderList = getUniqueList(currentRegionData, "Funder");
-                 funderList.unshift( "Select Funder" );
                  updateSelector( document.getElementById("funderSelector"), funderList );
 
                  var data = computeQuarterlyData( currentRegionData );
 
                  createVisualisation(data);
-
                  return;
             }
 
@@ -337,12 +427,16 @@
                      
                  // Update Cost Centres
                  costCentreList= getUniqueList(currentLocalityData,"Cost Centres");
-                 costCentreList.unshift( "Select Cost Centre" );
                  updateSelector( document.getElementById("costCentreSelector"), costCentreList);
 
                  var data = computeQuarterlyData( currentLocalityData );
                  createVisualisation(data);
                  
+                 return;
+            }
+
+            function funderSelectFunction() 
+            {
                  return;
             }
 
@@ -366,29 +460,17 @@
                  showDataSummary(data);
             }
 
-            function showDataSummary(data)
+            function showDataSummary(quarterlyData)
             {
                 var paraDiv = d3.select(document.getElementById("dataSummaryPara"));
                 paraDiv.selectAll("*").remove();
                 paraDiv.append("p").html( "Data Summary: " + region );
-                debugger;
                 paraDiv.selectAll("p")
-                .data(histData)
+                .data(quarterlyData)
                 .enter()
                 .append("p")
-                .text( function(d)
-                       { 
-                           var str = d.x + ": " + d.y;
-                           return str;
-                       });
-
-               // Income, expenditure, budget 
-
-                var quarterlySVG = document.getElementById("quarterlySVG");
-                d3.select(quarterlySVG).selectAll("*").remove();
-                histogram(quarterlySVG, histData);
-                return ;
-   
+                .text("");
+                return;
             }
 
             function propertySelectFunction() 
@@ -399,36 +481,7 @@
 
             function regionBtnClick()
             {
-                var region = document.getElementById("regionSelector").value;
-                //var property = document.getElementById("propertySelector").value;
-                var histData = [];
-                // The properties we are interested in start from index 5:
-                for ( var i = 5; i < propertyList.length; i++ )
-                {
-                    xi = propertyList[i];
-                    yi = sumArrayProperty(currentRegionData, xi);
-                    histData.push({x: xi, y: yi});
-                }
-                var paraDiv = d3.select(document.getElementById("regionSummaryPara"));
-                paraDiv.selectAll("*").remove();
-                paraDiv.append("p").html( "Data Summary: " + region );
-                debugger;
-                paraDiv.selectAll("p")
-                .data(histData)
-                .enter()
-                .append("p")
-                .text( function(d)
-                       { 
-                           var str = d.x + ": " + d.y;
-                           return str;
-                       });
-
-               // Income, expenditure, budget 
-
-                var quarterlySVG = document.getElementById("quarterlySVG");
-                d3.select(quarterlySVG).selectAll("*").remove();
-                histogram(quarterlySVG, histData);
-                return ;
+                
             }
 
 
@@ -463,49 +516,6 @@
                  return list; 
             }
 
-            function funderSelectFunction() 
-            {
-                 var funder = document.getElementById("funderSelector").value;
-                 // Initialize region data and locality list:
-                 currentFunderData = [];
-                 localityList = [];
-                 for ( i = 0; i < financialsData.length; i++ )
-                 {
-                     if ( financialsData[i].Funder == funder )
-                     {
-                         currentFunderData.push(financialsData[i]);
-                     }
-                 }
-
-                 // Get the list of localities supported by this funder
-                 localityList = getUniqueList(currentFunderData, "Locality");
-                 regionList = getUniqueList(currentFunderData, "Region");
-                 
-                 // update the existing selection box
-                 updateSelctor( document.getElementById("localitySelector"), localityList );
-                 updateSelctor( document.getElementById("regionSelector"), regionList );
-
-
-                 // Get the list of cost centres:
-                 costCentreList = currentRegionData.map(function(d){ return d["Cost Centres"]; } );
-                 // Get unique elements only:
-                 costCentreList = costCentreList.filter( function(d, i, thisArray){ return thisArray.indexOf(d) === i; });
-                 // Sort it:
-                 costCentreList = costCentreList.sort();
-
-
-                 // update the existing selection box
-                 updateSelctor( document.getElementById("costCentreSelector"), costCentreList );
-                 
-
-                 createVisualisation();
-
-                 //var regionPara = document.getElementById("regionSummary");
-                 //regionPara.innerHTML = "This region has " + (currentRegionData.length) + " entries.";
-                 
-                 return;
-            }
-
 
             function localityBtnClick()
             {
@@ -517,25 +527,6 @@
             {
 
 
-            }
-
-
-            /* **********************************************
-            // Function to make a list of options
-            /* ********************************************** */
-            // Appends option specified in the options array
-            // to a select object whose ID is 
-            // passed in optionObjectID
-            function makeOptionList( optionObjectID, options )
-            {
-               for( var i = 0; i < options.length; i++ )
-               {
-                  var el = document.createElement("option");
-                  el.textContent = options[i];
-                  el.value = options[i];
-                  optionObjectID.appendChild(el);
-               }
-               return;
             }
 
             
@@ -550,20 +541,16 @@
               propertyList = Object.getOwnPropertyNames(financialsData[0]);
 
               // Add Regions to the drop down list:
-              regionList.unshift("Select Region");
               updateSelector( document.getElementById("regionSelector"), regionList );
               
               // Add Funders to the drop down list:
-              funderList.unshift("Select Funder");
               updateSelector(document.getElementById("funderSelector"), funderList);
 
               // Add Localities to the drop down list:
-              localityList.unshift("Select Locality");
               updateSelector( document.getElementById("localitySelector"), localityList );
 
               // Add properties to the property selector, the first 4 are not needed:
-              propertyList = propertyList.slice(4,15);
-              propertyList.unshift("Select Property");
+              propertyList = propertyList.slice(18);
               updateSelector(document.getElementById("propertySelector"), propertyList);
             });                                 
 
