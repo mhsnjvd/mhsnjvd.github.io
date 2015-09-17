@@ -45,8 +45,8 @@ function plotQuarterlyData( svg, quarterlyPlotData)
      var linePlot3 = plotQuarterlyLine( svg, margin, xData,  quarterlyPlotData.incomeBudget, xScale, yScale);
      var circles3 = plotQuarterlyCircles( svg, margin, xData,  quarterlyPlotData.incomeBudget, xScale, yScale);
 
-     svg = d3.select(document.getElementById("funderSVG"));
-     plotPieChart( svg, [1, 2,3 ] );
+     //svg = d3.select(document.getElementById("funderSVG"));
+     //plotPieChart( svg, [1, 2,3 ] );
      return;
 }
 
@@ -80,7 +80,7 @@ function defineMargins(height, width)
      var topMargin = height/8;
      var rightMargin = width/20;
      var bottomMargin = height/8;
-     var leftMargin = width/10;
+     var leftMargin = width/7;
      var margin = {top: topMargin, right: rightMargin, bottom: bottomMargin, left: leftMargin};
      return margin;
 }
@@ -262,16 +262,11 @@ function plotPieChart(svg, pieData)
                        .attr("transform", "translate("+pieDim.w/2+","+pieDim.h/2+")");
         
         // create function to draw the arcs of the pie slices.
+        var outerRad = pieDim.r - 10;
+        var innerRad = outerRad/1.5;
         var arc = d3.svg.arc()
-            .outerRadius(pieDim.r - 10)
-            .innerRadius(0);
-
-        // Dummy Data:
-        pieData = [];
-        pieData = [ {name: "mohsin", value: 20},  {name: "javed", value: 80},  
-                    {name: "bilal", value: 10},  {name: "hafeez", value: 15},  
-                    {name: "akbar", value: 32},  {name: "mannan", value: 40} 
-                  ];  
+            .outerRadius(outerRad)
+            .innerRadius(innerRad);
 
         // create a function to compute the pie slice angles.
         var pie = d3.layout.pie().sort(null).value(function(d) { return d.value; });
