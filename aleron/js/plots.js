@@ -336,6 +336,9 @@ function plotPieChart(svg, pieData)
 
 function plotQuarterlyData( svg, data)
 {
+      svg.selectAll("*").remove();
+      svg.style("background-color", "whitesmoke"); 
+
       var plotData = data.income;
       plotData = plotData.concat(data.budget);
       plotData = plotData.concat(data.actual);

@@ -487,9 +487,7 @@
                  var data = computeQuarterlyData( currentRegionData );
 
                  svg = d3.select(document.getElementById("quarterlySVG"));
-                 svg.selectAll("*").remove();
-                 svg.style("background-color", "whitesmoke"); 
-
+                 
                  plotQuarterlyData( svg, data);
 
                  var count = getIdentifierCount( currentRegionData, localityList, "Locality");
@@ -518,19 +516,12 @@
 
                  var data = computeQuarterlyData( currentLocalityData );                 
 
-                 svg = d3.select(document.getElementById("quarterlySVG"));
-                 svg.selectAll("*").remove();
-                 svg.style("background-color", "whitesmoke");
-
+                 svg = d3.select(document.getElementById("quarterlySVG"));                 
                  plotQuarterlyData( svg, data );        
 
                   
-                  // Second Histogram Plot
-
-                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                  svg.selectAll("*").remove();
-                  svg.style("background-color", "whitesmoke"); 
-
+                  // Second Histogram Plot on the adjacent svg
+                  svg = d3.select(document.getElementById("quarterlyPieSVG"));                  
                   plotQuarterlyData( svg, data)
 
                   return;
