@@ -1,50 +1,39 @@
+function getHistScalesMargins( svg, data)
+{
+    var output = {};
+    // Define the margins:
+    var height = svg.attr("height");
+    var width = svg.attr("width");
+    var margin = defineMargins(height, width);
+
+    var minyData = d3.min(data);
+    var maxyData = d3.max(data); 
+
+    // Add some cushion for the data to look nice:
+    minyData = minyData - 0.5*(maxyData - minyData);
+    if ( minyData <= 0 )
+    {
+        minyData = 0;
+    }
+    // x scale and width gap:
+    output.xScale = quarterlyXScale([margin.left, width - margin.right], .6);
+    // y scale
+    output.yScale = quarterlyYScale([minyData, maxyData], [height-margin.top, margin.bottom]);
+    // h scale
+    output.hScale = quarterlyYScale([minyData, maxyData], [0, height-margin.top -  margin.bottom]);
+
+    //margin
+    output.margin = margin;
+
+    return output;
+}
+
+
 // d3 selected svg and data with a specific format
 function plotQuarterlyData( svg, quarterlyPlotData)
-{
-     // Get the h and w:
-     var height = svg.attr("height");
-     var width  = svg.attr("width");
-
-     // Define the margins:
-     var margin = defineMargins(height, width);
-
-     // Define x-data and get y data from data set:
-     var xData = ["Q1", "Q2", "Q3", "Q4"];
-
-     var data = [];
-     data = data.concat(quarterlyPlotData.incomeBudget);
-     data = data.concat(quarterlyPlotData.incomeActual);
-     data = data.concat(quarterlyPlotData.incomePrevious);
-     data = data.concat(quarterlyPlotData.expenditure);
-
-     var minyData = d3.min(data);
-     var maxyData = d3.max(data); 
-
-     // Add some cushion for the data to look nice:
-     minyData = minyData - 0.5*(maxyData - minyData);
-     if ( minyData <= 0 )
-     {
-         minyData = 0;
-     }
-     
-
-     // x scale and width gap:
-     var xScale = quarterlyXScale([margin.left, width - margin.right], .6);
-     // y scale
-     var yScale = quarterlyYScale([minyData, maxyData], [height-margin.top, margin.bottom]);
-     // h scale
-     var hScale = quarterlyYScale([minyData, maxyData], [0, height-margin.top -  margin.bottom]);
-
+{      
      var histogramPlot = plotQuarterlyHistogram( svg, margin, xData,  quarterlyPlotData.incomeActual, xScale, yScale, hScale);
-     var xAxis = plotQuarterlyXAxis(svg, margin, xData, xScale );
-     var yAxis = plotQuarterlyYAxis(svg, margin, yScale, quarterlyPlotData.unit);
-     var linePlot1 = plotQuarterlyLine( svg, margin, xData,  quarterlyPlotData.incomePrevious, xScale, yScale, hScale);
-     var circles1 = plotQuarterlyCircles( svg, margin, xData,  quarterlyPlotData.incomePrevious, xScale, yScale);
-     var linePlot2 = plotQuarterlyLine( svg, margin, xData,  quarterlyPlotData.expenditure, xScale, yScale);
-     var circles2 = plotQuarterlyCircles( svg, margin, xData,  quarterlyPlotData.expenditure, xScale, yScale);
-     var linePlot3 = plotQuarterlyLine( svg, margin, xData,  quarterlyPlotData.incomeBudget, xScale, yScale);
-     var circles3 = plotQuarterlyCircles( svg, margin, xData,  quarterlyPlotData.incomeBudget, xScale, yScale);
-
+     
      //svg = d3.select(document.getElementById("funderSVG"));
      //plotPieChart( svg, [1, 2,3 ] );
      return;
@@ -89,6 +78,8 @@ function defineMargins(height, width)
 // Quarterly data using data given 
 function plotQuarterlyHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
 {
+     // Object to be returned which will have an update function
+     histogram = {};
      // Draw the rectangles: 
      var bars = svg.selectAll("rect")
     .data(yData)
@@ -118,6 +109,13 @@ function plotQuarterlyHistogram( svg, margin, xData, yData, xScale, yScale, heig
                 .attr("fill", "steelblue");
                 return;
             });
+    /*
+    hisogram.update = function()
+    {
+        return 0;
+
+    }
+    */
     return bars;
 }
 
@@ -176,7 +174,7 @@ function plotQuarterlyYAxis(svg, margin, yScale, yLabel)
 //    including which the values are actual, the remaining 
 //    are forecasts
 
-function plotQuarterlyLine( svg, margin, xData, yData, xScale, yScale)
+function plotQuarterlyLine( svg, margin, xData, yData, xScale, yScale, lineColor)
 {
      var height = svg.attr("height");
      var width  = svg.attr("width");
@@ -193,7 +191,10 @@ function plotQuarterlyLine( svg, margin, xData, yData, xScale, yScale)
     // Add the valueline path.
     lineGraph.append("path")
     .attr("class", "line")
-    .attr("d", line(yData));
+    .attr("d", line(yData))
+    .attr("stroke", lineColor)
+    .attr("stroke-width", 2)
+    .attr("fill", "none");
 
     return lineGraph;
 } // End of function plotQuarterlyLine
@@ -216,7 +217,7 @@ function plotQuarterlyCircles(svg, margin, xData, yData, xScale, yScale)
     .attr("cx", function(d, i){ return xScale(i) + xScale.rangeBand()/2;})
     .attr("cy", function(d, i){ return yScale(d) - margin.bottom;})
     .attr("r", normalRadius)
-    .attr("fill", "red")
+    .attr("fill", "black")
     .on("mouseover", circleMouseOver)
     .on("mouseout", circleMouseOut);
     
@@ -230,7 +231,7 @@ function circleMouseOver(d)
    circle.transition()
        .duration(250)
        .attr("r", mouseOnRadius)
-       .attr("fill", "orange")
+       .attr("fill", "black")
        .attr("opacity", 1)
 }
    
@@ -241,16 +242,16 @@ function circleMouseOut(d)
    circle.transition()
        .duration(250)
        .attr("opacity", 1.0)
-       .attr("fill", "red")
+       .attr("fill", "black")
        .attr("r", mouseOutRadius);
 }
-
 
 
 // function to handle pieChart.
 function plotPieChart(svg, pieData)
 {
-        var pieChart ={};
+        var pieChart = {};
+
         var width = svg.attr("width");
         var hieght = svg.attr("height");
 
@@ -259,18 +260,32 @@ function plotPieChart(svg, pieData)
                 
         // create svg for pie chart.
         var pieSVG = svg.append("g")
-                       .attr("transform", "translate("+pieDim.w/2+","+pieDim.h/2+")");
+                       .attr("transform", "translate("+pieDim.w/1.4+","+pieDim.h/2+")");
         
         // create function to draw the arcs of the pie slices.
         var outerRad = pieDim.r - 10;
-        var innerRad = outerRad/1.5;
+        var innerRad = outerRad/2;
         var arc = d3.svg.arc()
             .outerRadius(outerRad)
             .innerRadius(innerRad);
 
         // create a function to compute the pie slice angles.
-        var pie = d3.layout.pie().sort(null).value(function(d) { return d.value; });
+        var pie = d3.layout.pie().sort(null).value(function(d) { return d.count; });
         var color = d3.scale.category20b();
+        
+
+        // Design the tooltip
+        var tooltip = svg.append('div')                                                
+          .attr('class', 'tooltip');                                    
+                      
+        tooltip.append('div')                                           
+          .attr('class', 'label');                                      
+             
+        tooltip.append('div')                                           
+          .attr('class', 'count');                                      
+        tooltip.append('div')                                           
+          .attr('class', 'percent');                                    
+
 
         // Draw the pie slices.
         pieSVG.selectAll("path")
@@ -278,11 +293,57 @@ function plotPieChart(svg, pieData)
         .enter()
         .append("path")
         .attr("d", arc)
-        .each(function(d) { this._current = d; })
-        .style("fill", function(d, i) { return color(d.data.name); })
-        .on("mouseover",mouseover).on("mouseout",mouseout);
+        //.each(function(d) { this._current = d; })
+        .attr("stroke", "orange")
+        .attr("stroke-width", 2)
+        .attr("fill", "none")
+        .style("fill", function(d, i) { return color(d.data.label); });
+        //.on("mouseover",mouseover).on("mouseout",mouseout);
+
+        // Legend:
+        var legendRectSize = 18;
+        var legendSpacing = 4;     
 
 
+        var legend = svg.selectAll('.legend')                     
+          .data(color.domain())                                   
+          .enter()                                                
+          .append('g')                                            
+          .attr('class', 'legend')                                
+          .attr('transform', function(d, i) {                     
+            var legendHeight = legendRectSize + legendSpacing;          
+            var offset =  legendHeight * color.domain().length / 2;     
+            var horz = 2 * legendRectSize;                       
+            var vert = i * legendHeight - offset + height/2;                       
+            return 'translate(' + horz + ',' + vert + ')';        
+          });                                                     
+
+        legend.append('rect')                                     
+          .attr('width', legendRectSize)                          
+          .attr('height', legendRectSize)                         
+          .style('fill', color)                                   
+          .style('stroke', color);                                
+          
+        legend.append('text')                                     
+          .attr('x', legendRectSize + legendSpacing)              
+          .attr('y', legendRectSize - legendSpacing)              
+          .text(function(d) { return d; });                       
+
+
+
+        pieSVG.on('mouseover', function(d) {                            
+            var total = d3.sum( pieData.map(function(d) { return d.count;})  );                                                        
+            var percent = Math.round(1000 * d.data.count / total) / 10; 
+            tooltip.select('.label').html(d.data.label);                
+            tooltip.select('.count').html(d.data.count);                
+            tooltip.select('.percent').html(percent + '%');             
+            tooltip.style('display', 'block');                          
+          });                                                           
+          
+          pieSVG.on('mouseout', function(){ tooltip.style('display', 'none');});                                                           
+
+
+        /*
         // create function to update pie-chart. This will be used by histogram.
         pieChart.update = function(newData)
         {
@@ -291,6 +352,7 @@ function plotPieChart(svg, pieData)
             .transition().duration(500)
             .attrTween("d", arcTween);
         }        
+        */
 
 
         /*
@@ -306,7 +368,6 @@ function plotPieChart(svg, pieData)
             hG.update(fData.map(function(v){
                 return [v.State,v.total];}), barColor);
         }
-        */
 
 
         // Animating the pie-slice requiring a custom function which specifies
@@ -317,5 +378,5 @@ function plotPieChart(svg, pieData)
             this._current = i(0);
             return function(t) { return arc(i(t));    };
         }    
-        return pieChart;
+        */
 }

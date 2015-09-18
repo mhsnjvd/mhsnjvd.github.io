@@ -28,18 +28,68 @@
       <![endif]-->
   <script type="text/javascript" src="./js/d3.min.js"></script>
   <style>
-      path { 
-          stroke: orange;
-          stroke-width: 2;
-          fill: none; }
-
       .axis path,
       .axis line {
               fill: none;
               stroke: grey;
               stroke-width: 2;
               shape-rendering: crispEdges; }
+
+       .legend {  
+           font-size: 12px; 
+       }
+       rect {  
+           stroke-width: 2; 
+       }
+
+      #chart {                                                          
+        height: 360px;                                                  
+        position: relative;                                             
+        width: 360px;                                                   
+      }                                                                 
+      .tooltip {                                                        
+        background: #eee;                                               
+        box-shadow: 0 0 5px #999999;                                    
+        color: #333;                                                    
+        display: none;                                                  
+        font-size: 12px;                                                
+        left: 130px;                                                    
+        padding: 10px;                                                  
+        position: absolute;                                             
+        text-align: center;                                             
+        top: 95px;                                                      
+        width: 80px;                                                    
+        z-index: 10;                                                    
+      }                                                                 
   </style>
+
+  <style>
+      #chart {                                                          
+        height: 360px;                                                  
+        position: relative;                                             
+        width: 360px;                                                   
+      }                                                                 
+      .tooltip {                                                        
+        background: #eee;                                               
+        box-shadow: 0 0 5px #999999;                                    
+        color: #333;                                                    
+        display: none;                                                  
+        font-size: 12px;                                                
+        left: 130px;                                                    
+        padding: 10px;                                                  
+        position: absolute;                                             
+        text-align: center;                                             
+        top: 95px;                                                      
+        width: 80px;                                                    
+        z-index: 10;                                                    
+      }                                                                 
+      .legend {
+        font-size: 12px;
+      }
+      rect {
+        stroke-width: 2;
+      }
+    </style>
 
   </head>
 
@@ -176,7 +226,6 @@
         </div>
         <!-- Row ends here *********************** -->
 
-
                 
 
     </div>
@@ -215,10 +264,10 @@
         <!-- Row ends here *********************** -->
 
 
-        <!-- Add some padding -->
+        <!-- Add some padding
         <br>
         <br>
-
+                             -->
         <!-- Row starts here *********************** -->
         <!--
         <div class="row">
@@ -241,9 +290,22 @@
         </div>
         -->
         <!-- Row ends here *********************** -->
-        <br>
-        <br>
+
         
+        <!-- Row starts here *********************** -->
+        <div class="row">
+             <div class="col-xs-1">
+             </div>
+
+             <div class="col-xs-10">
+                <h3 id="quarterlyPlotHeading" class="sub-header">Quarterly Financial Data</h3>
+             </div>
+
+             <div class="col-xs-1">
+             </div>
+
+        </div>
+        <!-- Row ends here *********************** -->
 
         <!-- Row starts here *********************** -->
         <div class="row">
@@ -256,7 +318,7 @@
              </div>
 
              <div class="col-xs-5">
-                 <svg id="pieSVG" height="350" width="500" style="background-color: whitesmoke"></svg>
+                 <svg id="quarterlyPieSVG" height="350" width="500" style="background-color: whitesmoke"></svg>
              </div>
 
              <div class="col-xs-1">
@@ -273,7 +335,7 @@
             </div>
             
             <div class="col-xs-10">
-              <h2 id="dataSummaryHeading" class="sub-header">Data Summary</h2>
+              <h3 id="dataSummaryHeading" class="sub-header">Data Summary</h3>
               <div class="table-responsive">
                 <table id="dataSummaryTable" class="table table-striped">
                   <thead>
@@ -345,14 +407,61 @@
         </div>
         <!-- Row ends here -->
 
+        <!-- Row starts here *********************** -->
+        <div class="row">
+             <div class="col-xs-1">
+             </div>
+
+             <div class="col-xs-10">
+                <h3 id="dataSummaryHeading" class="sub-header">Funders' Summary</h3>
+             </div>
+
+             <div class="col-xs-1">
+             </div>
+
+        </div>
+        <!-- Row ends here *********************** -->
+
+
+        <div class="row">
+             <div class="col-xs-1">
+             </div>
+
+             <div class="col-xs-5">
+                 <svg id="funderSVG" height="350" width="500" style="background-color: whitesmoke"></svg>
+             </div>
+
+             <div class="col-xs-5">
+                 <svg id="funderPieSVG" height="350" width="500" style="background-color: whitesmoke"></svg>
+             </div>
+
+             <div class="col-xs-1">
+             </div>
+
+        </div>
+        <!-- Row ends here *********************** -->
+
+        <div class="row">
+
+             <div class="col-xs-1">
+             </div>
+
+             <div id="chart" class="col-xs-10">
+             </div>
+
+             <div class="col-xs-1">
+             </div>
+
+        </div>
+
       </div>
       <!-- Container fluid ends here -->
-
 
         <script type="text/javascript" src="./js/globals.js"></script>
         <script type="text/javascript" src="./js/utils.js"></script>
         <script type="text/javascript" src="./js/quarterlyhist.js"></script>
         <script type="text/javascript"> 
+
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
@@ -377,16 +486,46 @@
 
                  var data = computeQuarterlyData( currentRegionData );
 
+                 svg = d3.select(document.getElementById("quarterlySVG"));
+                 svg.selectAll("*").remove();
+                 svg.style("background-color", "whitesmoke"); 
+
+                  var plotData = data.income;
+                  plotData = plotData.concat(data.budget);
+                  plotData = plotData.concat(data.actual);
+                  plotData = plotData.concat(data.previous);
+
+                  var scalesMargins = getHistScalesMargins(svg, plotData);
+                  var margin = scalesMargins.margin;
+                  var xScale = scalesMargins.xScale;
+                  var yScale = scalesMargins.yScale;
+                  var hScale = scalesMargins.hScale;
+
+                  var xData = ["Q1", "Q2", "Q3", "Q4"];
+
+                  var histogramPlot = plotQuarterlyHistogram( svg, margin, xData,  data.budget, xScale, yScale, hScale);          
+                  var xAxis = plotQuarterlyXAxis(svg, margin, xData, xScale );
+                  var yAxis = plotQuarterlyYAxis(svg, margin, yScale, "Million £");         
+
+
+                  var linePlot1 = plotQuarterlyLine( svg, margin, xData, data.previous, xScale, yScale, "green");
+                  var circles1 = plotQuarterlyCircles( svg, margin, xData, data.previous, xScale, yScale);
+                  var linePlot2 = plotQuarterlyLine( svg, margin, xData, data.income, xScale, yScale, "orange");
+                  var circles2 = plotQuarterlyCircles( svg, margin, xData, data.income, xScale, yScale);
+                  var linePlot3 = plotQuarterlyLine( svg, margin, xData, data.actual, xScale, yScale, "red");
+                  var circles3 = plotQuarterlyCircles( svg, margin, xData, data.actual, xScale, yScale);
+
+                 
+
                  var count = getIdentifierCount( currentRegionData, localityList, "Locality");
                  var pieData = [];
                  for ( var i = 0; i < localityList.length; i++ )
                  {
-                     pieData.push( {name: localityList[i], value: count[i]});
+                     pieData.push( {label: localityList[i], count: count[i]});
                  }
-
-                 pp = pieData;
-                 createVisualisation(data);
-                 svg = d3.select(document.getElementById("pieSVG"));
+                 
+                 svg = d3.select(document.getElementById("quarterlyPieSVG"));
+                 svg.selectAll("*").remove();
                  plotPieChart( svg, pieData);
                  return;
             }
@@ -400,35 +539,80 @@
                  costCentreList= getUniqueList(currentLocalityData,"Cost Centres");
                  updateSelector( document.getElementById("costCentreSelector"), costCentreList);
 
+                 // First Histogram Plot
+
                  var data = computeQuarterlyData( currentLocalityData );
-                 createVisualisation(data);
-                 
+
+                 svg = d3.select(document.getElementById("quarterlySVG"));
+                 svg.selectAll("*").remove();
+                 svg.style("background-color", "whitesmoke"); 
+
+                  var plotData = data.income;
+                  plotData = plotData.concat(data.budget);
+                  plotData = plotData.concat(data.actual);
+                  plotData = plotData.concat(data.previous);
+
+                  var scalesMargins = getHistScalesMargins(svg, plotData);
+                  var margin = scalesMargins.margin;
+                  var xScale = scalesMargins.xScale;
+                  var yScale = scalesMargins.yScale;
+                  var hScale = scalesMargins.hScale;
+
+                  var xData = ["Q1", "Q2", "Q3", "Q4"];
+                  var yData = data.budget;
+                  var histogramPlot = plotQuarterlyHistogram( svg, margin, xData,  yData, xScale, yScale, hScale);          
+                  var xAxis = plotQuarterlyXAxis(svg, margin, xData, xScale );
+                  var yAxis = plotQuarterlyYAxis(svg, margin, yScale, "Million £");         
+
+                  var linePlot1 = plotQuarterlyLine( svg, margin, xData, data.previous, xScale, yScale, "green");
+                  var circles1 = plotQuarterlyCircles( svg, margin, xData, data.previous, xScale, yScale);
+                  var linePlot2 = plotQuarterlyLine( svg, margin, xData, data.income, xScale, yScale, "orange");
+                  var circles2 = plotQuarterlyCircles( svg, margin, xData, data.income, xScale, yScale);
+                  var linePlot3 = plotQuarterlyLine( svg, margin, xData, data.actual, xScale, yScale, "red");
+                  var circles3 = plotQuarterlyCircles( svg, margin, xData, data.actual, xScale, yScale);
+                  
+                  // Second Histogram Plot
+
+                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
+                  svg.selectAll("*").remove();
+                  svg.style("background-color", "whitesmoke"); 
+
+                  return;
+            }
+
+            function costCentreSelectFunction() 
+            {
+                 var costCentre = document.getElementById("costCentreSelector").value;
+                 currentCostCentreData = currentLocalityData.filter( function(d) { return d["Cost Centres"] === costCentre; } );
+                     
+                 var data = computeQuarterlyData( currentCostCentreData );
+
+                 svg = d3.select(document.getElementById("quarterlySVG"));
+                 svg.selectAll("*").remove();
+                 svg.style("background-color", "whitesmoke"); 
+
+                  var plotData = data.income;
+                  plotData = plotData.concat(data.budget);
+                  plotData = plotData.concat(data.actual);
+                  plotData = plotData.concat(data.previous);
+
+                  var scalesMargins = getHistScalesMargins(svg, plotData);
+                  var margin = scalesMargins.margin;
+                  var xScale = scalesMargins.xScale;
+                  var yScale = scalesMargins.yScale;
+                  var hScale = scalesMargins.hScale;
+
+                  var xData = ["Q1", "Q2", "Q3", "Q4"];
+                  var yData = data.budget;
+                  var histogramPlot = plotQuarterlyHistogram( svg, margin, xData,  yData, xScale, yScale, hScale);          
+                  var xAxis = plotQuarterlyXAxis(svg, margin, xData, xScale );
+                  var yAxis = plotQuarterlyYAxis(svg, margin, yScale, "Million £");                                           
                  return;
             }
 
             function funderSelectFunction() 
             {
                  return;
-            }
-
-            function createVisualisation(data)
-            {
-                 var svg = d3.select(document.getElementById("quarterlySVG"));
-                 svg.selectAll("*").remove();
-                 svg.style("background-color", "whitesmoke"); 
-
-                 var quarterlyPlotData = { incomeBudget: [], incomeActual: [], incomePrevious: [], expenditure: [], unit: "Million £", cumulative: true, currentTime: "Q4" };
-
-                 quarterlyPlotData.incomeBudget = data.budget;
-                 quarterlyPlotData.incomePrevious = data.previous;
-                 quarterlyPlotData.incomeActual = data.actual;
-                 quarterlyPlotData.expenditure = data.income;
-                 quarterlyPlotData.unit = "million £";
-                 quarterlyPlotData.cumulative = true;
-                 quarterlyPlotData.currentTime = "Q4";
-
-                 plotQuarterlyData(svg, quarterlyPlotData);
-                 //showDataSummary(data);
             }
 
             function showDataSummary(quarterlyData)
@@ -450,26 +634,7 @@
                  return;
             }
 
-            function regionBtnClick()
-            {
-                
-            }
-
-
-
-            function localityBtnClick()
-            {
-
-
-            }
-
-            function propertyBtnClick()
-            {
-
-
-            }
-
-            
+           
             // Upload the data file and process it:
             d3.csv( "./csdata/Financials_File_Dummy.csv", function(d)
             { 
@@ -501,11 +666,25 @@
          </script>
          
           <!-- FOOTER -->
-          <footer>
-            <p class="pull-right"><a href="#">Back to top</a></p>
-            <p>&copy; <span id="idFooter"> 2015, Inc.</span> &middot;
-            <a id="idURL" href="#">Privacy</a> &middot; <a href="idURL">Terms</a></p>
-          </footer>
+          <div class="container-fluid">
+              <div class="row">
+                  
+                  <div class="col-xs-1">
+                  </div>
+                  
+                  <div class="col-xs-10">
+                      <footer>
+                        <p class="pull-right"><a href="#">Back to top</a></p>
+                        <p>&copy; <span id="idFooter"> 2015, Inc.</span> &middot;
+                        <a id="idURL" href="#">Privacy</a> &middot; <a href="idURL">Terms</a></p>
+                      </footer>
+                  </div>
+                  
+                  <div class="col-xs-1">
+                  </div>
+                  
+              </div>
+          </div> 
 
           <script src="./js/defs.js"></script>
           <script type="text/javascript">
