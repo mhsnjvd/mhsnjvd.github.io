@@ -498,39 +498,6 @@
               updateSelector(document.getElementById("propertySelector"), propertyList);
             });                                 
 
-
-            var contractsData = []
-            d3.csv( "./csdata/Contracts_signed_file.csv", function(d)
-            { 
-              // Copy the data read into the global variable:
-              contractsData = d;
-
-            });
-
-            var salesData = []
-            d3.csv( "./csdata/Sales_opportunities_file.csv", function(d)
-            { 
-              // Copy the data read into the global variable:
-              salesData = d;
-
-            });
-
-            var fte01Data = [];
-            var fte02Data = [];
-            d3.csv( "./csdata/FTE 01Qtr_ 1_1516.csv", function(d)
-            { 
-              // Copy the data read into the global variable:
-              fte01Data = d;
-
-            });
-
-            d3.csv( "./csdata/FTE 02Qtr_ 1_1516.csv", function(d)
-            { 
-              // Copy the data read into the global variable:
-              fte02Data = d;
-
-            });
-
          </script>
          
           <!-- FOOTER -->
