@@ -64,6 +64,20 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
     .attr("width", function(d) { return xScale.rangeBand(); })
     .attr("fill", "steelblue");
 
+
+
+     var tip = d3.tip()
+     .attr('class', 'd3-tip')
+     .offset([-10, 0])
+     .html(function(d) {
+                return "Value: <span style='color:red'>" + d + "</span>";
+           });
+
+
+
+     bars.call(tip);
+     var digits = d3.format(".3f");
+
      // Functions for mouse-over and mouse-out:
      bars.on("mouseover", function(d)
             {
@@ -71,6 +85,9 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
                 .transition()
                 .duration(500)
                 .attr("fill", "blue");
+
+                tip.show(digits(d));
+                            
                 return;
             });
 
@@ -80,6 +97,9 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
                 .transition()
                 .duration(500)
                 .attr("fill", "steelblue");
+
+                tip.hide();
+
                 return;
             });
     /*
@@ -208,11 +228,11 @@ function plotPieChart(svg, pieData)
         var hieght = svg.attr("height");
 
         var pieDim ={w: width, h: height};
-        pieDim.r = Math.min(pieDim.w, pieDim.h) / 2.5;
+        pieDim.r = Math.min(pieDim.w, pieDim.h) / 2.8;
                 
         // create svg for pie chart.
         var pieSVG = svg.append("g")
-                       .attr("transform", "translate("+pieDim.w/1.4+","+pieDim.h/2+")");
+                       .attr("transform", "translate("+pieDim.w/1.33+","+pieDim.h/2+")");
         
         // create function to draw the arcs of the pie slices.
         var outerRad = pieDim.r - 10;
@@ -226,8 +246,10 @@ function plotPieChart(svg, pieData)
         var color = d3.scale.category20b();
         
 
+
+
         // Design the tooltip
-        var tooltip = svg.append('div')                                                
+        var tooltip = pieSVG.append('div')                                                
           .attr('class', 'tooltip');                                    
                       
         tooltip.append('div')                                           
@@ -239,8 +261,10 @@ function plotPieChart(svg, pieData)
           .attr('class', 'percent');                                    
 
 
+        var digits = d3.format(".3f");
+
         // Draw the pie slices.
-        pieSVG.selectAll("path")
+        var piePath = pieSVG.selectAll("path")
         .data(pie(pieData))
         .enter()
         .append("path")
@@ -249,8 +273,29 @@ function plotPieChart(svg, pieData)
         .attr("stroke", "orange")
         .attr("stroke-width", 2)
         .attr("fill", "none")
-        .style("fill", function(d, i) { return color(d.data.label); });
-        //.on("mouseover",mouseover).on("mouseout",mouseout);
+        .style("fill", function(d, i) { return color(d.data.label); })
+        .on("mouseover", function(d)
+        {
+             var total = d3.sum( pieData.map(function(d) { return d.count; } ));
+             var thisText = digits(d.data.count/total * 100) + "%";
+
+          //Create the tooltip label
+             pieSVG.append("text")
+             .attr("id", "tooltip")
+             .attr("x", 0)
+             .attr("y", 0)
+             .attr("text-anchor", "middle")
+             .attr("font-family", "sans-serif")
+             .attr("font-size", "11px")
+             .attr("font-weight", "bold")
+             .attr("fill", "black")
+             .text(thisText);
+        })
+        .on("mouseout", function(d)
+        {
+            //Remove the tooltip
+            d3.select("#tooltip").remove();
+        });
 
         // Legend:
         var legendRectSize = 18;
@@ -282,6 +327,15 @@ function plotPieChart(svg, pieData)
           .text(function(d) { return d; });                       
 
 
+
+                    
+          
+        
+
+
+
+
+        /*
 
         pieSVG.on('mouseover', function(d) {                            
             var total = d3.sum( pieData.map(function(d) { return d.count;})  );                                                        
@@ -333,7 +387,6 @@ function plotPieChart(svg, pieData)
         */
 }
 
-
 function plotQuarterlyData( svg, data)
 {
       svg.selectAll("*").remove();
@@ -350,7 +403,7 @@ function plotQuarterlyData( svg, data)
       var yScale = scalesMargins.yScale;
       var hScale = scalesMargins.hScale;
 
-      var xData = ["Q1", "Q2", "Q3", "Q4"];
+      var xData = data.quarterNames;
 
       plotHistogram( svg, margin, xData,  data.budget, xScale, yScale, hScale);          
       plotXAxis(svg, margin, xData, xScale );

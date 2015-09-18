@@ -36,6 +36,7 @@ function computeQuarterlyData(dataArray)
     data.budget = [];
     data.actual = [];
     data.previous = [];
+    data.quarterNames = ["Q1", "Q2", "Q3", "Q4"];
 
     var property = [];
 

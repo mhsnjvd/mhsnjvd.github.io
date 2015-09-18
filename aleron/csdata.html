@@ -27,6 +27,8 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
       <![endif]-->
   <script type="text/javascript" src="./js/d3.min.js"></script>
+  <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
   <style>
       .axis path,
       .axis line {
@@ -60,10 +62,39 @@
         top: 95px;                                                      
         width: 80px;                                                    
         z-index: 10;                                                    
-      }                                                                 
-  </style>
+      } 
 
-  <style>
+
+
+        .d3-tip {
+    line-height: 1;
+    font-weight: ;
+    padding: 6px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+  }
+
+  /* Creates a small triangle extender for the tooltip */
+  .d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.8);
+    content: "\25BC";
+    position: absolute;
+    text-align: center;
+  }
+
+  /* Style northward tooltips differently */
+  .d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+  } 
+
       #chart {                                                          
         height: 360px;                                                  
         position: relative;                                             
@@ -520,8 +551,10 @@
                  plotQuarterlyData( svg, data );        
 
                   
-                  // Second Histogram Plot on the adjacent svg
-                  svg = d3.select(document.getElementById("quarterlyPieSVG"));                  
+                  // Second Histogram Plot on the adjacent svg                
+                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
+                  data = currentLocalityData.map( function(d) { return d["Q1 Actual"]; });
+                  data.xData = currentLocalityD                 
                   plotQuarterlyData( svg, data)
 
                   return;
