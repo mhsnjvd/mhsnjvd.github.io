@@ -332,3 +332,35 @@ function plotPieChart(svg, pieData)
         }    
         */
 }
+
+
+function plotQuarterlyData( svg, data)
+{
+      var plotData = data.income;
+      plotData = plotData.concat(data.budget);
+      plotData = plotData.concat(data.actual);
+      plotData = plotData.concat(data.previous);
+
+      var scalesMargins = getHistScalesMargins(svg, plotData);
+      var margin = scalesMargins.margin;
+      var xScale = scalesMargins.xScale;
+      var yScale = scalesMargins.yScale;
+      var hScale = scalesMargins.hScale;
+
+      var xData = ["Q1", "Q2", "Q3", "Q4"];
+
+      plotHistogram( svg, margin, xData,  data.budget, xScale, yScale, hScale);          
+      plotXAxis(svg, margin, xData, xScale );
+      plotYAxis(svg, margin, yScale, "Million £");         
+
+
+      plotLine( svg, margin, xData, data.previous, xScale, yScale, "green");
+      plotCircles( svg, margin, xData, data.previous, xScale, yScale);
+      
+      plotLine( svg, margin, xData, data.income, xScale, yScale, "orange");
+      plotCircles( svg, margin, xData, data.income, xScale, yScale);
+      
+      plotLine( svg, margin, xData, data.actual, xScale, yScale, "red");
+      plotCircles( svg, margin, xData, data.actual, xScale, yScale);
+}
+

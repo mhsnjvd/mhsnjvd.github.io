@@ -459,7 +459,7 @@
 
         <script type="text/javascript" src="./js/globals.js"></script>
         <script type="text/javascript" src="./js/utils.js"></script>
-        <script type="text/javascript" src="./js/quarterlyhist.js"></script>
+        <script type="text/javascript" src="./js/plots.js"></script>
         <script type="text/javascript"> 
 
             /////////////////////////////////////////////
@@ -490,32 +490,7 @@
                  svg.selectAll("*").remove();
                  svg.style("background-color", "whitesmoke"); 
 
-                  var plotData = data.income;
-                  plotData = plotData.concat(data.budget);
-                  plotData = plotData.concat(data.actual);
-                  plotData = plotData.concat(data.previous);
-
-                  var scalesMargins = getHistScalesMargins(svg, plotData);
-                  var margin = scalesMargins.margin;
-                  var xScale = scalesMargins.xScale;
-                  var yScale = scalesMargins.yScale;
-                  var hScale = scalesMargins.hScale;
-
-                  var xData = ["Q1", "Q2", "Q3", "Q4"];
-
-                  var histogramPlot = plotQuarterlyHistogram( svg, margin, xData,  data.budget, xScale, yScale, hScale);          
-                  var xAxis = plotQuarterlyXAxis(svg, margin, xData, xScale );
-                  var yAxis = plotQuarterlyYAxis(svg, margin, yScale, "Million £");         
-
-
-                  var linePlot1 = plotQuarterlyLine( svg, margin, xData, data.previous, xScale, yScale, "green");
-                  var circles1 = plotQuarterlyCircles( svg, margin, xData, data.previous, xScale, yScale);
-                  var linePlot2 = plotQuarterlyLine( svg, margin, xData, data.income, xScale, yScale, "orange");
-                  var circles2 = plotQuarterlyCircles( svg, margin, xData, data.income, xScale, yScale);
-                  var linePlot3 = plotQuarterlyLine( svg, margin, xData, data.actual, xScale, yScale, "red");
-                  var circles3 = plotQuarterlyCircles( svg, margin, xData, data.actual, xScale, yScale);
-
-                 
+                 plotQuarterlyData( svg, data);
 
                  var count = getIdentifierCount( currentRegionData, localityList, "Locality");
                  var pieData = [];
@@ -529,7 +504,7 @@
                  plotPieChart( svg, pieData);
                  return;
             }
-
+            
             function localitySelectFunction() 
             {
                  var locality = document.getElementById("localitySelector").value;
@@ -541,41 +516,22 @@
 
                  // First Histogram Plot
 
-                 var data = computeQuarterlyData( currentLocalityData );
+                 var data = computeQuarterlyData( currentLocalityData );                 
 
                  svg = d3.select(document.getElementById("quarterlySVG"));
                  svg.selectAll("*").remove();
-                 svg.style("background-color", "whitesmoke"); 
+                 svg.style("background-color", "whitesmoke");
 
-                  var plotData = data.income;
-                  plotData = plotData.concat(data.budget);
-                  plotData = plotData.concat(data.actual);
-                  plotData = plotData.concat(data.previous);
+                 plotQuarterlyData( svg, data );        
 
-                  var scalesMargins = getHistScalesMargins(svg, plotData);
-                  var margin = scalesMargins.margin;
-                  var xScale = scalesMargins.xScale;
-                  var yScale = scalesMargins.yScale;
-                  var hScale = scalesMargins.hScale;
-
-                  var xData = ["Q1", "Q2", "Q3", "Q4"];
-                  var yData = data.budget;
-                  var histogramPlot = plotQuarterlyHistogram( svg, margin, xData,  yData, xScale, yScale, hScale);          
-                  var xAxis = plotQuarterlyXAxis(svg, margin, xData, xScale );
-                  var yAxis = plotQuarterlyYAxis(svg, margin, yScale, "Million £");         
-
-                  var linePlot1 = plotQuarterlyLine( svg, margin, xData, data.previous, xScale, yScale, "green");
-                  var circles1 = plotQuarterlyCircles( svg, margin, xData, data.previous, xScale, yScale);
-                  var linePlot2 = plotQuarterlyLine( svg, margin, xData, data.income, xScale, yScale, "orange");
-                  var circles2 = plotQuarterlyCircles( svg, margin, xData, data.income, xScale, yScale);
-                  var linePlot3 = plotQuarterlyLine( svg, margin, xData, data.actual, xScale, yScale, "red");
-                  var circles3 = plotQuarterlyCircles( svg, margin, xData, data.actual, xScale, yScale);
                   
                   // Second Histogram Plot
 
                   svg = d3.select(document.getElementById("quarterlyPieSVG"));
                   svg.selectAll("*").remove();
                   svg.style("background-color", "whitesmoke"); 
+
+                  plotQuarterlyData( svg, data)
 
                   return;
             }
