@@ -310,7 +310,7 @@ function plotPieChart(svg, pieData)
           .attr('transform', function(d, i) {                     
             var legendHeight = legendRectSize + legendSpacing;          
             var offset =  legendHeight * color.domain().length / 2;     
-            var horz = 2 * legendRectSize;                       
+            var horz = legendRectSize;                       
             var vert = i * legendHeight - offset + height/2;                       
             return 'translate(' + horz + ',' + vert + ')';        
           });                                                     
