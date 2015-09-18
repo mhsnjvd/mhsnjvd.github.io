@@ -250,7 +250,7 @@ function circleMouseOut(d)
 // function to handle pieChart.
 function plotPieChart(svg, pieData)
 {
-        var pC ={};
+        var pieChart ={};
         var width = svg.attr("width");
         var hieght = svg.attr("height");
 
@@ -270,7 +270,7 @@ function plotPieChart(svg, pieData)
 
         // create a function to compute the pie slice angles.
         var pie = d3.layout.pie().sort(null).value(function(d) { return d.value; });
-        var color = d3.scale.category20();
+        var color = d3.scale.category20b();
 
         // Draw the pie slices.
         pieSVG.selectAll("path")
@@ -282,20 +282,18 @@ function plotPieChart(svg, pieData)
         .style("fill", function(d, i) { return color(d.data.name); })
         .on("mouseover",mouseover).on("mouseout",mouseout);
 
-        return pC;
-}
 
-        /*
         // create function to update pie-chart. This will be used by histogram.
-        pC.update = function(nD)
+        pieChart.update = function(newData)
         {
             piesvg.selectAll("path")
-            .data(pie(nD))
+            .data(pie(newData))
             .transition().duration(500)
             .attrTween("d", arcTween);
         }        
 
 
+        /*
         // Utility function to be called on mouseover a pie slice.
         function mouseover(d){
             // call the update function of histogram with new data.
@@ -308,13 +306,16 @@ function plotPieChart(svg, pieData)
             hG.update(fData.map(function(v){
                 return [v.State,v.total];}), barColor);
         }
+        */
 
 
         // Animating the pie-slice requiring a custom function which specifies
         // how the intermediate paths should be drawn.
-        function arcTween(a) {
+        function arcTween(a) 
+        {
             var i = d3.interpolate(this._current, a);
             this._current = i(0);
             return function(t) { return arc(i(t));    };
         }    
-        */
+        return pieChart;
+}
