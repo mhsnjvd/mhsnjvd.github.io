@@ -177,45 +177,55 @@ function plotLine( svg, margin, xData, yData, xScale, yScale, lineColor)
 
 function plotCircles(svg, margin, xData, yData, xScale, yScale)
 {
-    var circles = svg.append("g")
+    var circlesSVG = svg.append("g")
     .attr("transform", "translate("+ 0 +","+margin.top+")");
 
     var normalRadius = 5;
 
-    circles.selectAll("circle")
+    var circles = circlesSVG.selectAll("circle")
     .data(yData)
     .enter()
     .append("circle")
     .attr("cx", function(d, i){ return xScale(i) + xScale.rangeBand()/2;})
     .attr("cy", function(d, i){ return yScale(d) - margin.bottom;})
     .attr("r", normalRadius)
-    .attr("fill", "black")
-    .on("mouseover", circleMouseOver)
-    .on("mouseout", circleMouseOut);
-    
-    return circles;
-}
+    .attr("fill", "black");
 
-function circleMouseOver(d)
-{
-   var mouseOnRadius = 9;
-   circle = d3.select(this);
-   circle.transition()
+    var tip = d3.tip()
+     .attr('class', 'd3-tip')
+     .offset([-10, 0])
+     .html(function(d) {
+                return "Value: <span style='color:red'>" + d + "</span>";
+           });
+
+     circles.call(tip);
+     var digits = d3.format(".3f");
+
+     circles.on("mouseover", function(d){
+        var mouseOnRadius = 9;
+        circle = d3.select(this);
+        circle.transition()
        .duration(250)
        .attr("r", mouseOnRadius)
        .attr("fill", "black")
-       .attr("opacity", 1)
-}
-   
-function circleMouseOut(d)
-{
-   var mouseOutRadius = 5;
-   circle = d3.select(this);
-   circle.transition()
+       .attr("opacity", 1);
+
+       tip.show(digits(d));
+     });
+
+     circles.on("mouseout", function(d){    
+        var mouseOutRadius = 5
+        circle = d3.select(this);
+        circle.transition()
        .duration(250)
        .attr("opacity", 1.0)
        .attr("fill", "black")
        .attr("r", mouseOutRadius);
+
+       tip.hide();
+     });
+    
+    return circles;
 }
 
 
