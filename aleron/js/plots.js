@@ -364,15 +364,7 @@ function plotPieChart(svg, pieData)
         legend.append('text')                                     
           .attr('x', legendRectSize + legendSpacing)              
           .attr('y', legendRectSize - legendSpacing)              
-          .text(function(d) { return d; });                       
-
-
-
-            
-
-          
-          
-
+          .text(function(d) { return d; });              
 
         /*
         // create function to update pie-chart. This will be used by histogram.
@@ -443,6 +435,41 @@ function plotQuarterlyData( svg, data)
       
       plotLine( svg, margin, xData, data.actual, xScale, yScale, "red");
       plotCircles( svg, margin, xData, data.actual, xScale, yScale);
+
+
+         // Legend:
+      var legendRectSize = 18;
+      var legendSpacing = 4;     
+
+      var labels = [ {label:"Budget" , color: "steelblue"},
+                     {label:"Previous" , color: "green"},
+                     {label:"Income" , color: "orange"},
+                     {label:"Actual" , color: "red"} ]; 
+
+      var legend = svg.selectAll('.legend')                     
+      .data(labels)                                   
+      .enter()                                                
+      .append('g')                                            
+      .attr('class', 'legend')                                
+      .attr('transform', function(d, i) {                     
+            var legendHeight = legendRectSize + legendSpacing;                    
+            var horz = margin.left + legendRectSize;                       
+            var vert = 1.2*margin.top + i * legendHeight;                       
+            return 'translate(' + horz + ',' + vert + ')';        
+          });                                                     
+
+        legend.append('rect')                                     
+          .attr('width', legendRectSize)                          
+          .attr('height', legendRectSize)                         
+          .style('fill', function(d, i) { return d.color; })                                   
+          .style('stroke', function(d, i) { return d.color; });                                
+          
+          
+        legend.append('text')                                     
+          .attr('x', legendRectSize + legendSpacing)              
+          .attr('y', legendRectSize - legendSpacing)              
+          .text(function(d) { return d.label; });              
+
 }
 
 plotHorisontalBars();
