@@ -189,7 +189,7 @@ function plotYLabel( svg, margin, yLabel)
 {
    var label = svg.append("text")
         .attr( "id", "yLabel")
-        .attr("x", margin.left / 2)
+        .attr("x", margin.left / 2 )
         .attr("y", margin.top  / 2 )
         .style("text-anchor", "middle")
         .style("font-weight", "bold")
@@ -542,7 +542,7 @@ function plotCostCentres( svg, data)
       //plotHistogram( svg, margin, xData, yData, xScale, yScale, hScale);          
       plotHorisontalBars(svg, margin, xData, yData)
       plotXLabel( svg, margin, "Cost Centres within the Locality")
-      plotXLabel( svg, margin, "Cost Centre ID")
+      plotYLabel( svg, margin, "CC ID")
       
 }      
 
