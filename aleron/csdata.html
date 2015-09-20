@@ -598,28 +598,14 @@
                  var costCentre = document.getElementById("costCentreSelector").value;
                  currentCostCentreData = currentLocalityData.filter( function(d) { return d["Cost Centres"] === costCentre; } );
                      
-                 var data = computeQuarterlyData( currentCostCentreData );
+                 var data = computeQuarterlyData( currentCostCentreData );                 
 
-                 svg = d3.select(document.getElementById("quarterlySVG"));
-                 svg.selectAll("*").remove();
-                 svg.style("background-color", "whitesmoke"); 
+                 var svg = d3.select(document.getElementById("quarterlySVG"));                 
+                 plotQuarterlyData( svg, data );  
 
-                  var plotData = data.income;
-                  plotData = plotData.concat(data.budget);
-                  plotData = plotData.concat(data.actual);
-                  plotData = plotData.concat(data.previous);
-
-                  var scalesMargins = getHistScalesMargins(svg, plotData);
-                  var margin = scalesMargins.margin;
-                  var xScale = scalesMargins.xScale;
-                  var yScale = scalesMargins.yScale;
-                  var hScale = scalesMargins.hScale;
-
-                  var xData = ["Q1", "Q2", "Q3", "Q4"];
-                  var yData = data.budget;
-                  var histogramPlot = plotHistogram( svg, margin, xData,  yData, xScale, yScale, hScale);          
-                  var xAxis = plotQuarterlyXAxis(svg, margin, xData, xScale );
-                  var yAxis = plotQuarterlyYAxis(svg, margin, yScale, "Million £");                                           
+                 svg = d3.select(document.getElementById("quarterlyPieSVG"));
+                 plotCostCentres(svg, currentLocalityData);
+                                                                              
                  return;
             }
 
