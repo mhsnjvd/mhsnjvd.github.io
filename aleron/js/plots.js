@@ -53,26 +53,29 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
 {
      // Object to be returned which will have an update function
      histogram = {};
+     var height = svg.attr("height");
+     var width  = svg.attr("width");
+
      // Draw the rectangles: 
      var bars = svg.selectAll("rect")
     .data(yData)
     .enter()
     .append("rect")
     .attr("x", function(d, i) { return xScale(i); })
-    .attr("y", function(d) { return yScale(d);})
-    .attr("height", function(d) { return heightScale(d); })
+    .attr("y", function(d) { return height - margin.bottom;})
+    .attr("height", function(d) { return 0; })
     .attr("width", function(d) { return xScale.rangeBand(); })
     .attr("fill", "steelblue");
 
-    var width = svg.attr("width");
     var grid = d3.range(10).map( function(d){ 
-      return {'x1': margin.left, 'y1': margin.top, 'x2': width - margin.right, 'y2':margin.top};
+      return {'x1': margin.left, 'y1': margin.top, 'x2': margin.left, 'y2':margin.top};
     });
 
 
 
-   var spanHeight = (svg.attr("height") - margin.top - margin.bottom)/10;
-   var grids = svg.append('g')                            
+   var spanHeight = (height - margin.top - margin.bottom)/10;
+   var grids = svg.append('g')
+              .attr("id", 'gridLines')                          
               .selectAll('line')
               .data(grid)
               .enter()
@@ -83,13 +86,27 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
                      'y2':function(d, i){ return d.y2 + (i)*spanHeight; } })
               .style({'stroke':'#adadad','stroke-width':'1px'});
 
+    svg.select("#gridLines")
+       .selectAll("line")
+       .data(grid)
+       .transition()
+       .duration(1000)
+       .attr("x2", function(d) { return width - margin.right;});
+
+
+    svg.selectAll("rect")
+    .data(yData)
+    .transition()
+    .duration(1000)
+    .attr("y", function(d) { return yScale(d);})
+    .attr("height", function(d) { return heightScale(d); });
+    
      var tip = d3.tip()
      .attr('class', 'd3-tip')
      .offset([-10, 0])
      .html(function(d) {
                 return "Value: <span style='color:red'>" + d + "</span>";
            });
-
 
 
      bars.call(tip);
