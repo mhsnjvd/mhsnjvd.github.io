@@ -315,10 +315,10 @@ function plotPieChart(svg, pieData)
         
         // create function to draw the arcs of the pie slices.
         var outerRad = pieDim.r - 10;
-        var innerRad = outerRad/2;
+        var innerRad = outerRad/2.2;
         var arc = d3.svg.arc()
-            .outerRadius(outerRad)
-            .innerRadius(innerRad);
+            .outerRadius(outerRad/10)
+            .innerRadius(innerRad/10);
 
         // create a function to compute the pie slice angles.
         var pie = d3.layout.pie().sort(null).value(function(d) { return d.count; });
@@ -362,7 +362,16 @@ function plotPieChart(svg, pieData)
         });
 
         piePath.call(tip);
+         
+        var newArc = d3.svg.arc()
+            .outerRadius(outerRad)
+            .innerRadius(innerRad);
 
+        pieSVG.selectAll("path")
+        .data(pie(pieData))
+        .transition()
+        .duration(2000)
+        .attr("d", newArc);
 
         // Legend:
         var legendRectSize = 18;
