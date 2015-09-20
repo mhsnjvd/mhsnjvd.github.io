@@ -56,7 +56,7 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
      var height = svg.attr("height");
      var width  = svg.attr("width");
 
-     // Draw the rectangles: 
+     // Draw the rectangles with 0 height:
      var bars = svg.selectAll("rect")
     .data(yData)
     .enter()
@@ -67,11 +67,11 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
     .attr("width", function(d) { return xScale.rangeBand(); })
     .attr("fill", "steelblue");
 
+
+    // Draw the gird lines with 0 length:
     var grid = d3.range(10).map( function(d){ 
       return {'x1': margin.left, 'y1': margin.top, 'x2': margin.left, 'y2':margin.top};
     });
-
-
 
    var spanHeight = (height - margin.top - margin.bottom)/10;
    var grids = svg.append('g')
@@ -86,6 +86,8 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
                      'y2':function(d, i){ return d.y2 + (i)*spanHeight; } })
               .style({'stroke':'#adadad','stroke-width':'1px'});
 
+
+    // animate the gird lines:
     svg.select("#gridLines")
        .selectAll("line")
        .data(grid)
@@ -93,7 +95,7 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
        .duration(1000)
        .attr("x2", function(d) { return width - margin.right;});
 
-
+    // animate the bars:
     svg.selectAll("rect")
     .data(yData)
     .transition()
@@ -101,6 +103,9 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
     .attr("y", function(d) { return yScale(d);})
     .attr("height", function(d) { return heightScale(d); });
     
+
+
+     // Define the tooltip:     
      var tip = d3.tip()
      .attr('class', 'd3-tip')
      .offset([-10, 0])
@@ -128,7 +133,7 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
             {
                 d3.select(this)
                 .transition()
-                .duration(500)
+                .duration(1000)
                 .attr("fill", "steelblue");
 
                 tip.hide();
@@ -308,6 +313,17 @@ function plotPieChart(svg, pieData)
           .attr('class', 'percent');                                    
 
 
+        var tip = d3.tip()
+         .attr('class', 'd3-tip')
+         .offset([-10, 0])
+         .html(function(d) {
+                var label = d.data.label;
+                var count = d.data.count;
+                var percent = d.data.percent;                
+                var displayText = "<span style='color:red'>" + label + "</span>" + " count: " + count + " (" + numberFormat(percent) + "%)";
+                return displayText;
+           });        
+
         // Draw the pie slices.
         var piePath = pieSVG.selectAll("path")
         .data(pie(pieData))
@@ -322,15 +338,16 @@ function plotPieChart(svg, pieData)
         .on("mouseover", function(d)
         {
              var total = d3.sum( pieData.map(function(d) { return d.count; } ));
-             var percent = d.data.count/total * 100;
-                                                   
-            var percent = Math.round(1000 * d.data.count / total) / 10; 
+             d.data.percent = d.data.count/total * 100;                                                  
+            /*
             tooltip.select('.label').html(d.data.label);                
             tooltip.select('.count').html(d.data.count);                
             tooltip.select('.percent').html(numberFormat(percent) + '%');             
             tooltip.style('display', 'block');                          
 
-           /*
+            */
+            /*
+             var displayText = "Count: " + d.data.count + " (" + numberFormat(percent) + "%)";
           //Create the tooltip label
              pieSVG.append("text")
              .attr("id", "tooltip")
@@ -341,17 +358,24 @@ function plotPieChart(svg, pieData)
              .attr("font-size", "11px")
              .attr("font-weight", "bold")
              .attr("fill", "black")
-             .text(thisText);
+             .text(displayText);   
              */
+
+             tip.show(d)       
         })
         .on("mouseout", function(d)
         {
             //Remove the tooltip
-            //d3.select("#tooltip").remove();
+            d3.select("#tooltip").remove();
+
+            tip.hide();
 
 
-            tooltip.style('display', 'none');                                                           
+            //tooltip.style('display', 'none');                                                           
         });
+
+        piePath.call(tip);
+
 
         // Legend:
         var legendRectSize = 18;
