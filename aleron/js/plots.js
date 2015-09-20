@@ -92,14 +92,14 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
        .selectAll("line")
        .data(grid)
        .transition()
-       .duration(1000)
+       .duration(2000)
        .attr("x2", function(d) { return width - margin.right;});
 
     // animate the bars:
     svg.selectAll("rect")
     .data(yData)
     .transition()
-    .duration(1000)
+    .duration(2000)
     .attr("y", function(d) { return yScale(d);})
     .attr("height", function(d) { return heightScale(d); });
     
@@ -199,29 +199,45 @@ function plotYAxis(svg, margin, yScale, yLabel)
 function plotLine( svg, margin, xData, yData, xScale, yScale, lineColor)
 {     
     // Define the line
-    var line = d3.svg.line()
+    var dummyLineFunction = d3.svg.line()
+    .x( function(d, i){ return xScale(0) + xScale.rangeBand()/2; })
+    .y( function(d, i){ return yScale(yData[0])-margin.bottom; });
+
+
+    var lineFunction = d3.svg.line()
     .x( function(d, i){ return xScale(i) + xScale.rangeBand()/2; })
     .y( function(d, i){ return yScale(d)-margin.bottom; });
 
     // Adds the svg canvas
     var lineGraph = svg.append("g")
-    .attr("transform", "translate(" + 0 + "," + margin.top + ")");
+    .attr("transform", "translate(" + 0 + "," + margin.top + ")")
+    .attr('id', "lines"+lineColor);
 
     // Add the valueline path.
     lineGraph.append("path")
     .attr("class", "line")
-    .attr("d", line(yData))
+    .attr("d", dummyLineFunction(yData))
     .attr("stroke", lineColor)
     .attr("stroke-width", 2)
     .attr("fill", "none");
 
+    // Animations:
+    svg.select("#lines"+lineColor)
+    .selectAll("path")
+    .data(yData)
+    .transition()
+    .duration(2000)
+    .attr("d", lineFunction(yData));
+    
+
     return lineGraph;
 } // End of function plotQuarterlyLine
 
-function plotCircles(svg, margin, xData, yData, xScale, yScale)
+function plotCircles(svg, margin, xData, yData, xScale, yScale, circleColor)
 {
     var circlesSVG = svg.append("g")
-    .attr("transform", "translate("+ 0 +","+margin.top+")");
+    .attr("transform", "translate("+ 0 +","+margin.top+")")
+    .attr("id", "circles"+circleColor);
 
     var normalRadius = 5;
 
@@ -229,10 +245,21 @@ function plotCircles(svg, margin, xData, yData, xScale, yScale)
     .data(yData)
     .enter()
     .append("circle")
-    .attr("cx", function(d, i){ return xScale(i) + xScale.rangeBand()/2;})
-    .attr("cy", function(d, i){ return yScale(d) - margin.bottom;})
+    .attr("cx", function(d, i){ return xScale(0) + xScale.rangeBand()/2;})
+    .attr("cy", function(d, i){ return yScale(yData[0]) - margin.bottom;})
     .attr("r", normalRadius)
-    .attr("fill", "black");
+    .attr("fill", circleColor);
+
+
+    // Animations:
+    svg.select("#circles"+circleColor)
+    .selectAll("circle")
+    .data(yData)
+    .transition()
+    .duration(3000)
+    .attr("cx", function(d, i){ return xScale(i) + xScale.rangeBand()/2;})
+    .attr("cy", function(d, i){ return yScale(d) - margin.bottom;});
+    
 
     var tip = d3.tip()
      .attr('class', 'd3-tip')
@@ -261,7 +288,7 @@ function plotCircles(svg, margin, xData, yData, xScale, yScale)
         circle.transition()
        .duration(250)
        .attr("opacity", 1.0)
-       .attr("fill", "black")
+       .attr("fill", circleColor)
        .attr("r", mouseOutRadius);
 
        tip.hide();
@@ -428,13 +455,13 @@ function plotQuarterlyData( svg, data)
 
 
       plotLine( svg, margin, xData, data.previous, xScale, yScale, "green");
-      plotCircles( svg, margin, xData, data.previous, xScale, yScale);
+      plotCircles( svg, margin, xData, data.previous, xScale, yScale, "green");
       
       plotLine( svg, margin, xData, data.income, xScale, yScale, "orange");
-      plotCircles( svg, margin, xData, data.income, xScale, yScale);
+      plotCircles( svg, margin, xData, data.income, xScale, yScale, "orange");
       
       plotLine( svg, margin, xData, data.actual, xScale, yScale, "red");
-      plotCircles( svg, margin, xData, data.actual, xScale, yScale);
+      plotCircles( svg, margin, xData, data.actual, xScale, yScale, "red");
 
 
          // Legend:
