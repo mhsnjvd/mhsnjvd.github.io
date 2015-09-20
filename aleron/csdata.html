@@ -585,17 +585,12 @@
 
                  var data = computeQuarterlyData( currentLocalityData );                 
 
-                 svg = d3.select(document.getElementById("quarterlySVG"));                 
-                 plotQuarterlyData( svg, data );        
+                 var svg = d3.select(document.getElementById("quarterlySVG"));                 
+                 plotQuarterlyData( svg, data );  
 
-                  
-                  // Second Histogram Plot on the adjacent svg                
-                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                  data = currentLocalityData.map( function(d) { return d["Q1 Actual"]; });
-                  data.xData = currentLocalityD                 
-                  plotQuarterlyData( svg, data)
-
-                  return;
+                 svg = d3.select(document.getElementById("quarterlyPieSVG"));
+                 plotCostCentres(svg, currentLocalityData)                                              
+                 return;
             }
 
             function costCentreSelectFunction() 
@@ -622,7 +617,7 @@
 
                   var xData = ["Q1", "Q2", "Q3", "Q4"];
                   var yData = data.budget;
-                  var histogramPlot = plotQuarterlyHistogram( svg, margin, xData,  yData, xScale, yScale, hScale);          
+                  var histogramPlot = plotHistogram( svg, margin, xData,  yData, xScale, yScale, hScale);          
                   var xAxis = plotQuarterlyXAxis(svg, margin, xData, xScale );
                   var yAxis = plotQuarterlyYAxis(svg, margin, yScale, "Million £");                                           
                  return;
