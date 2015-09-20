@@ -13,3 +13,6 @@ var currentFunderData = [];
 var currentLocalityData = [];
 var currentCostCentreData = [];
 
+
+
+var numberFormat = d3.format(".3f");

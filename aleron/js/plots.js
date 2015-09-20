@@ -64,7 +64,24 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
     .attr("width", function(d) { return xScale.rangeBand(); })
     .attr("fill", "steelblue");
 
+    var width = svg.attr("width");
+    var grid = d3.range(10).map( function(d){ 
+      return {'x1': margin.left, 'y1': margin.top, 'x2': width - margin.right, 'y2':margin.top};
+    });
 
+
+
+   var spanHeight = (svg.attr("height") - margin.top - margin.bottom)/10;
+   var grids = svg.append('g')                            
+              .selectAll('line')
+              .data(grid)
+              .enter()
+              .append('line')
+              .attr({'x1':function(d, i){ return d.x1; },
+                     'y1':function(d, i){ return d.y1 + (i)*spanHeight; },
+                     'x2':function(d, i){ return d.x2; },
+                     'y2':function(d, i){ return d.y2 + (i)*spanHeight; } })
+              .style({'stroke':'#adadad','stroke-width':'1px'});
 
      var tip = d3.tip()
      .attr('class', 'd3-tip')
@@ -76,17 +93,16 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
 
 
      bars.call(tip);
-     var digits = d3.format(".3f");
 
      // Functions for mouse-over and mouse-out:
      bars.on("mouseover", function(d)
             {
-                d3.select(this)
+                d3.select(this)                
                 .transition()
-                .duration(500)
+                .duration(1000)                                    
                 .attr("fill", "blue");
 
-                tip.show(digits(d));
+                tip.show(numberFormat(d));
                             
                 return;
             });
@@ -109,6 +125,7 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
 
     }
     */
+
     return bars;
 }
 
@@ -142,11 +159,15 @@ function plotYAxis(svg, margin, yScale, yLabel)
     svg.append("g")
     .attr("class", "y axis")
     .attr("transform", "translate(" + margin.left + ",0)")
-    .call(yAxis)
-    .append("text")
-    .attr("transform", "rotate(-90)")
-    .style("text-anchor", "start")
-    .text(yLabel);
+    .text(yLabel)
+    .call(yAxis);
+
+     svg.append("text")      // text label for the y axis
+        .attr("x", margin.left / 2)
+        .attr("y", margin.top  / 2 )
+        .style("text-anchor", "middle")
+        .style("font-weight", "bold")
+        .text(yLabel);
 
     return yAxis;
 }
@@ -199,7 +220,6 @@ function plotCircles(svg, margin, xData, yData, xScale, yScale)
            });
 
      circles.call(tip);
-     var digits = d3.format(".3f");
 
      circles.on("mouseover", function(d){
         var mouseOnRadius = 9;
@@ -210,7 +230,7 @@ function plotCircles(svg, margin, xData, yData, xScale, yScale)
        .attr("fill", "black")
        .attr("opacity", 1);
 
-       tip.show(digits(d));
+       tip.show(numberFormat(d));
      });
 
      circles.on("mouseout", function(d){    
@@ -271,8 +291,6 @@ function plotPieChart(svg, pieData)
           .attr('class', 'percent');                                    
 
 
-        var digits = d3.format(".3f");
-
         // Draw the pie slices.
         var piePath = pieSVG.selectAll("path")
         .data(pie(pieData))
@@ -287,8 +305,15 @@ function plotPieChart(svg, pieData)
         .on("mouseover", function(d)
         {
              var total = d3.sum( pieData.map(function(d) { return d.count; } ));
-             var thisText = digits(d.data.count/total * 100) + "%";
+             var percent = d.data.count/total * 100;
+                                                   
+            var percent = Math.round(1000 * d.data.count / total) / 10; 
+            tooltip.select('.label').html(d.data.label);                
+            tooltip.select('.count').html(d.data.count);                
+            tooltip.select('.percent').html(numberFormat(percent) + '%');             
+            tooltip.style('display', 'block');                          
 
+           /*
           //Create the tooltip label
              pieSVG.append("text")
              .attr("id", "tooltip")
@@ -300,11 +325,15 @@ function plotPieChart(svg, pieData)
              .attr("font-weight", "bold")
              .attr("fill", "black")
              .text(thisText);
+             */
         })
         .on("mouseout", function(d)
         {
             //Remove the tooltip
-            d3.select("#tooltip").remove();
+            //d3.select("#tooltip").remove();
+
+
+            tooltip.style('display', 'none');                                                           
         });
 
         // Legend:
@@ -338,25 +367,10 @@ function plotPieChart(svg, pieData)
 
 
 
-                    
+            
+
           
-        
-
-
-
-
-        /*
-
-        pieSVG.on('mouseover', function(d) {                            
-            var total = d3.sum( pieData.map(function(d) { return d.count;})  );                                                        
-            var percent = Math.round(1000 * d.data.count / total) / 10; 
-            tooltip.select('.label').html(d.data.label);                
-            tooltip.select('.count').html(d.data.count);                
-            tooltip.select('.percent').html(percent + '%');             
-            tooltip.style('display', 'block');                          
-          });                                                           
           
-          pieSVG.on('mouseout', function(){ tooltip.style('display', 'none');});                                                           
 
 
         /*
@@ -417,7 +431,7 @@ function plotQuarterlyData( svg, data)
 
       plotHistogram( svg, margin, xData,  data.budget, xScale, yScale, hScale);          
       plotXAxis(svg, margin, xData, xScale );
-      plotYAxis(svg, margin, yScale, "Million £");         
+      plotYAxis(svg, margin, yScale, "£ million");         
 
 
       plotLine( svg, margin, xData, data.previous, xScale, yScale, "green");
@@ -430,3 +444,104 @@ function plotQuarterlyData( svg, data)
       plotCircles( svg, margin, xData, data.actual, xScale, yScale);
 }
 
+plotHorisontalBars();
+
+function plotHorisontalBars()
+{
+    var categories= ['','Accessories', 'Audiophile', 'Camera & Photo', 'Cell Phones', 'Computers','eBook Readers','Gadgets','GPS & Navigation','Home Audio','Office Electronics','Portable Audio','Portable Video','Security & Surveillance','Service','Television & Video','Car & Vehicle'];
+
+    var dollars = [213,209,190,179,156,209,190,179,213,209,190,179,156,209,190,190];
+
+    var colors = ['#0000b4','#0082ca','#0094ff','#0d4bcf','#0066AE','#074285','#00187B','#285964','#405F83','#416545','#4D7069','#6E9985','#7EBC89','#0283AF','#79BCBF','#99C19E'];
+
+    var grid = d3.range(25).map(function(i){
+      return {'x1':0,'y1':0,'x2':0,'y2':200};
+    });
+
+    var tickVals = grid.map(function(d,i){
+      if(i>0){ return i*10; }
+      else if(i===0){ return "100";}
+    });
+
+    var xscale = d3.scale.linear()
+            .domain([10,250])
+            .range([0,400]);
+
+    var yscale = d3.scale.linear()
+            .domain([0,categories.length])
+            .range([0,200]);
+
+    var colorScale = d3.scale.quantize()
+            .domain([0,categories.length])
+            .range(colors);
+
+    var canvas = d3.select('#chart')
+            .append('svg')
+            .attr({'width':400,'height':200});
+
+    var grids = canvas.append('g')
+              .attr('id','grid')
+              .attr('transform','translate(150,10)')
+              .selectAll('line')
+              .data(grid)
+              .enter()
+              .append('line')
+              .attr({'x1':function(d,i){ return i*30; },
+                 'y1':function(d){ return d.y1; },
+                 'x2':function(d,i){ return i*20; },
+                 'y2':function(d){ return d.y2; },
+              })
+              .style({'stroke':'#adadad','stroke-width':'1px'});
+
+    var xAxis = d3.svg.axis();
+      xAxis
+        .orient('bottom')
+        .scale(xscale)
+        .tickValues(tickVals);
+
+    var yAxis = d3.svg.axis();
+      yAxis
+        .orient('left')
+        .scale(yscale)
+        .tickSize(2)
+        .tickFormat(function(d,i){ return categories[i]; })
+        .tickValues(d3.range(17));
+
+    var y_xis = canvas.append('g')
+              .attr("transform", "translate(150,0)")
+              .attr('id','yaxis')
+              .call(yAxis);
+
+    var x_xis = canvas.append('g')
+              .attr("transform", "translate(150,480)")
+              .attr('id','xaxis')
+              .call(xAxis);
+
+    var chart = canvas.append('g')
+              .attr("transform", "translate(150,0)")
+              .attr('id','bars')
+              .selectAll('rect')
+              .data(dollars)
+              .enter()
+              .append('rect')
+              .attr('height',19)
+              .attr({'x':0,'y':function(d,i){ return yscale(i)+19; }})
+              .style('fill',function(d,i){ return colorScale(i); })
+              .attr('width',function(d){ return 0; });
+
+
+    var transit = d3.select("svg").selectAll("rect")
+                .data(dollars)
+                .transition()
+                .duration(1000) 
+                .attr("width", function(d) {return xscale(d); });
+
+    var transitext = d3.select('#bars')
+              .selectAll('text')
+              .data(dollars)
+              .enter()
+              .append('text')
+              .attr({'x':function(d) {return xscale(d)-200; },'y':function(d,i){ return yscale(i)+35; }})
+              .text(function(d){ return d+"$"; }).style({'fill':'#fff','font-size':'14px'});
+
+}
