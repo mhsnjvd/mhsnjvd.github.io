@@ -605,7 +605,7 @@
 
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
                  plotCostCentres(svg, currentLocalityData);
-                                                                              
+
                  return;
             }
 
@@ -660,6 +660,8 @@
               // Add properties to the property selector, the first 4 are not needed:
               propertyList = propertyList.slice(5);
               updateSelector(document.getElementById("propertySelector"), propertyList);
+
+              regionSelectFunction();
             });                                 
 
          </script>

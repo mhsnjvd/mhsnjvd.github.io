@@ -58,34 +58,7 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
     .attr("width", function(d) { return xScale.rangeBand(); })
     .attr("fill", "steelblue");
 
-
-    // Draw the gird lines with 0 length:
-    var grid = d3.range(10).map( function(d){ 
-      return {'x1': margin.left, 'y1': margin.top, 'x2': margin.left, 'y2':margin.top};
-    });
-
-   var spanHeight = (height - margin.top - margin.bottom)/10;
-   var grids = svg.append('g')
-              .attr("id", 'gridLines')                          
-              .selectAll('line')
-              .data(grid)
-              .enter()
-              .append('line')
-              .attr({'x1':function(d, i){ return d.x1; },
-                     'y1':function(d, i){ return d.y1 + (i)*spanHeight; },
-                     'x2':function(d, i){ return d.x2; },
-                     'y2':function(d, i){ return d.y2 + (i)*spanHeight; } })
-              .style({'stroke':'#adadad','stroke-width':'1px'});
-
-
-    // animate the gird lines:
-    svg.select("#gridLines")
-       .selectAll("line")
-       .data(grid)
-       .transition()
-       .duration(2000)
-       .attr("x2", function(d) { return width - margin.right;});
-
+  
     // animate the bars:
     svg.selectAll("rect")
     .data(yData)
@@ -236,6 +209,39 @@ function plotLine( svg, margin, xData, yData, xScale, yScale, lineColor)
 
     return lineGraph;
 } // End of function plotQuarterlyLine
+
+function plotHorisontalGrid( svg, margin, nLines)
+{
+    var height = svg.attr("height");
+    var width  = svg.attr("width");
+
+
+    // Draw the gird lines with 0 length:
+    var grid = d3.range(nLines).map( function(d){ 
+      return {'x1': margin.left, 'y1': margin.top, 'x2': margin.left, 'y2':margin.top};
+    });
+
+   var spanHeight = (height - margin.top - margin.bottom)/nLines;
+   var grids = svg.append('g')
+              .attr("id", 'horzGridLines')                          
+              .selectAll('line')
+              .data(grid)
+              .enter()
+              .append('line')
+              .attr({'x1':function(d, i){ return d.x1; },
+                     'y1':function(d, i){ return d.y1 + (i)*spanHeight; },
+                     'x2':function(d, i){ return d.x2; },
+                     'y2':function(d, i){ return d.y2 + (i)*spanHeight; } })
+              .style({'stroke':'#adadad','stroke-width':'1px'});
+
+    // animate the gird lines:
+    svg.select("#horzGridLines")
+       .selectAll("line")
+       .data(grid)
+       .transition()
+       .duration(2000)
+       .attr("x2", function(d) { return width - margin.right;});
+}
 
 function plotCircles(svg, margin, xData, yData, xScale, yScale, circleColor)
 {
@@ -445,6 +451,8 @@ function plotPieChart(svg, pieData)
         */
 }
 
+
+
 function plotQuarterlyData( svg, data)
 {
       svg.selectAll("*").remove();
@@ -452,7 +460,7 @@ function plotQuarterlyData( svg, data)
       var height = svg.attr("height");
       var width = svg.attr("width");
 
-      var plotData = data.income;
+      var plotData = data.forecast;
       plotData = plotData.concat(data.budget);
       plotData = plotData.concat(data.actual);
       plotData = plotData.concat(data.previous);
@@ -468,30 +476,34 @@ function plotQuarterlyData( svg, data)
       var hScale = vScales.hScale;      
       var xData = data.quarterNames;
 
-      plotHistogram( svg, margin, xData,  data.budget, xScale, yScale, hScale);          
+      plotHorisontalGrid( svg, margin, 10);
+      plotHistogram( svg, margin, xData, data.actual, xScale, yScale, hScale);          
+      //plotHistogram( svg, margin, xData, data.forecast, xScale, yScale, hScale);
+
+
+      plotLine( svg, margin, xData, data.previous, xScale, yScale, "green");
+      plotCircles( svg, margin, xData, data.previous, xScale, yScale, "green");
+      
+      plotLine( svg, margin, xData, data.forecast, xScale, yScale, "orange");
+      plotCircles( svg, margin, xData, data.forecast, xScale, yScale, "orange");
+            
+      plotLine( svg, margin, xData, data.budget, xScale, yScale, "red");
+      plotCircles( svg, margin, xData, data.budget, xScale, yScale, "red");
+
       plotXAxis(svg, margin, xData, xScale );
       plotXLabel(svg, margin, "Quarterly Financial Data");
       plotYAxis(svg, margin, yScale);
       plotYLabel(svg, margin, "£ million");         
 
 
-      plotLine( svg, margin, xData, data.previous, xScale, yScale, "green");
-      plotCircles( svg, margin, xData, data.previous, xScale, yScale, "green");
-      
-      plotLine( svg, margin, xData, data.income, xScale, yScale, "orange");
-      plotCircles( svg, margin, xData, data.income, xScale, yScale, "orange");
-      
-      plotLine( svg, margin, xData, data.actual, xScale, yScale, "red");
-      plotCircles( svg, margin, xData, data.actual, xScale, yScale, "red");
 
-
-         // Legend:
+      // Legend:
       var legendRectSize = 18;
       var legendSpacing = 4;     
 
       var labels = [ {label:"Budget" , color: "steelblue"},
                      {label:"Previous" , color: "green"},
-                     {label:"Income" , color: "orange"},
+                     {label:"Forecast" , color: "orange"},
                      {label:"Actual" , color: "red"} ]; 
 
       var legend = svg.selectAll('.legend')                     
@@ -538,35 +550,16 @@ function plotCostCentres( svg, data)
       var xScale = d3.scale.ordinal()
                    .domain(d3.range(xData.length))
                    .rangeRoundBands( [margin.left, width - margin.right], .2);
-
-      //plotHistogram( svg, margin, xData, yData, xScale, yScale, hScale);          
-      plotHorisontalBars(svg, margin, xData, yData)
+      
+      plotVerticalGrid( svg, margin, 25);
+      plotHorisontalBars(svg, margin, xData, yData);
       plotXLabel( svg, margin, "Cost Centres within the Locality")
       plotYLabel( svg, margin, "CC ID")
       
-}      
+}   
 
-function plotHorisontalBars(svg, margin, categories, values)
+function plotVerticalGrid( svg, margin, nLines)
 {
-    var height = svg.attr("height");
-    var width = svg.attr("width");
-    svg.selectAll("*").remove();
-
-
-    var minVal = 0;
-    var maxVal = d3.max(values);
-
-    // used for the height of the horizontal bar and the gaps 
-    // in between:
-    var yScale = d3.scale.ordinal()
-             .domain(d3.range(categories.length))
-             .rangeRoundBands( [margin.top, height - margin.bottom], .2 );
-
-    // used for the width of the horizontal bar:
-    var xScale = d3.scale.linear()
-            .domain([0, maxVal])
-            .range([0, width - margin.right - margin.left ]);
-
     var nLines = 25;
     var grid = d3.range(nLines).map( function(d)
     {
@@ -587,7 +580,6 @@ function plotHorisontalBars(svg, margin, categories, values)
                      'y2':function(d, i){ return margin.top; } })
               .style({'stroke':'#adadad','stroke-width':'1px'});
 
-
     // animate the gird lines:
      svg.select("#verticalGridLines")
        .selectAll("line")
@@ -596,6 +588,28 @@ function plotHorisontalBars(svg, margin, categories, values)
        .duration(2000)
        .attr("y2", function(d) { return height - margin.bottom;});        
 
+}   
+
+function plotHorisontalBars(svg, margin, categories, values)
+{
+    var height = svg.attr("height");
+    var width = svg.attr("width");    
+
+    var minVal = 0;
+    var maxVal = d3.max(values);
+
+    // used for the height of the horizontal bar and the gaps 
+    // in between:
+    var yScale = d3.scale.ordinal()
+             .domain(d3.range(categories.length))
+             .rangeRoundBands( [margin.top, height - margin.bottom], .2 );
+
+    // used for the width of the horizontal bar:
+    var xScale = d3.scale.linear()
+            .domain([0, maxVal])
+            .range([0, width - margin.right - margin.left ]);
+
+    
       
     var color = d3.scale.category20();
     var chart = svg.append('g')              
@@ -665,14 +679,15 @@ function plotHorisontalBars(svg, margin, categories, values)
         var yAxis = d3.svg.axis();
          yAxis.orient('left')
         .scale(yScale)
-        .tickSize(.5)        
+        .tickSize(1)        
         .tickFormat(function(d,i){ return categories[i]; })
         .tickValues(d3.range(categories.length));
 
     var y_xis = svg.append('g')
               .attr("transform", "translate(" + margin.left + ",0)")
               .attr('id','yaxis')
-              .call(yAxis);
-
+              .call(yAxis)
+              .selectAll("text")
+              .attr("font-size", "6");
         
 }

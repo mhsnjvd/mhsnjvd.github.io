@@ -15,4 +15,4 @@ var currentCostCentreData = [];
 
 
 
-var numberFormat = d3.format(".3f");
+var numberFormat = d3.format(",.2f");

@@ -32,9 +32,9 @@ function sumArrayProperty( data, property)
 function computeQuarterlyData(dataArray)
 {
     var data = {};
-    data.income = [];
-    data.budget = [];
     data.actual = [];
+    data.budget = [];
+    data.forecast = [];
     data.previous = [];
     data.quarterNames = ["Q1", "Q2", "Q3", "Q4"];
 
@@ -42,8 +42,8 @@ function computeQuarterlyData(dataArray)
 
     for ( var i = 0; i < 4; i++ )
     {
-        property = "Q" + (i+1) + " Income";
-        data.income[i] = sumArrayProperty( dataArray, property);
+        property = "Q" + (i+1) + " Forecast";
+        data.forecast[i] = sumArrayProperty( dataArray, property);
 
         property = "Q" + (i+1) + " Budget";
         data.budget[i] = sumArrayProperty( dataArray, property);
