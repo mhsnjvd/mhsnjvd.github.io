@@ -297,22 +297,7 @@ function plotPieChart(svg, pieData)
         var pie = d3.layout.pie().sort(null).value(function(d) { return d.count; });
         var color = d3.scale.category20b();
         
-
-
-
-        // Design the tooltip
-        var tooltip = pieSVG.append('div')                                                
-          .attr('class', 'tooltip');                                    
-                      
-        tooltip.append('div')                                           
-          .attr('class', 'label');                                      
-             
-        tooltip.append('div')                                           
-          .attr('class', 'count');                                      
-        tooltip.append('div')                                           
-          .attr('class', 'percent');                                    
-
-
+        // Design text for the tool tip:
         var tip = d3.tip()
          .attr('class', 'd3-tip')
          .offset([-10, 0])
@@ -338,29 +323,7 @@ function plotPieChart(svg, pieData)
         .on("mouseover", function(d)
         {
              var total = d3.sum( pieData.map(function(d) { return d.count; } ));
-             d.data.percent = d.data.count/total * 100;                                                  
-            /*
-            tooltip.select('.label').html(d.data.label);                
-            tooltip.select('.count').html(d.data.count);                
-            tooltip.select('.percent').html(numberFormat(percent) + '%');             
-            tooltip.style('display', 'block');                          
-
-            */
-            /*
-             var displayText = "Count: " + d.data.count + " (" + numberFormat(percent) + "%)";
-          //Create the tooltip label
-             pieSVG.append("text")
-             .attr("id", "tooltip")
-             .attr("x", 0)
-             .attr("y", 0)
-             .attr("text-anchor", "middle")
-             .attr("font-family", "sans-serif")
-             .attr("font-size", "11px")
-             .attr("font-weight", "bold")
-             .attr("fill", "black")
-             .text(displayText);   
-             */
-
+             d.data.percent = d.data.count/total * 100;                                                              
              tip.show(d)       
         })
         .on("mouseout", function(d)
@@ -368,10 +331,7 @@ function plotPieChart(svg, pieData)
             //Remove the tooltip
             d3.select("#tooltip").remove();
 
-            tip.hide();
-
-
-            //tooltip.style('display', 'none');                                                           
+            tip.hide();            
         });
 
         piePath.call(tip);
