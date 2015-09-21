@@ -40,7 +40,7 @@ function getVerticalScales(svg, margin, data)
 }
 
 // Takes  a d3 selected SVG element and makes a histogram
-function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
+function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale, barColor)
 {
      // Object to be returned which will have an update function
      histogram = {};
@@ -56,7 +56,7 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
     .attr("y", function(d) { return height - margin.bottom;})
     .attr("height", function(d) { return 0; })
     .attr("width", function(d) { return xScale.rangeBand(); })
-    .attr("fill", "steelblue");
+    .attr("fill", barColor);
 
   
     // animate the bars:
@@ -98,7 +98,7 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale)
                 d3.select(this)
                 .transition()
                 .duration(1000)
-                .attr("fill", "steelblue");
+                .attr("fill", barColor);
 
                 tip.hide();
 
@@ -476,19 +476,22 @@ function plotQuarterlyData( svg, data)
       var hScale = vScales.hScale;      
       var xData = data.quarterNames;
 
+      var color  = dataAnalysisTool.color;
+
       plotHorisontalGrid( svg, margin, 10);
-      plotHistogram( svg, margin, xData, data.actual, xScale, yScale, hScale);          
+      plotHistogram( svg, margin, xData, data.actual, xScale, yScale, hScale, color.actual);          
       //plotHistogram( svg, margin, xData, data.forecast, xScale, yScale, hScale);
 
-
-      plotLine( svg, margin, xData, data.previous, xScale, yScale, "green");
-      plotCircles( svg, margin, xData, data.previous, xScale, yScale, "green");
-      
-      plotLine( svg, margin, xData, data.forecast, xScale, yScale, "orange");
-      plotCircles( svg, margin, xData, data.forecast, xScale, yScale, "orange");
             
-      plotLine( svg, margin, xData, data.budget, xScale, yScale, "red");
-      plotCircles( svg, margin, xData, data.budget, xScale, yScale, "red");
+      plotLine( svg, margin, xData, data.forecast, xScale, yScale, color.forecast);
+      plotCircles( svg, margin, xData, data.forecast, xScale, yScale, color.forecast);
+            
+      plotLine( svg, margin, xData, data.budget, xScale, yScale, color.budget);
+      plotCircles( svg, margin, xData, data.budget, xScale, yScale, color.budget);
+
+      plotLine( svg, margin, xData, data.previous, xScale, yScale, color.previous);
+      plotCircles( svg, margin, xData, data.previous, xScale, yScale, color.previous);
+      
 
       plotXAxis(svg, margin, xData, xScale );
       plotXLabel(svg, margin, "Quarterly Financial Data");
@@ -501,10 +504,11 @@ function plotQuarterlyData( svg, data)
       var legendRectSize = 18;
       var legendSpacing = 4;     
 
-      var labels = [ {label:"Budget" , color: "steelblue"},
-                     {label:"Previous" , color: "green"},
-                     {label:"Forecast" , color: "orange"},
-                     {label:"Actual" , color: "red"} ]; 
+      var labels = [ {label:"Actual" , color: color.actual},
+                     {label:"Forecast" , color: color.forecast},
+                     {label:"Budget" , color: color.budget},
+                     {label:"Previous" , color: color.previous}
+                    ]; 
 
       var legend = svg.selectAll('.legend')                     
       .data(labels)                                   

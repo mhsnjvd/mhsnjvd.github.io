@@ -569,6 +569,10 @@
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
                  svg.selectAll("*").remove();
                  plotPieChart( svg, pieData);
+
+                 // Update data table:
+                 var tableData = makeTableData(data);
+                 updateTable( document.getElementById("dataTable"), tableData);
                  return;
             }
             
@@ -589,7 +593,11 @@
                  plotQuarterlyData( svg, data );  
 
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                 plotCostCentres(svg, currentLocalityData)                                              
+                 plotCostCentres(svg, currentLocalityData)   
+
+                 // Update data table:
+                 var tableData = makeTableData(data);
+                 updateTable( document.getElementById("dataTable"), tableData);                                                          
                  return;
             }
 
@@ -605,6 +613,10 @@
 
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
                  plotCostCentres(svg, currentLocalityData);
+
+                 // Update data table:
+                 var tableData = makeTableData(data);
+                 updateTable( document.getElementById("dataTable"), tableData);                 
 
                  return;
             }

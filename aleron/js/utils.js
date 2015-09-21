@@ -57,6 +57,78 @@ function computeQuarterlyData(dataArray)
     return data;
 }
 
+// 
+function makeTableData(data)
+{
+    var tableHeader = ["Quantity", "Q1", "Q2", "Q3", "Q4", "FY", "Budget", "Variation", "Variation (%)"];
+    var tableData = [];
+    tableData.push(tableHeader);
+    propertyName = ["actual", "forecast", "budget", "previous"];
+    firstColumn = ["Actual", "Forecaset", "Budget", "Previous"];
+
+    for ( var i = 0; i < 4; i++ )
+    {
+        var row = [];
+        row.push( firstColumn[i]);
+        // array of 4 numbers (one for each quarters)
+        row = row.concat( data[propertyName[i]]);
+        // dummy entries to match the number of columns
+        row = row.concat( [0, 0, 0, 0]);
+        tableData.push(row);
+    }    
+    return tableData;
+}
+
+// tableData is an array, each element of which 
+// is another array containing row data
+// the first row is conisdered as the table head.
+function updateTable( table, tableData)
+{
+    while ( table.rows.length > 0 )
+    {
+        table.deleteRow(0);
+    }
+    
+    // Number of rows
+    var M = tableData.length;
+    // Number of columns
+    var N = tableData[0].length;
+
+
+    // Make table header
+    var header = table.createTHead();
+    var row = header.insertRow(0);
+        
+    for ( var j = 0; j < N; j++ )
+    {
+        var cell = row.insertCell(j);
+        cell.innerHTML = tableData[0][j].bold();      
+    }
+     
+    // Make remaining rows
+    for ( var i = 1; i < M; i++ )
+    {    
+        var row;
+        row = table.insertRow(i);
+        
+        for ( var j = 0; j < N; j++ )
+        {
+            var cell = row.insertCell(j);   
+            // First entry is a string
+            if ( j === 0)         
+            {
+                cell.innerHTML = tableData[i][j];
+            }
+            // Other entries are numbers:
+            else
+            {
+                cell.innerHTML = numberFormat( tableData[i][j]);
+            }
+        }
+    }
+    return table;    
+}
+
 // Example: Count how many times each locality (property) in 
 // data occurs from the possible list of localities
 function getIdentifierCount( dataArray, identifierList, property )
@@ -90,46 +162,7 @@ function updateSelector( selectorID, optionList )
      }
 }
 
-// tableData is an array, each element of which 
-// is another array containing row data
-// the first row is conisdered as the table head.
-function updateTable( table, tableData)
-{
-    while ( table.rows.length > 0 )
-    {
-        table.deleteRow(0);
-    }
-    
-    // Number of rows
-    var M = tableData.length;
-    // Number of columns
-    var N = tableData[0].length;
 
-
-    // Make table header
-    var header = table.createTHead();
-    var row = header.insertRow(0);
-        
-    for ( var j = 0; j < N; j++ )
-    {
-        var cell = row.insertCell(j);
-        cell.innerHTML = tableData[0][j].bold()        
-    }
-     
-    // Make remaining rows
-    for ( var i = 1; i < M; i++ )
-    {    
-        var row;
-        row = table.insertRow(i);
-        
-        for ( var j = 0; j < N; j++ )
-        {
-            var cell = row.insertCell(j);
-            cell.innerHTML = tableData[i][j]
-        }
-    }
-    return table;    
-}
 
 // Looks at array data and returns for each element the 
 // property specified by property and returns a 
