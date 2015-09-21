@@ -19,8 +19,8 @@ var numberFormat = d3.format(",.2f");
 
 var dataAnalysisTool = {};
 dataAnalysisTool.color = {};
-dataAnalysisTool.color.actual = "steelblue";
-dataAnalysisTool.color.forecast = "orange";
+dataAnalysisTool.color.actual = "orange";
+dataAnalysisTool.color.forecast = "steelblue";
 dataAnalysisTool.color.budget = "red";
 dataAnalysisTool.color.previous = "green";
 dataAnalysisTool.color.histogram = "steelblue";
