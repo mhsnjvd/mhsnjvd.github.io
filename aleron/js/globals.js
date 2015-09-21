@@ -23,4 +23,5 @@ dataAnalysisTool.color.actual = "steelblue";
 dataAnalysisTool.color.forecast = "orange";
 dataAnalysisTool.color.budget = "red";
 dataAnalysisTool.color.previous = "green";
+dataAnalysisTool.color.histogram = "steelblue";
  

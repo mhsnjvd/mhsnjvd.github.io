@@ -46,6 +46,25 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale, 
      histogram = {};
      var height = svg.attr("height");
      var width  = svg.attr("width");
+     
+     // Switch to default if no color is passed
+     barColor = barColor || dataAnalysisTool.color.histogram;
+     
+     if ( typeof(barColor) === "string")
+     {
+         // Copy the same string n times, for each data entry
+         barColor = yData.map( function(d) { return barColor;});
+     }
+     else
+     {
+         // Should be an array of colors
+         if ( barColor.length !== yData.length)
+         {
+              console.log( "plotHistogram: number of colors not the same as number of bars.");
+         }
+
+     }
+     
 
      // Draw the rectangles with 0 height:
      var bars = svg.selectAll("rect")
@@ -56,7 +75,7 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale, 
     .attr("y", function(d) { return height - margin.bottom;})
     .attr("height", function(d) { return 0; })
     .attr("width", function(d) { return xScale.rangeBand(); })
-    .attr("fill", barColor);
+    .attr("fill", function(d, i){ return barColor[i];} );
 
   
     // animate the bars:
@@ -93,12 +112,12 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale, 
                 return;
             });
 
-    bars.on("mouseout", function(d)
+    bars.on("mouseout", function(d, i)
             {
                 d3.select(this)
                 .transition()
                 .duration(1000)
-                .attr("fill", barColor);
+                .attr("fill", barColor[i]);
 
                 tip.hide();
 
@@ -479,12 +498,13 @@ function plotQuarterlyData( svg, data)
       var color  = dataAnalysisTool.color;
 
       plotHorisontalGrid( svg, margin, 10);
-      plotHistogram( svg, margin, xData, data.actual, xScale, yScale, hScale, color.actual);          
+      var mixedData = [];
+      mixedData.push(data.actual[0]);
+      mixedData = mixedData.concat( data.forecast.slice(1) );
+      var histColors = [color.actual, color.forecast, color.forecast, color.forecast];
+      plotHistogram( svg, margin, xData, data.actual, xScale, yScale, hScale, histColors);          
       //plotHistogram( svg, margin, xData, data.forecast, xScale, yScale, hScale);
 
-            
-      plotLine( svg, margin, xData, data.forecast, xScale, yScale, color.forecast);
-      plotCircles( svg, margin, xData, data.forecast, xScale, yScale, color.forecast);
             
       plotLine( svg, margin, xData, data.budget, xScale, yScale, color.budget);
       plotCircles( svg, margin, xData, data.budget, xScale, yScale, color.budget);

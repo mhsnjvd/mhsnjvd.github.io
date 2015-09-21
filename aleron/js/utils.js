@@ -64,7 +64,7 @@ function makeTableData(data)
     var tableData = [];
     tableData.push(tableHeader);
     propertyName = ["actual", "forecast", "budget", "previous"];
-    firstColumn = ["Actual", "Forecaset", "Budget", "Previous"];
+    firstColumn = ["Actual", "Forecast", "Budget", "Previous"];
 
     for ( var i = 0; i < 4; i++ )
     {
