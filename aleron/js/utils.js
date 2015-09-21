@@ -90,16 +90,71 @@ function updateSelector( selectorID, optionList )
      }
 }
 
+// tableData is an array, each element of which 
+// is another array containing row data
+// the first row is conisdered as the table head.
+function updateTable( table, tableData)
+{
+    while ( table.rows.length > 0 )
+    {
+        table.deleteRow(0);
+    }
+    
+    // Number of rows
+    var M = tableData.length;
+    // Number of columns
+    var N = tableData[0].length;
+
+
+    // Make table header
+    var header = table.createTHead();
+    var row = header.insertRow(0);
+        
+    for ( var j = 0; j < N; j++ )
+    {
+        var cell = row.insertCell(j);
+        cell.innerHTML = tableData[0][j].bold()        
+    }
+     
+    // Make remaining rows
+    for ( var i = 1; i < M; i++ )
+    {    
+        var row;
+        row = table.insertRow(i);
+        
+        for ( var j = 0; j < N; j++ )
+        {
+            var cell = row.insertCell(j);
+            cell.innerHTML = tableData[i][j]
+        }
+    }
+    return table;    
+}
+
 // Looks at array data and returns for each element the 
 // property specified by property and returns a 
-// sorted list of elements under that property:
+// list of elements under that property:
 function getUniqueList( data, property)
 {
      // Get the list of elements with the property:
      var list = data.map(function(d){ return d[property]; } );
      // Get unique elements only:
      list = list.filter( function(d, i, thisArray){ return thisArray.indexOf(d) === i; });
-     // Sort it:
-     list = list.sort();
      return list; 
 }
+
+// Same as above but sorts the list as well:
+function getUniqueSortedList( data, property)
+{
+    var list = getUniqueList( data, property);
+    list = list.sort();
+    return list;
+}
+
+
+
+
+
+
+
+
