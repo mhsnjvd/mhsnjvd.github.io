@@ -518,23 +518,94 @@
         </div>
         <!-- Row ends here *********************** -->
 
+
+
+        <!------------------------------------------------------
+        --------------------------------------------------------
+        --------------------------------------------------------
+             Page content for Business development
+        --------------------------------------------------------
+        --------------------------------------------------------
+        -------------------------------------------------------- -->
+
+        
+        <!-- Start a row -->
         <div class="row">
 
-             <div class="col-xs-1">
-             </div>
+            <div class="col-xs-1">
+            </div>
+             
+            <div class="col-xs-10">
 
-             <div class="col-xs-10">
-             </div>
+                <h4 class="page-header">Business Development Data</h4> 
 
-             <div class="col-xs-1">
-             </div>
+                <!-- strat internal row -->
+                <div class="row">
+             
+                   <div class="col-xs-4">
+                         <select style="width: 250px" id="contractsRegionSelector" onchange="contractsRegionSelectFunction()">
+                         </select>
+                   </div>
 
+                   <div class="col-xs-4">
+                     <select style="width: 250px" id="contractsLocalitySelector" onchange="contractsLocalitySelectFunction()">
+                     </select>
+                   </div>
+
+                   <div class="col-xs-4">
+                     <select style="width: 250px" id="costCentreSelector" onchange="">
+                     </select>
+                   </div>
+
+               </div>
+                <!-- finish internal row -->
+
+            </div>
+           
+            <div class="col-xs-1">
+            </div>
+           
         </div>
-
+        <!-- End a row -->
+        <!-- Start a row -->
         <div class="row">
-          <div class="col-xs-12" id="chart">
-          </div>        
+
+
+            <div class="col-xs-1">
+            </div>
+             
+            <div class="col-xs-10">
+
+                <h4 class="page-header">Business Development Data</h4> 
+
+                <!-- strat internal row -->
+                <div class="row">
+             
+                   <div class="col-xs-4">
+                         <select style="width: 250px" id="contractsRegionSelector" onchange="contractsRegionSelectFunction()">
+                         </select>
+                   </div>
+
+                   <div class="col-xs-4">
+                     <select style="width: 250px" id="contractsLocalitySelector" onchange="contractsLocalitySelectFunction()">
+                     </select>
+                   </div>
+
+                   <div class="col-xs-4">
+                     <select style="width: 250px" id="costCentreSelector" onchange="">
+                     </select>
+                   </div>
+
+               </div>
+                <!-- finish internal row -->
+
+            </div>
+           
+            <div class="col-xs-1">
+            </div>
+           
         </div>
+        <!-- End a row -->
 
       </div>
       <!-- Container fluid ends here -->
@@ -552,31 +623,31 @@
             {
                  var region = document.getElementById("regionSelector").value;
                  // Initialize region data and locality list:
-                 currentRegionData = financialsData.filter( function(d) { return d.Region === region; } );
+                 dashBoardData.financialsData.currentRegionData = dashBoardData.financialsData.rawData.filter( function(d) { return d.Region === region; } );
 
                  // Update localities
-                 localityList = getUniqueSortedList(currentRegionData, "Locality");
-                 updateSelector( document.getElementById("localitySelector"), localityList );
+                 dashBoardData.financialsData.localityList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData, "Locality");
+                 updateSelector( document.getElementById("localitySelector"), dashBoardData.financialsData.localityList );
 
                  // Update Cost Centres
-                 costCentreList= getUniqueSortedList(currentRegionData,"Cost Centres");
-                 updateSelector( document.getElementById("costCentreSelector"), costCentreList);
+                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData,"Cost Centres");
+                 updateSelector( document.getElementById("costCentreSelector"), dashBoardData.financialsData.costCentreList);
 
                  // Update localities
-                 funderList = getUniqueSortedList(currentRegionData, "Funder");
-                 updateSelector( document.getElementById("funderSelector"), funderList );
+                 dashBoardData.financialsData.funderList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData, "Funder");
+                 updateSelector( document.getElementById("funderSelector"), dashBoardData.financialsData.funderList );
 
-                 var data = computeQuarterlyData( currentRegionData );
+                 var data = computeQuarterlyData( dashBoardData.financialsData.currentRegionData );
 
                  svg = d3.select(document.getElementById("quarterlySVG"));
                  
                  plotQuarterlyData( svg, data);
 
-                 var count = getIdentifierCount( currentRegionData, localityList, "Locality");
+                 var count = getIdentifierCount( dashBoardData.financialsData.currentRegionData, dashBoardData.financialsData.localityList, "Locality");
                  var pieData = [];
-                 for ( var i = 0; i < localityList.length; i++ )
+                 for ( var i = 0; i < dashBoardData.financialsData.localityList.length; i++ )
                  {
-                     pieData.push( {label: localityList[i], count: count[i]});
+                     pieData.push( {label: dashBoardData.financialsData.localityList[i], count: count[i]});
                  }
                  
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
@@ -592,21 +663,21 @@
             function localitySelectFunction() 
             {
                  var locality = document.getElementById("localitySelector").value;
-                 currentLocalityData = currentRegionData.filter( function(d) { return d.Locality === locality; } );
+                 dashBoardData.financialsData.currentLocalityData = dashBoardData.financialsData.currentRegionData.filter( function(d) { return d.Locality === locality; } );
                      
                  // Update Cost Centres
-                 costCentreList= getUniqueSortedList(currentLocalityData,"Cost Centres");
-                 updateSelector( document.getElementById("costCentreSelector"), costCentreList);
+                 dashBoardData.financialsData.costCentreList= getUniqueSortedList(dashBoardData.financialsData.currentLocalityData,"Cost Centres");
+                 updateSelector( document.getElementById("costCentreSelector"), dashBoardData.financialsData.costCentreList);
 
                  // First Histogram Plot
 
-                 var data = computeQuarterlyData( currentLocalityData );                 
+                 var data = computeQuarterlyData( dashBoardData.financialsData.currentLocalityData );                 
 
                  var svg = d3.select(document.getElementById("quarterlySVG"));                 
                  plotQuarterlyData( svg, data );  
 
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                 plotCostCentres(svg, currentLocalityData)   
+                 plotCostCentres(svg, dashBoardData.financialsData.currentLocalityData)   
 
                  // Update data table:
                  var tableData = makeTableData(data);
@@ -617,15 +688,15 @@
             function costCentreSelectFunction() 
             {
                  var costCentre = document.getElementById("costCentreSelector").value;
-                 currentCostCentreData = currentLocalityData.filter( function(d) { return d["Cost Centres"] === costCentre; } );
+                 dashBoardData.financialsData.currentCostCentreData = dashBoardData.financialsData.currentLocalityData.filter( function(d) { return d["Cost Centres"] === costCentre; } );
                      
-                 var data = computeQuarterlyData( currentCostCentreData );                 
+                 var data = computeQuarterlyData( dashBoardData.financialsData.currentCostCentreData );                 
 
                  var svg = d3.select(document.getElementById("quarterlySVG"));                 
                  plotQuarterlyData( svg, data );  
 
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                 plotCostCentres(svg, currentLocalityData);
+                 plotCostCentres(svg, dashBoardData.financialsData.currentLocalityData);
 
                  // Update data table:
                  var tableData = makeTableData(data);
@@ -663,12 +734,45 @@
             d3.csv( "./csdata/Financials_File_Dummy.csv", function(d)
             { 
               // Copy the data read into the global variable:
-              financialsData = d;
-              regionList = getUniqueSortedList(financialsData, "Region");
-              localityList = getUniqueSortedList(financialsData, "Locality");
-              funderList = getUniqueSortedList(financialsData, "Funder");
-              costCentreList = getUniqueSortedList(financialsData, "Cost Centres");
-              propertyList = Object.getOwnPropertyNames(financialsData[0]);
+              dashBoardData.financialsData.rawData = d;
+
+              // copy locally as well:
+              var data = d;
+
+              dashBoardData.financialsData.regionList = getUniqueSortedList(data, "Region");
+              dashBoardData.financialsData.localityList = getUniqueSortedList(data, "Locality");
+              dashBoardData.financialsData.funderList = getUniqueSortedList(data, "Funder");
+              dashBoardData.financialsData.costCentreList = getUniqueSortedList(data, "Cost Centres");
+              dashBoardData.financialsData.propertyList = Object.getOwnPropertyNames(data[0]);
+
+              // Add Regions to the drop down list:
+              updateSelector( document.getElementById("regionSelector"), dashBoardData.financialsData.regionList);
+              
+              // Add Funders to the drop down list:
+              updateSelector(document.getElementById("funderSelector"), dashBoardData.financialsData.funderList);
+
+              // Add Localities to the drop down list:
+              updateSelector( document.getElementById("localitySelector"), dashBoardData.financialsData.localityList );
+
+              // Add cost centres to the drop down list:
+              updateSelector( document.getElementById("costCentreSelector"), dashBoardData.financialsData.costCentreList );
+
+              // Add properties to the property selector, the first 4 are not needed:
+              propertyList = dashBoardData.financialsData.propertyList.slice(5);
+              updateSelector(document.getElementById("propertySelector"), propertyList);
+
+              regionSelectFunction();
+            });                                 
+
+
+            /*
+            d3.csv( "./csdata/DataFolder/9_Q1_BusinessPipeline-2015-07-15-Contracts.csv", function(d)
+            { 
+              // Copy the data read into the global variable:
+              contractsData = d;
+              constractsRegionList = getUniqueSortedList(contractsData, "Region");
+              cosntractsLocalityList = getUniqueSortedList(contractsData, "Locality");
+              propertyList = Object.getOwnPropertyNames(contractsData[0]);
 
               // Add Regions to the drop down list:
               updateSelector( document.getElementById("regionSelector"), regionList );
@@ -687,7 +791,17 @@
               updateSelector(document.getElementById("propertySelector"), propertyList);
 
               regionSelectFunction();
+
+
             });                                 
+            d3.csv( "./csdata/DataFolder/8_Q1_BusinessPipeline-2015-07-15-Proposals.csv", function(d)
+            { 
+              // Copy the data read into the global variable:
+              proposalsData = d;
+
+            });                                 
+            */
+
 
          </script>
          

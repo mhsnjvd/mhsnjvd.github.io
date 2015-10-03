@@ -2,26 +2,27 @@
 //          Global variables               //
 /////////////////////////////////////////////
 
-var financialsData = [];
-var funderList = [];
-var regionList = [];
-var localityList = [];
-var costCentreList = [];
-var propertyList = [];
-var currentRegionData = [];
-var currentFunderData = [];
-var currentLocalityData = [];
-var currentCostCentreData = [];
+var dashBoardData = {};
+dashBoardData.financialsData = {};
+dashBoardData.contractsData = {}; 
+
+dashBoardData.financialsData.rawData = [];
+dashBoardData.financialsData.funderList = [];
+dashBoardData.financialsData.regionList = [];
+dashBoardData.financialsData.localityList = [];
+dashBoardData.financialsData.costCentreList = [];
+dashBoardData.financialsData.propertyList = [];
+dashBoardData.financialsData.currentRegionData = [];
+dashBoardData.financialsData.currentFunderData = [];
+dashBoardData.financialsData.currentLocalityData = [];
+dashBoardData.financialsData.currentCostCentreData = [];
 
 
-
-var numberFormat = d3.format(",.2f");
-
-var dataAnalysisTool = {};
-dataAnalysisTool.color = {};
-dataAnalysisTool.color.actual = "orange";
-dataAnalysisTool.color.forecast = "steelblue";
-dataAnalysisTool.color.budget = "red";
-dataAnalysisTool.color.previous = "green";
-dataAnalysisTool.color.histogram = "steelblue";
- 
+var dashBoardSettings = {};
+dashBoardSettings.color = {};
+dashBoardSettings.color.actual = "orange";
+dashBoardSettings.color.forecast = "steelblue";
+dashBoardSettings.color.budget = "red";
+dashBoardSettings.color.previous = "green";
+dashBoardSettings.color.histogram = "steelblue";
+dashBoardSettings.numberFormat = d3.format(",.2f");

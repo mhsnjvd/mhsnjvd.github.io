@@ -122,7 +122,7 @@ function updateTable( table, tableData)
             // Other entries are numbers:
             else
             {
-                cell.innerHTML = numberFormat( tableData[i][j]);
+                cell.innerHTML = dashBoardSettings.numberFormat( tableData[i][j]);
             }
         }
     }

@@ -48,7 +48,7 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale, 
      var width  = svg.attr("width");
      
      // Switch to default if no color is passed
-     barColor = barColor || dataAnalysisTool.color.histogram;
+     barColor = barColor || dashBoardSettings.color.histogram;
      
      if ( typeof(barColor) === "string")
      {
@@ -62,10 +62,8 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale, 
          {
               console.log( "plotHistogram: number of colors not the same as number of bars.");
          }
-
      }
      
-
      // Draw the rectangles with 0 height:
      var bars = svg.selectAll("rect")
     .data(yData)
@@ -77,7 +75,6 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale, 
     .attr("width", function(d) { return xScale.rangeBand(); })
     .attr("fill", function(d, i){ return barColor[i];} );
 
-  
     // animate the bars:
     svg.selectAll("rect")
     .data(yData)
@@ -86,44 +83,50 @@ function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale, 
     .attr("y", function(d) { return yScale(d);})
     .attr("height", function(d) { return heightScale(d); });
     
-
-
      // Define the tooltip:     
-     var tip = d3.tip()
-     .attr('class', 'd3-tip')
-     .offset([-10, 0])
-     .html(function(d) {
-                return "Value: <span style='color:red'>" + d + "</span>";
+    var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+               return "Value: <span style='color:red'>" + d + "</span>";
+          });
+
+    bars.call(tip);
+
+    // Functions for mouse-over and mouse-out:
+    bars.on("mouseover", function(d)
+           {
+               d3.select(this)                
+               .transition()
+               .duration(1000)                                    
+               .attr("fill", "blue");
+
+               tip.show(dashBoardSettings.numberFormat(d));
+                           
+               return;
            });
 
-
-     bars.call(tip);
-
-     // Functions for mouse-over and mouse-out:
-     bars.on("mouseover", function(d)
-            {
-                d3.select(this)                
-                .transition()
-                .duration(1000)                                    
-                .attr("fill", "blue");
-
-                tip.show(numberFormat(d));
-                            
-                return;
-            });
-
     bars.on("mouseout", function(d, i)
-            {
-                d3.select(this)
-                .transition()
-                .duration(1000)
-                .attr("fill", barColor[i]);
+           {
+               d3.select(this)
+               .transition()
+               .duration(1000)
+               .attr("fill", barColor[i]);
 
-                tip.hide();
+               tip.hide();
 
-                return;
-            });    
+               return;
+           });    
 
+    bars.update = function(newData)
+    {
+        svg.selectAll("rect")
+        .data(newData)
+        .transition()
+        .duration(2000)
+        .attr("y", function(d) { return yScale(d);})
+        .attr("height", function(d) { return heightScale(d); });
+    }
     return bars;
 }
 
@@ -308,7 +311,7 @@ function plotCircles(svg, margin, xData, yData, xScale, yScale, circleColor)
        .attr("fill", "black")
        .attr("opacity", 1);
 
-       tip.show(numberFormat(d));
+       tip.show(dashBoardSettings.numberFormat(d));
      });
 
      circles.on("mouseout", function(d){    
@@ -361,7 +364,7 @@ function plotPieChart(svg, pieData)
                 var label = d.data.label;
                 var count = d.data.count;
                 var percent = d.data.percent;                
-                var displayText = "<span style='color:red'>" + label + "</span>" + " count: " + count + " (" + numberFormat(percent) + "%)";
+                var displayText = "<span style='color:red'>" + label + "</span>" + " count: " + count + " (" + dashBoardSettings.numberFormat(percent) + "%)";
                 return displayText;
            });        
 
@@ -470,8 +473,6 @@ function plotPieChart(svg, pieData)
         */
 }
 
-
-
 function plotQuarterlyData( svg, data)
 {
       svg.selectAll("*").remove();
@@ -495,14 +496,14 @@ function plotQuarterlyData( svg, data)
       var hScale = vScales.hScale;      
       var xData = data.quarterNames;
 
-      var color  = dataAnalysisTool.color;
+      var color  = dashBoardSettings.color;
 
       plotHorisontalGrid( svg, margin, 10);
       var mixedData = [];
       mixedData.push(data.actual[0]);
       mixedData = mixedData.concat( data.forecast.slice(1) );
       var histColors = [color.actual, color.forecast, color.forecast, color.forecast];
-      plotHistogram( svg, margin, xData, data.actual, xScale, yScale, hScale, histColors);          
+      var bars = plotHistogram( svg, margin, xData, data.actual, xScale, yScale, hScale, histColors);          
       //plotHistogram( svg, margin, xData, data.forecast, xScale, yScale, hScale);
 
             
@@ -517,8 +518,6 @@ function plotQuarterlyData( svg, data)
       plotXLabel(svg, margin, "Quarterly Financial Data");
       plotYAxis(svg, margin, yScale);
       plotYLabel(svg, margin, "£ million");         
-
-
 
       // Legend:
       var legendRectSize = 18;
@@ -553,19 +552,24 @@ function plotQuarterlyData( svg, data)
           .attr('x', legendRectSize + legendSpacing)              
           .attr('y', legendRectSize - legendSpacing)              
           .text(function(d) { return d.label; });              
+
+        legend.on("mouseover", function(d) { bars.update( [0, 0, 0, 0] ); return ; } );
 }
 
-function plotCostCentres( svg, data)
+function plotCostCentres(svg, data)
 {
       svg.selectAll("*").remove();
       svg.style("background-color", "whitesmoke");
       
       // Second Histogram Plot on the adjacent svg                      
       var height = svg.attr("height");
-      var width = svg.attr("width");
+      var width  = svg.attr("width");
 
-      var yData = currentLocalityData.map( function(d) { return +d["Q1 Actual"]; });
-      var xData = currentLocalityData.map( function(d) { return d["Cost Centres"]; });
+      // Extract Q1 actual and cast it to number:
+      var yData = data.map( function(d) { return +d["Q1 Actual"]; });
+
+      // Extract the cost centre number
+      var xData = data.map( function(d) { return d["Cost Centres"]; });
 
       var margin = defineMargins(height, width);
       var vScales = getVerticalScales(svg, margin, yData);          
