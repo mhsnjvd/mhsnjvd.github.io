@@ -236,17 +236,17 @@
 
 
                  <div  class="col-xs-4">
-                       <select style="width: 250px" id="regionSelector" onchange="regionSelectFunction()">
+                       <select style="width: 250px" id="financialsRegionSelector" onchange="regionSelectFunction()">
                        </select>
                  </div>
         
                  <div  class="col-xs-4">
-                   <select style="width: 250px" id="localitySelector" onchange="localitySelectFunction()">
+                   <select style="width: 250px" id="financialsLocalitySelector" onchange="localitySelectFunction()">
                    </select>
                  </div>
 
                  <div  class="col-xs-4">
-                   <select style="width: 250px" id="costCentreSelector" onchange="costCentreSelectFunction()">
+                   <select style="width: 250px" id="financialsCostCentreSelector" onchange="costCentreSelectFunction()">
                    </select>
                  </div>
                  
@@ -482,13 +482,13 @@
 
              <!-- Second column starts here *********************** -->
              <div  class="col-xs-5 placeholders">
-                   <select style="width: 200px" id="funderSelector" onchange="funderSelectFunction()">
+                   <select style="width: 200px" id="financialsFunderSelector" onchange="funderSelectFunction()">
                    </select>               
              </div>
         
              <!-- Third column starts here *********************** -->
              <div  class="col-xs-5 placeholders">
-                   <select style="width: 200px" id="propertySelector" onchange="propertySelectFunction()">
+                   <select style="width: 200px" id="financialsPropertySelector" onchange="propertySelectFunction()">
                    </select>
              </div>
 
@@ -518,95 +518,6 @@
         </div>
         <!-- Row ends here *********************** -->
 
-
-
-        <!------------------------------------------------------
-        --------------------------------------------------------
-        --------------------------------------------------------
-             Page content for Business development
-        --------------------------------------------------------
-        --------------------------------------------------------
-        -------------------------------------------------------- -->
-
-        
-        <!-- Start a row -->
-        <div class="row">
-
-            <div class="col-xs-1">
-            </div>
-             
-            <div class="col-xs-10">
-
-                <h4 class="page-header">Business Development Data</h4> 
-
-                <!-- strat internal row -->
-                <div class="row">
-             
-                   <div class="col-xs-4">
-                         <select style="width: 250px" id="contractsRegionSelector" onchange="contractsRegionSelectFunction()">
-                         </select>
-                   </div>
-
-                   <div class="col-xs-4">
-                     <select style="width: 250px" id="contractsLocalitySelector" onchange="contractsLocalitySelectFunction()">
-                     </select>
-                   </div>
-
-                   <div class="col-xs-4">
-                     <select style="width: 250px" id="costCentreSelector" onchange="">
-                     </select>
-                   </div>
-
-               </div>
-                <!-- finish internal row -->
-
-            </div>
-           
-            <div class="col-xs-1">
-            </div>
-           
-        </div>
-        <!-- End a row -->
-        <!-- Start a row -->
-        <div class="row">
-
-
-            <div class="col-xs-1">
-            </div>
-             
-            <div class="col-xs-10">
-
-                <h4 class="page-header">Business Development Data</h4> 
-
-                <!-- strat internal row -->
-                <div class="row">
-             
-                   <div class="col-xs-4">
-                         <select style="width: 250px" id="contractsRegionSelector" onchange="contractsRegionSelectFunction()">
-                         </select>
-                   </div>
-
-                   <div class="col-xs-4">
-                     <select style="width: 250px" id="contractsLocalitySelector" onchange="contractsLocalitySelectFunction()">
-                     </select>
-                   </div>
-
-                   <div class="col-xs-4">
-                     <select style="width: 250px" id="costCentreSelector" onchange="">
-                     </select>
-                   </div>
-
-               </div>
-                <!-- finish internal row -->
-
-            </div>
-           
-            <div class="col-xs-1">
-            </div>
-           
-        </div>
-        <!-- End a row -->
-
       </div>
       <!-- Container fluid ends here -->
 
@@ -621,21 +532,21 @@
 
             function regionSelectFunction() 
             {
-                 var region = document.getElementById("regionSelector").value;
+                 var region = document.getElementById("financialsRegionSelector").value;
                  // Initialize region data and locality list:
                  dashBoardData.financialsData.currentRegionData = dashBoardData.financialsData.rawData.filter( function(d) { return d.Region === region; } );
 
                  // Update localities
                  dashBoardData.financialsData.localityList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData, "Locality");
-                 updateSelector( document.getElementById("localitySelector"), dashBoardData.financialsData.localityList );
+                 updateSelector( document.getElementById("financialsLocalitySelector"), dashBoardData.financialsData.localityList );
 
                  // Update Cost Centres
                  dashBoardData.financialsData.costCentreList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData,"Cost Centres");
-                 updateSelector( document.getElementById("costCentreSelector"), dashBoardData.financialsData.costCentreList);
+                 updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
 
                  // Update localities
                  dashBoardData.financialsData.funderList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData, "Funder");
-                 updateSelector( document.getElementById("funderSelector"), dashBoardData.financialsData.funderList );
+                 updateSelector( document.getElementById("financialsFunderSelector"), dashBoardData.financialsData.funderList );
 
                  var data = computeQuarterlyData( dashBoardData.financialsData.currentRegionData );
 
@@ -662,12 +573,12 @@
             
             function localitySelectFunction() 
             {
-                 var locality = document.getElementById("localitySelector").value;
+                 var locality = document.getElementById("financialsLocalitySelector").value;
                  dashBoardData.financialsData.currentLocalityData = dashBoardData.financialsData.currentRegionData.filter( function(d) { return d.Locality === locality; } );
                      
                  // Update Cost Centres
                  dashBoardData.financialsData.costCentreList= getUniqueSortedList(dashBoardData.financialsData.currentLocalityData,"Cost Centres");
-                 updateSelector( document.getElementById("costCentreSelector"), dashBoardData.financialsData.costCentreList);
+                 updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
 
                  // First Histogram Plot
 
@@ -687,7 +598,7 @@
 
             function costCentreSelectFunction() 
             {
-                 var costCentre = document.getElementById("costCentreSelector").value;
+                 var costCentre = document.getElementById("financialsCostCentreSelector").value;
                  dashBoardData.financialsData.currentCostCentreData = dashBoardData.financialsData.currentLocalityData.filter( function(d) { return d["Cost Centres"] === costCentre; } );
                      
                  var data = computeQuarterlyData( dashBoardData.financialsData.currentCostCentreData );                 
@@ -702,11 +613,6 @@
                  var tableData = makeTableData(data);
                  updateTable( document.getElementById("dataTable"), tableData);                 
 
-                 return;
-            }
-
-            function funderSelectFunction() 
-            {
                  return;
             }
 
@@ -746,62 +652,23 @@
               dashBoardData.financialsData.propertyList = Object.getOwnPropertyNames(data[0]);
 
               // Add Regions to the drop down list:
-              updateSelector( document.getElementById("regionSelector"), dashBoardData.financialsData.regionList);
+              updateSelector( document.getElementById("financialsRegionSelector"), dashBoardData.financialsData.regionList);
               
               // Add Funders to the drop down list:
-              updateSelector(document.getElementById("funderSelector"), dashBoardData.financialsData.funderList);
+              updateSelector(document.getElementById("financialsFunderSelector"), dashBoardData.financialsData.funderList);
 
               // Add Localities to the drop down list:
-              updateSelector( document.getElementById("localitySelector"), dashBoardData.financialsData.localityList );
+              updateSelector( document.getElementById("financialsLocalitySelector"), dashBoardData.financialsData.localityList );
 
               // Add cost centres to the drop down list:
-              updateSelector( document.getElementById("costCentreSelector"), dashBoardData.financialsData.costCentreList );
+              updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList );
 
               // Add properties to the property selector, the first 4 are not needed:
-              propertyList = dashBoardData.financialsData.propertyList.slice(5);
-              updateSelector(document.getElementById("propertySelector"), propertyList);
+              dashBoardData.financialsData.propertyList = dashBoardData.financialsData.propertyList.slice(5);
+              updateSelector(document.getElementById("financialsPropertySelector"), dashBoardData.financialsData.propertyList);
 
               regionSelectFunction();
             });                                 
-
-
-            /*
-            d3.csv( "./csdata/DataFolder/9_Q1_BusinessPipeline-2015-07-15-Contracts.csv", function(d)
-            { 
-              // Copy the data read into the global variable:
-              contractsData = d;
-              constractsRegionList = getUniqueSortedList(contractsData, "Region");
-              cosntractsLocalityList = getUniqueSortedList(contractsData, "Locality");
-              propertyList = Object.getOwnPropertyNames(contractsData[0]);
-
-              // Add Regions to the drop down list:
-              updateSelector( document.getElementById("regionSelector"), regionList );
-              
-              // Add Funders to the drop down list:
-              updateSelector(document.getElementById("funderSelector"), funderList);
-
-              // Add Localities to the drop down list:
-              updateSelector( document.getElementById("localitySelector"), localityList );
-
-              // Add cost centres to the drop down list:
-              updateSelector( document.getElementById("costCentreSelector"), costCentreList );
-
-              // Add properties to the property selector, the first 4 are not needed:
-              propertyList = propertyList.slice(5);
-              updateSelector(document.getElementById("propertySelector"), propertyList);
-
-              regionSelectFunction();
-
-
-            });                                 
-            d3.csv( "./csdata/DataFolder/8_Q1_BusinessPipeline-2015-07-15-Proposals.csv", function(d)
-            { 
-              // Copy the data read into the global variable:
-              proposalsData = d;
-
-            });                                 
-            */
-
 
          </script>
          
