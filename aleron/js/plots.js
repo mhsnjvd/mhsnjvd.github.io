@@ -553,7 +553,7 @@ function plotQuarterlyFinancialData( svg, data)
           .attr('y', legendRectSize - legendSpacing)              
           .text(function(d) { return d.label; });              
 
-        legend.on("mouseover", function(d) { bars.update( [0, 0, 0, 0] ); return ; } );
+        //legend.on("mouseover", function(d) { bars.update( [0, 0, 0, 0] ); return ; } );
 }
 
 function plotCostCentres(svg, data)
@@ -608,7 +608,7 @@ function plotVerticalGrid( svg, margin, nLines)
                      'y2':function(d, i){ return margin.top; } })
               .style({'stroke':'#adadad','stroke-width':'1px'});
 
-    // animate the gird lines:
+     // animate the gird lines:
      svg.select("#verticalGridLines")
        .selectAll("line")
        .data(grid)
@@ -636,8 +636,6 @@ function plotHorisontalBars(svg, margin, categories, values)
     var xScale = d3.scale.linear()
             .domain([0, maxVal])
             .range([0, width - margin.right - margin.left ]);
-
-    
       
     var color = d3.scale.category20();
     var chart = svg.append('g')              
