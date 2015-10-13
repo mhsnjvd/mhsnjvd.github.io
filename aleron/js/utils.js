@@ -29,7 +29,7 @@ function sumArrayProperty( data, property)
 
 // Returns an object with four fields, each is an array of length 4
 // one entry for each quarter.
-function computeQuarterlyData(dataArray)
+function computeQuarterlyFinancialData(dataArray)
 {
     var data = {};
     data.actual = [];

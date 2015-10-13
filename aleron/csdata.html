@@ -548,11 +548,11 @@
                  dashBoardData.financialsData.funderList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData, "Funder");
                  updateSelector( document.getElementById("financialsFunderSelector"), dashBoardData.financialsData.funderList );
 
-                 var data = computeQuarterlyData( dashBoardData.financialsData.currentRegionData );
+                 var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentRegionData );
 
                  svg = d3.select(document.getElementById("quarterlySVG"));
                  
-                 plotQuarterlyData( svg, data);
+                 plotQuarterlyFinancialData( svg, data);
 
                  var count = getIdentifierCount( dashBoardData.financialsData.currentRegionData, dashBoardData.financialsData.localityList, "Locality");
                  var pieData = [];
@@ -582,10 +582,10 @@
 
                  // First Histogram Plot
 
-                 var data = computeQuarterlyData( dashBoardData.financialsData.currentLocalityData );                 
+                 var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentLocalityData );                 
 
                  var svg = d3.select(document.getElementById("quarterlySVG"));                 
-                 plotQuarterlyData( svg, data );  
+                 plotQuarterlyFinancialData( svg, data );  
 
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
                  plotCostCentres(svg, dashBoardData.financialsData.currentLocalityData)   
@@ -601,10 +601,10 @@
                  var costCentre = document.getElementById("financialsCostCentreSelector").value;
                  dashBoardData.financialsData.currentCostCentreData = dashBoardData.financialsData.currentLocalityData.filter( function(d) { return d["Cost Centres"] === costCentre; } );
                      
-                 var data = computeQuarterlyData( dashBoardData.financialsData.currentCostCentreData );                 
+                 var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentCostCentreData );                 
 
                  var svg = d3.select(document.getElementById("quarterlySVG"));                 
-                 plotQuarterlyData( svg, data );  
+                 plotQuarterlyFinancialData( svg, data );  
 
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
                  plotCostCentres(svg, dashBoardData.financialsData.currentLocalityData);

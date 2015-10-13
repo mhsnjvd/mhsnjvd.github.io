@@ -473,7 +473,7 @@ function plotPieChart(svg, pieData)
         */
 }
 
-function plotQuarterlyData( svg, data)
+function plotQuarterlyFinancialData( svg, data)
 {
       svg.selectAll("*").remove();
       svg.style("background-color", "whitesmoke"); 
