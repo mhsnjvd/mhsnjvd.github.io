@@ -4,8 +4,7 @@
 
 var dashBoardData = {};
 dashBoardData.financialsData = {};
-dashBoardData.contractsData = {}; 
-dashBoardData.proposalsData = {};
+dashBoardData.bizDevData = {};
 
 // These can be created on the runtime but
 // given here just to give a template idea:

@@ -336,7 +336,7 @@ function plotPieChart(svg, pieData)
         var pieChart = {};
 
         var width = svg.attr("width");
-        var hieght = svg.attr("height");
+        var height = svg.attr("height");
 
         var pieDim ={w: width, h: height};
         pieDim.r = Math.min(pieDim.w, pieDim.h) / 2.8;
@@ -589,6 +589,9 @@ function plotCostCentres(svg, data)
 function plotVerticalGrid( svg, margin, nLines)
 {
     var nLines = 25;
+    var height = svg.attr("height");
+    var width  = svg.attr("width");
+
     var grid = d3.range(nLines).map( function(d)
     {
       return {'x1':margin.left,'y1':margin.top,'x2':margin.left,'y2':margin.top};
