@@ -233,17 +233,17 @@
                 <div class="row">
              
                    <div class="col-xs-4">
-                         <select style="width: 250px" id="contractsRegionSelector" onchange="contractsRegionSelectFunction()">
+                         <select style="width: 250px" id="bizDevRegionSelector" onchange="bizDevRegionSelectFunction()">
                          </select>
                    </div>
 
                    <div class="col-xs-4">
-                     <select style="width: 250px" id="contractsLocalitySelector" onchange="contractsLocalitySelectFunction()">
+                     <select style="width: 250px" id="bizDevLocalitySelector" onchange="bizDevLocalitySelectFunction()">
                      </select>
                    </div>
 
                    <div class="col-xs-4">
-                     <select style="width: 250px" id="contractsCostCentreSelector" onchange="contractsCostCentreSelectFunction()">
+                     <select style="width: 250px" id="bizDevCostCentreSelector" onchange="bizDevCostCentreSelectFunction()">
                      </select>
                    </div>
 
@@ -401,32 +401,32 @@
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
-
-            function contractsRegionSelectFunction() 
+            function bizDevRegionSelectFunction() 
             {
-                 var region = document.getElementById("contractsRegionSelector").value;
+                 var region = document.getElementById("bizDevRegionSelector").value;
                  // Initialize region data and locality list:
-                 dashBoardData.contractsData.currentRegionData = dashBoardData.contractsData.rawData.filter( function(d) { return d.Region === region; } );
+                 dashBoardData.bizDevData.currentRegionData = dashBoardData.bizDevData.rawData.filter( function(d) { return d.Region === region; } );
+                 dashBoardData.bizDevData.currentRegionContractsData = dashBoardData.bizDevData.contractsData.filter( function(d) { return d.Region === region; } );
 
                  // Update localities
-                 dashBoardData.contractsData.localityList = getUniqueSortedList(dashBoardData.contractsData.currentRegionData, "Locality");
-                 updateSelector( document.getElementById("contractsLocalitySelector"), dashBoardData.contractsData.localityList );
+                 dashBoardData.bizDevData.localityList = getUniqueSortedList(dashBoardData.bizDevData.currentRegionData, "Locality");
+                 updateSelector( document.getElementById("bizDevLocalitySelector"), dashBoardData.bizDevData.localityList );
 
                  // Update Cost Centres
-                 dashBoardData.contractsData.costCentreList = getUniqueSortedList(dashBoardData.contractsData.currentRegionData,"Cost Centres");
-                 updateSelector( document.getElementById("contractsCostCentreSelector"), dashBoardData.contractsData.costCentreList);
+                 dashBoardData.bizDevData.costCentreList = getUniqueSortedList(dashBoardData.bizDevData.currentRegionData,"Cost Centres");
+                 updateSelector( document.getElementById("bizDevCostCentreSelector"), dashBoardData.bizDevData.costCentreList);
 
-                 var data = computeQuarterlyData( dashBoardData.contractsData.currentRegionData );
+                 var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentRegionData, dashBoardData.bizDevData.currentRegionContractsData);
 
                  svg = d3.select(document.getElementById("quarterlySVG"));
                  
-                 plotQuarterlyData( svg, data);
+                 //plotQuarterlyBizDevData( svg, data);
 
-                 var count = getIdentifierCount( dashBoardData.contractsData.currentRegionData, dashBoardData.contractsData.localityList, "Locality");
+                 var count = getIdentifierCount( dashBoardData.bizDevData.currentRegionData, dashBoardData.bizDevData.localityList, "Locality");
                  var pieData = [];
-                 for ( var i = 0; i < dashBoardData.contractsData.localityList.length; i++ )
+                 for ( var i = 0; i < dashBoardData.bizDevData.localityList.length; i++ )
                  {
-                     pieData.push( {label: dashBoardData.contractsData.localityList[i], count: count[i]});
+                     pieData.push( {label: dashBoardData.bizDevData.localityList[i], count: count[i]});
                  }
                  
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
@@ -434,51 +434,51 @@
                  plotPieChart( svg, pieData);
 
                  // Update data table:
-                 var tableData = makeTableData(data);
+                 var tableData = makeBizDevTableData(data);
                  updateTable( document.getElementById("dataTable"), tableData);
                  return;
             }
             
-            function contractsLocalitySelectFunction() 
+            function bizDevLocalitySelectFunction() 
             {
-                 var locality = document.getElementById("contractsLocalitySelector").value;
-                 dashBoardData.contractsData.currentLocalityData = dashBoardData.contractsData.currentRegionData.filter( function(d) { return d.Locality === locality; } );
+                 var locality = document.getElementById("bizDevLocalitySelector").value;
+                 dashBoardData.bizDevData.currentLocalityData = dashBoardData.bizDevData.currentRegionData.filter( function(d) { return d.Locality === locality; } );
                      
                  // Update Cost Centres
-                 dashBoardData.contractsData.costCentreList= getUniqueSortedList(dashBoardData.contractsData.currentLocalityData,"Cost Centres");
-                 updateSelector( document.getElementById("contractsCostCentreSelector"), dashBoardData.contractsData.costCentreList);
+                 dashBoardData.bizDevData.costCentreList= getUniqueSortedList(dashBoardData.bizDevData.currentLocalityData,"Cost Centres");
+                 updateSelector( document.getElementById("bizDevCostCentreSelector"), dashBoardData.bizDevData.costCentreList);
 
                  // First Histogram Plot
 
-                 var data = computeQuarterlyData( dashBoardData.contractsData.currentLocalityData );                 
+                 var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentLocalityData );                 
 
                  var svg = d3.select(document.getElementById("quarterlySVG"));                 
-                 plotQuarterlyData( svg, data );  
+                 //plotQuarterlyBizDevData( svg, data );  
 
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                 plotCostCentres(svg, dashBoardData.contractsData.currentLocalityData)   
+                 plotCostCentres(svg, dashBoardData.bizDevData.currentLocalityData)   
 
                  // Update data table:
-                 var tableData = makeTableData(data);
+                 var tableData = makeBizDevTableData(data);
                  updateTable( document.getElementById("dataTable"), tableData);                                                          
                  return;
             }
 
-            function contractsCostCentreSelectFunction() 
+            function bizDevCostCentreSelectFunction() 
             {
-                 var costCentre = document.getElementById("contractsCostCentreSelector").value;
-                 dashBoardData.contractsData.currentCostCentreData = dashBoardData.contractsData.currentLocalityData.filter( function(d) { return d["Cost Centres"] === costCentre; } );
+                 var costCentre = document.getElementById("bizDevCostCentreSelector").value;
+                 dashBoardData.bizDevData.currentCostCentreData = dashBoardData.bizDevData.currentLocalityData.filter( function(d) { return d["Cost Centres"] === costCentre; } );
                      
-                 var data = computeQuarterlyData( dashBoardData.contractsData.currentCostCentreData );                 
+                 var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentCostCentreData );                 
 
                  var svg = d3.select(document.getElementById("quarterlySVG"));                 
-                 plotQuarterlyData( svg, data );  
+                 //plotQuarterlyBizDevData( svg, data );  
 
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                 plotCostCentres(svg, dashBoardData.contractsData.currentLocalityData);
+                 //plotCostCentres(svg, dashBoardData.bizDevData.currentLocalityData);
 
                  // Update data table:
-                 var tableData = makeTableData(data);
+                 var tableData = makeBizDevTableData(data);
                  updateTable( document.getElementById("dataTable"), tableData);                 
 
                  return;
@@ -503,40 +503,38 @@
                  return;
             }
 
-           
+            d3.csv( "./csdata/DataFolder/8_Q1_BusinessPipeline-2015-07-15-Proposals.csv", function(d)
+            { 
+              // Copy the data read into the global variable:
+              dashBoardData.bizDevData.rawData = d;
+              var data = d;
+
+              dashBoardData.bizDevData.regionList = getUniqueSortedList(data, "Region");
+              dashBoardData.bizDevData.localityList = getUniqueSortedList(data, "Locality");
+              dashBoardData.bizDevData.costCentreList = getUniqueSortedList(data, "Name");
+              dashBoardData.bizDevData.propertyList = Object.getOwnPropertyNames(data[0]);
+            });                                 
+
             d3.csv( "./csdata/DataFolder/9_Q1_BusinessPipeline-2015-07-15-Contracts.csv", function(d)
             { 
               // Copy the data read into the global variable:
-              dashBoardData.contractsData.rawData = d;
+              dashBoardData.bizDevData.contractsData = d;
 
               // Copy the data locally as well:
               var data = d;
 
-              dashBoardData.contractsData.regionList = getUniqueSortedList(data, "Region");
-              dashBoardData.contractsData.localityList = getUniqueSortedList(data, "Locality");
-              dashBoardData.contractsData.costCentreList = getUniqueSortedList(data, "Name");
-              dashBoardData.contractsData.propertyList = Object.getOwnPropertyNames(data[0]);
-
               // Add Regions to the drop down list:
-              updateSelector( document.getElementById("contractsRegionSelector"),dashBoardData.contractsData.regionList );
+              updateSelector( document.getElementById("bizDevRegionSelector"), dashBoardData.bizDevData.regionList );
 
               // Add Localities to the drop down list:
-              updateSelector( document.getElementById("contractsLocalitySelector"),dashBoardData.contractsData.localityList );
+              updateSelector( document.getElementById("bizDevLocalitySelector"), dashBoardData.bizDevData.localityList );
 
               // Add cost centres to the drop down list:
-              updateSelector( document.getElementById("contractsCostCentreSelector"),dashBoardData.contractsData.costCentreList );
+              updateSelector( document.getElementById("bizDevCostCentreSelector"), dashBoardData.bizDevData.costCentreList );
 
-              regionSelectFunction();
+              bizDevRegionSelectFunction();
 
             });
-
-            d3.csv( "./csdata/DataFolder/8_Q1_BusinessPipeline-2015-07-15-Proposals.csv", function(d)
-            { 
-              // Copy the data read into the global variable:
-              dashBoardData.proposalsData.rawData = d;
-              var data = d;
-
-            });                                 
 
          </script>
          
