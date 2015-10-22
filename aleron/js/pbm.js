@@ -1,89 +1,95 @@
 // *******************************************************
 //    People and Business Model Utility functions
 // *****************************************************//
-function computeQuarterlyBizDevData(pipeLineDataArray, contractDataArray)
+function computeQuarterlyPeopleBizModelData(peopleBizModelDataArray)
 {
     /*****************************************
      * This function is accessing global data:
      * ****************************************/
-
+    // Generic routine to compute quarterly data. Here is the format:
+    // Main fields of the object data will be the entries of the first column
+    // each field is an object and the fields of this object are d
+    //
+    //
+    //                        data[property][ColumnHeading1]                                data[property][ColumnHeading2] ...
+    //                    data[prop][ColHead1][sub1] data[prop][ColHead1][sub2]...   data[prop][ColHead2][sub1] data[prop][ColHead2][sub2]...
+    //    data[property1]
+    //    data[property2]
+    //       .
+    //       .
+    //       .
+    
     // This is the object returned:
     var data = {};
-    data.pipeLineQualified = [];
-    data.pipeLineQualifiedOut = [];
-    data.pipeLineSuccessful = [];
-    data.pipeLineUnsuccessful = [];
-    data.pipeLineInProgress = [];
-    data.contractAwardPerQuarter = [];
 
-    data.quarterNames = ["Q1", "Q2", "Q3", "Q4"];
+    var headerColumn = ["AD", "CSMs", "TeamManagers", "CSM + Team Leaders", "Practitioners", "Administrators", "Others", "TOTAL"];
+    var headerRow = ["Q1", "Q2", "Q3", "Q4"];
+    var quantityForEachSubColumn = ["HC", "FTE"];
 
-    var property = []; 
-    
-    // At the moment we only have one quarter
-    var numOfQuarters = 1;
-
-    for ( var i = 0; i < numOfQuarters; i++ )
+    for ( var i = 0; i < headerColumn.length; i++ )
     {
-        property = dashBoardData.bizDevData.propertyList[2]; 
-        data.pipeLineQualified[i] = sumArrayProperty( pipeLineDataArray, property);
-
-
-        property = dashBoardData.bizDevData.propertyList[3]; 
-        data.pipeLineQualifiedOut[i] = sumArrayProperty( pipeLineDataArray, property);
-
-        // TODO: This property is matching out of sheer luck, do it proper:
-        property = dashBoardData.bizDevData.propertyList[2]; 
-        data.contractAwardPerQuarter[i] = sumArrayProperty( contractDataArray, property);
-
-    }
-
-
-    data.pipeLineTotal = [];
-    data.pipeLineTotalQualified = [];
-    data.percentAgeQualified = [];
-
-    data.pipeLineTotalSuccessful = [];
-    data.percentAgeSuccessful = [];
-
-    // Based on the above computations, calculate other things:
-    for ( var i = 0; i < numOfQuarters; i++ )
-    {
-        data.pipeLineTotal[i] = data.pipeLineQualified[i] +  data.pipeLineQualifiedOut[i];
-        data.pipeLineTotalQualified[i] = data.pipeLineQualified[i];
-
-        // TODO: Handle divide by zero:
-        if ( data.pipeLineTotal[i] === 0 )
+        data[headerColumn[i]] = {};
+        for ( var j = 0; j < headerRow.length; j++ )
         {
-            data.pipeLineTotal[i] = 1;
+            data[headerColumn[i]][headerRow[j]] = {};
+            for ( var k = 0; k < quantityForEachSubColumn.length; k++ )
+            {
+                // var property = dashBoardData.peopleBizModelData.propertyList[2]; 
+                // TODO: How to have a list of functions to compute for each quantity?
+                //var computedQuantity = sumArrayProperty( peopleBizModelDataArray, property);
+                var computedQuantity = 0.0;
+                data[headerColumn[i]][headerRow[j]][quantityForEachSubColumn[k]] = computedQuantity;
+            }
         }
-
-        data.percentAgeQualified[i] = data.pipeLineTotalQualified[i] / data.pipeLineTotal[i] * 100.0;
-        data.percentAgeSuccessful[i] = data.pipeLineTotalSuccessful[i] / data.pipeLineTotal[i] * 100.0;
     }
-    
     return data;
 }
 
-function makeBizDevTableData(data)
+function makePeopleBizModelTableData(data)
 {
-    var tableHeader = ["Pipeline (£)", "Q1", "Q2", "Q3", "Q4", "FY", "FY15/16", "FY14/15"];
     var tableData = [];
-    tableData.push(tableHeader);
-    
-    var propertyName = ["pipeLineQualified", "pipeLineQualifiedOut", "pipeLineTotal ", "percentAgeQualified", "pipeLineSuccessful", "pipeLineUnsuccessful", "pipeLineInProgress", "pipeLineTotalQualified", "percentageSuccessful", "contractAwardPerQuarter" ];
 
-    var firstColumn = ["Pipeline - Qualified", "Pipeline - Qualified Out", "Total Pipeline", "% Qualified", "Pipeline - Successful", "Pipeline - Unsuccessful", "Pipeline - In progress", "Total Qualified Pipeline", "% Successful", "Contract Award per Quarter" ];
+    if ( (data === undefined) || data.length === 0 )
+    {
+        console.log( 'makePeopleBizModelTableData(data):data is undefined or of zero length');
+        return;
+    }
 
-    for ( var i = 0; i < propertyName.length; i++ )
+    // TODO: None of these should be empty! do an error check on this
+    var firstColumn = Object.getOwnPropertyNames(data);
+    var topRow      = Object.getOwnPropertyNames(data[firstColumn[0]]);
+    var subTopRow   = Object.getOwnPropertyNames(data[firstColumn[0]][topHeader[0]]);
+
+    // Make the top two header rows of the table:
+    var topHeader = [];
+    var subHeader = [];
+    for ( var i = 0; i < topRow.length; i++ )
+    {
+        for ( var j = 0; j < subTopRow.length; j++ )
+        {
+            topHeader.push(topRow[i]);
+            subHeader.push(subTopRow[j]);
+        }
+    }
+
+    tableData.push(topHeader);
+    tableData.push(subHeader);
+
+
+    for ( var i = 0; i < firstColumn.length; i++ )
     {
         var row = [];
-        row.push( firstColumn[i]);
-
-        row = row.concat( data[propertyName[i]]);
-        // dummy entries to match the number of columns
-        row = row.concat( [0, 0, 0, 0, 0, 0] );
+        row.push( firstColumn[i] );
+        for ( var j = 0; j < topRow.lenght; j++ )
+        {
+            for ( var k = 0; k < subTopRow.length; k++ )
+            {
+                // Ensure that this is a number
+                var thisEntry = +data[firstColumn[i]][topRow[j]][subTopRow[k]];
+                row.push(thisEntry);
+            }
+        }
         tableData.push(row);
-    }    
+    }
     return tableData;
 }
