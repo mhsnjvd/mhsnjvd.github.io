@@ -63,16 +63,7 @@ function updateTable( table, tableData)
         for ( var j = 0; j < N; j++ )
         {
             var cell = row.insertCell(j);   
-            // First entry is a string
-            if ( j === 0)         
-            {
-                cell.innerHTML = tableData[i][j];
-            }
-            // Other entries are numbers:
-            else
-            {
-                cell.innerHTML = dashBoardSettings.numberFormat( tableData[i][j]);
-            }
+            cell.innerHTML = tableData[i][j];
         }
     }
     return table;    
@@ -100,6 +91,7 @@ function updateSelector( selectorID, optionList )
     {
         // TODO: Do better error handling.
         console.log('updateSelector():optionList is undefined');
+        console.log('The call came from ' +  arguments.callee.caller );
         return;
     }
      

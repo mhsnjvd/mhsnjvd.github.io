@@ -32,7 +32,6 @@ function computeQuarterlyFinancialData(dataArray)
     return data;
 }
 
-// 
 function makeFinancialTableData(data)
 {
     var tableHeader = ["Quantity", "Q1", "Q2", "Q3", "Q4", "FY", "Budget", "Variation", "Variation (%)"];
@@ -47,7 +46,11 @@ function makeFinancialTableData(data)
         var row = [];
         row.push( firstColumn[i]);
         // array of 4 numbers (one for each quarters)
-        row = row.concat( data[propertyName[i]]);
+        var dataArray = data[propertyName[i]];
+        for ( var j = 0; j < dataArray.length; j++ )
+        {
+            row.push(dashBoardSettings.numberFormat(dataArray[j]));
+        }
         // dummy entries to match the number of columns
         row = row.concat( [0, 0, 0, 0]);
         tableData.push(row);

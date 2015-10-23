@@ -22,8 +22,10 @@ function computeQuarterlyPeopleBizModelData(peopleBizModelDataArray)
     // This is the object returned:
     var data = {};
 
-    var headerColumn = ["AD", "CSMs", "TeamManagers", "CSM + Team Leaders", "Practitioners", "Administrators", "Others", "TOTAL"];
-    var headerRow = ["Q1", "Q2", "Q3", "Q4"];
+    var headerColumn = ["AD", "CSMs", "Team Managers", "CSM + Team Leaders", "Practitioners", "Administrators", "Others", "TOTAL"];
+    //var headerRow = ["Q1", "Q2", "Q3", "Q4"];
+    // Only Q1 at the moment:
+    var headerRow = ["Q1"];
     var quantityForEachSubColumn = ["HC", "FTE"];
 
     for ( var i = 0; i < headerColumn.length; i++ )
@@ -38,6 +40,19 @@ function computeQuarterlyPeopleBizModelData(peopleBizModelDataArray)
                 // TODO: How to have a list of functions to compute for each quantity?
                 //var computedQuantity = sumArrayProperty( peopleBizModelDataArray, property);
                 var computedQuantity = 0.0;
+                if ( quantityForEachSubColumn[k] == "HC" )
+                {
+                    // This is just the head count:
+                    computedQuantity = peopleBizModelDataArray.length;
+                }
+
+                if ( quantityForEachSubColumn[k] == "FTE" )
+                {
+                    // Full time Equivalent
+                    var property = dashBoardData.peopleBizModelData.propertyList[12];
+                    computedQuantity = sumArrayProperty( peopleBizModelDataArray, property);
+                }
+
                 data[headerColumn[i]][headerRow[j]][quantityForEachSubColumn[k]] = computedQuantity;
             }
         }
@@ -58,34 +73,33 @@ function makePeopleBizModelTableData(data)
     // TODO: None of these should be empty! do an error check on this
     var firstColumn = Object.getOwnPropertyNames(data);
     var topRow      = Object.getOwnPropertyNames(data[firstColumn[0]]);
-    var subTopRow   = Object.getOwnPropertyNames(data[firstColumn[0]][topHeader[0]]);
+    var subTopRow   = Object.getOwnPropertyNames(data[firstColumn[0]][topRow[0]]);
 
-    // Make the top two header rows of the table:
-    var topHeader = [];
-    var subHeader = [];
+    // Make the top header rows of the table:
+    var tableHeader = ["Staff"];
     for ( var i = 0; i < topRow.length; i++ )
     {
         for ( var j = 0; j < subTopRow.length; j++ )
         {
-            topHeader.push(topRow[i]);
-            subHeader.push(subTopRow[j]);
+            var str = subTopRow[j] + " (" + topRow[i] + ")";
+            tableHeader.push(str);
         }
     }
 
-    tableData.push(topHeader);
-    tableData.push(subHeader);
-
+    tableData.push(tableHeader);
 
     for ( var i = 0; i < firstColumn.length; i++ )
     {
         var row = [];
         row.push( firstColumn[i] );
-        for ( var j = 0; j < topRow.lenght; j++ )
+        console.log(topRow.length);
+        for ( var j = 0; j < topRow.length; j++ )
         {
             for ( var k = 0; k < subTopRow.length; k++ )
             {
                 // Ensure that this is a number
                 var thisEntry = +data[firstColumn[i]][topRow[j]][subTopRow[k]];
+                console.log("This Entry = " + thisEntry );
                 row.push(thisEntry);
             }
         }
