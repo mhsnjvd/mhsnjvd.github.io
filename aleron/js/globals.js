@@ -3,6 +3,7 @@
 /////////////////////////////////////////////
 
 var dashBoardData = {};
+dashBoardData.impactData = {};
 dashBoardData.financialsData = {};
 dashBoardData.bizDevData = {};
 dashBoardData.peopleBizModelData = {};
@@ -28,3 +29,7 @@ dashBoardSettings.color.budget = "red";
 dashBoardSettings.color.previous = "green";
 dashBoardSettings.color.histogram = "steelblue";
 dashBoardSettings.numberFormat = d3.format(",.2f");
+
+
+// Path of data directory:
+dashBoardSettings.dataDir = "./data/";

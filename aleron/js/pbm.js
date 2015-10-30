@@ -97,9 +97,12 @@ function makePeopleBizModelTableData(data)
         {
             for ( var k = 0; k < subTopRow.length; k++ )
             {
-                // Ensure that this is a number
                 var thisEntry = +data[firstColumn[i]][topRow[j]][subTopRow[k]];
-                console.log("This Entry = " + thisEntry );
+                // Don't add decimals if it's a head count
+                if ( subTopRow[k] !== "HC" )
+                {
+                    thisEntry = dashBoardSettings.numberFormat( +data[firstColumn[i]][topRow[j]][subTopRow[k]] );
+                }
                 row.push(thisEntry);
             }
         }

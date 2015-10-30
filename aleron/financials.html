@@ -511,7 +511,7 @@
 
            
             // Upload the data file and process it:
-            d3.csv( "./csdata/Financials_File_Dummy.csv", function(d)
+            d3.csv( dashBoardSettings.dataDir + "Financials_File_Dummy.csv", function(d)
             { 
               // Copy the data read into the global variable:
               dashBoardData.financialsData.rawData = d;
