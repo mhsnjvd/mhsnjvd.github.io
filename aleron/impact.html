@@ -199,7 +199,7 @@
                  </div>
 
                   <div  class="col-xs-4">
-                     Select Cost Centre
+                     Select Contract
                  </div>
 
               </div>
@@ -219,7 +219,7 @@
                    </div>
 
                    <div class="col-xs-4">
-                     <select style="width: 250px" id="impactCostCentreSelector" onchange="impactCostCentreSelectFunction()">
+                     <select style="width: 250px" id="impactContractNameSelector" onchange="impactContractNameSelectFunction()">
                      </select>
                    </div>
 
@@ -322,19 +322,24 @@
             function impactRegionSelectFunction() 
             {
                  var region = document.getElementById("impactRegionSelector").value;
+                 var regionProperty = dashBoardData.impactData.regionProperty;
+                 var localityProperty = dashBoardData.impactData.localityProperty; 
+                 var contractNameProperty = dashBoardData.impactData.contractNameProperty; 
+
                  // Initialize region data and locality list:
-                 dashBoardData.impactData.currentRegionData = dashBoardData.impactData.rawData.filter( function(d) { return d.Region === region; } );
-                 //dashBoardData.impactData.currentRegionContractsData = dashBoardData.impactData.shortTermData.filter( function(d) { return d.Region === region; } );
+                 dashBoardData.impactData.currentRegionData = dashBoardData.impactData.rawData.filter( function(d) { return d[regionProperty] === region; } );
+                 dashBoardData.impactData.currentRegionExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter( function(d)
+                         { return d[regionProperty] === region; } );
 
                  // Update localities
-                 //dashBoardData.impactData.localityList = getUniqueSortedList(dashBoardData.impactData.currentRegionData, "Locality");
-                 //updateSelector( document.getElementById("impactLocalitySelector"), dashBoardData.impactData.localityList );
+                 dashBoardData.impactData.localityList = getUniqueSortedList(dashBoardData.impactData.currentRegionData, localityProperty);
+                 updateSelector( document.getElementById("impactLocalitySelector"), dashBoardData.impactData.localityList );
 
-                 // Update Cost Centres
-                 //dashBoardData.impactData.costCentreList = getUniqueSortedList(dashBoardData.impactData.currentRegionData,"Cost Centres");
-                 //updateSelector( document.getElementById("impactCostCentreSelector"), dashBoardData.impactData.costCentreList);
+                 // Update Contracts
+                 dashBoardData.impactData.contractNameList = getUniqueSortedList(dashBoardData.impactData.currentRegionData, contractNameProperty);
+                 updateSelector( document.getElementById("impactContractNameSelector"), dashBoardData.impactData.contractNameList);
 
-                 var data = computeQuarterlyImpactData( dashBoardData.impactData.currentRegionData);
+                 var data = computeQuarterlyImpactData( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentRegionExternalInspectionsData );
 
                  svg = d3.select(document.getElementById("quarterlySVG"));
                  
@@ -363,8 +368,8 @@
                  dashBoardData.impactData.currentLocalityData = dashBoardData.impactData.currentRegionData.filter( function(d) { return d.Locality === locality; } );
                      
                  // Update Cost Centres
-                 dashBoardData.impactData.costCentreList= getUniqueSortedList(dashBoardData.impactData.currentLocalityData,"Cost Centres");
-                 updateSelector( document.getElementById("impactCostCentreSelector"), dashBoardData.impactData.costCentreList);
+                 dashBoardData.impactData.contractNameList= getUniqueSortedList(dashBoardData.impactData.currentLocalityData,"Cost Centres");
+                 updateSelector( document.getElementById("impactContractNameSelector"), dashBoardData.impactData.contractNameList);
 
                  // First Histogram Plot
 
@@ -374,7 +379,7 @@
                  //plotQuarterlyBizDevData( svg, data );  
 
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                 plotCostCentres(svg, dashBoardData.impactData.currentLocalityData)   
+                 plotContractNames(svg, dashBoardData.impactData.currentLocalityData)   
 
                  // Update data table:
                  var tableData = makeImpactTableData(data);
@@ -382,18 +387,18 @@
                  return;
             }
 
-            function impactCostCentreSelectFunction() 
+            function impactContractNameSelectFunction() 
             {
-                 var costCentre = document.getElementById("impactCostCentreSelector").value;
-                 dashBoardData.impactData.currentCostCentreData = dashBoardData.impactData.currentLocalityData.filter( function(d) { return d["Cost Centres"] === costCentre; } );
+                 var contractName = document.getElementById("impactContractNameSelector").value;
+                 dashBoardData.impactData.currentContractNameData = dashBoardData.impactData.currentLocalityData.filter( function(d) { return d["Cost Centres"] === contractName; } );
                      
-                 var data = computeQuarterlyBizDevData( dashBoardData.impactData.currentCostCentreData );                 
+                 var data = computeQuarterlyBizDevData( dashBoardData.impactData.currentContractNameData );                 
 
                  var svg = d3.select(document.getElementById("quarterlySVG"));                 
                  //plotQuarterlyBizDevData( svg, data );  
 
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                 //plotCostCentres(svg, dashBoardData.impactData.currentLocalityData);
+                 //plotContractNames(svg, dashBoardData.impactData.currentLocalityData);
 
                  // Update data table:
                  var tableData = makeImpactTableData(data);
@@ -420,49 +425,36 @@
                  return;
             }
 
-
-            d3.csv( dashBoardSettings.dataDir + "Childrens_Services_Short_Term_Absence_Qtr_1_1516.csv", function(d)
-            { 
-              // Copy the data read into the global variable:
-              dashBoardData.impactData.shortTermData = d;
-
-              // Copy the data locally as well:
-              var data = d;
-
-              console.log("Done reading the first file...");
-              // Add Regions to the drop down list:
-
-              // Add Localities to the drop down list:
-              //updateSelector( document.getElementById("impactLocalitySelector"), dashBoardData.impactData.localityList );
-
-              // Add cost centres to the drop down list:
-              //updateSelector( document.getElementById("impactCostCentreSelector"), dashBoardData.impactData.costCentreList );
-
-
+            d3.csv( dashBoardSettings.dataDir + "003_CAIU_External.csv", function(d)
+            {
+               dashBoardData.impactData.externalInspectionsData = d;
+               console.log("Done reading external inspections file");
             });
 
-            d3.csv( dashBoardSettings.dataDir + "Childrens_Services_FTE_Qtr_1_1516.csv", function(d)
+
+
+            d3.csv( dashBoardSettings.dataDir + "001_Contract_DB_Q2.csv", function(d)
             { 
               // Copy the data read into the global variable:
               dashBoardData.impactData.rawData = d;
               var data = d;
 
+              console.log("Done reading constracts files");
+
               dashBoardData.impactData.propertyList = Object.getOwnPropertyNames(data[0]);
-              var regionProperty = dashBoardData.impactData.propertyList[1]; 
-              var localityProperty = dashBoardData.impactData.propertyList[2]; 
-              var costCentreProperty = dashBoardData.impactData.propertyList[3]; 
+              dashBoardData.impactData.regionProperty = dashBoardData.impactData.propertyList[0]; 
+              dashBoardData.impactData.localityProperty = dashBoardData.impactData.propertyList[1]; 
+              dashBoardData.impactData.contractNameProperty = dashBoardData.impactData.propertyList[3]; 
 
               // Get the lists of regions etc:
-              dashBoardData.impactData.regionList = getUniqueSortedList(data, regionProperty);
-              dashBoardData.impactData.localityList = getUniqueSortedList(data, localityProperty);
-              dashBoardData.impactData.costCentreList = getUniqueSortedList(data, costCentreProperty);
+              dashBoardData.impactData.regionList = getUniqueSortedList(data, dashBoardData.impactData.regionProperty);
+              dashBoardData.impactData.localityList = getUniqueSortedList(data, dashBoardData.impactData.localityProperty);
+              dashBoardData.impactData.contractNameList = getUniqueSortedList(data, dashBoardData.impactData.contractNameProperty);
 
               // Update selectors based on the lists above:
               updateSelector( document.getElementById("impactRegionSelector"), dashBoardData.impactData.regionList );
               updateSelector( document.getElementById("impactLocalitySelector"), dashBoardData.impactData.localityList );
-              updateSelector( document.getElementById("impactCostCentreSelector"), dashBoardData.impactData.costCentreList );
-
-              console.log("Done reading the second file...");
+              updateSelector( document.getElementById("impactContractNameSelector"), dashBoardData.impactData.contractNameList );
 
               impactRegionSelectFunction();
 

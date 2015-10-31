@@ -1,7 +1,7 @@
 // *******************************************************
 //    Impact Measurement Utility Functions
 // *****************************************************//
-function computeQuarterlyImpactData(impactDataArray)
+function computeQuarterlyImpactData(impactDataArray, externalInspectionsDataArray)
 {
     /*****************************************
      * This function is accessing global data:
@@ -11,7 +11,7 @@ function computeQuarterlyImpactData(impactDataArray)
     // This is the object returned:
     var data = {};
 
-    var headerColumn = ["Green", "Amber", "Red", "Total Number of Contracts", "Green (Outcomes)", "Amber (Outcomes)", "Red (Outcomes)", "Percentage %", "#CYP WS work with intensively", "#CYP WS work with", "Outstanding", "Good/Very Good", "Satisfactory/Requires Improvement", "Unsatisfactory", "Unscored", "Total"];
+    var headerColumn = ["Green", "Amber", "Red", "Unscored", "Total Number of Contracts", "Green (Outcomes)", "Amber (Outcomes)", "Red (Outcomes)", "Percentage %", "#CYP WS work with intensively", "#CYP WS work with", "Outstanding", "Good/Very Good", "Satisfactory/Requires Improvement", "Unsatisfactory", "Performance Unscored", "Total"];
     var headerRow = ["Q1", "Q2", "Q3", "Q4", "FY"];
 
     for ( var i = 0; i < headerColumn.length; i++ )
@@ -23,8 +23,8 @@ function computeQuarterlyImpactData(impactDataArray)
             // var property = dashBoardData.impactData.propertyList[2]; 
             // TODO: How to have a list of functions to compute for each quantity?
             //var computedQuantity = sumArrayProperty( impactDataArray, property);
-
             /*
+
             var computedQuantity = 0.0;
             // This is just the head count:
             computedQuantity = impactDataArray.length;
@@ -36,6 +36,31 @@ function computeQuarterlyImpactData(impactDataArray)
             */
         }
     }
+
+    // Count the number of G, A, R, missing and total for the second quarter
+    data[headerColumn[0]][headerRow[1]] = sumArrayProperty( impactDataArray, "G");
+    data[headerColumn[1]][headerRow[1]] = sumArrayProperty( impactDataArray, "A");
+    data[headerColumn[2]][headerRow[1]] = sumArrayProperty( impactDataArray, "R");
+    data[headerColumn[3]][headerRow[1]] = impactDataArray.length - data[headerColumn[0]][headerRow[1]] - data[headerColumn[1]][headerRow[1]] - data[headerColumn[2]][headerRow[1]];
+    data[headerColumn[4]][headerRow[1]] = impactDataArray.length;
+
+
+
+    // External Inspections:
+    // The first four entries of the headerRow must be quarter names
+    var numOfQuarters = 2;
+    var quarterNames = ["Q1", "Q2", "Q3", "Q4"];
+    for ( var i = 0; i < numOfQuarters; i++ )
+    {
+       var quarterlyExternalInspectionsData = externalInspectionsDataArray.filter( function(d){ return d["Reporting Quarter"] === quarterNames[i]; } );
+      data[headerColumn[11]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Excellent/Outstanding"] == 1; } ).length;
+      data[headerColumn[12]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Good/Very Good"] == 1; } ).length;
+      data[headerColumn[13]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Requires Improvement/Satisfactory/Adequate"] == 1; } ).length;
+      data[headerColumn[14]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Unsatisfactory/Inadequate/Poor/Weak"] == 1; } ).length;
+      data[headerColumn[15]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Uncored"] == 1; } ).length;
+      data[headerColumn[16]][quarterNames[i]] = quarterlyExternalInspectionsData.length;
+    }
+
     return data;
 }
 
@@ -63,7 +88,7 @@ function makeImpactTableData(data)
     }
 
     // Number of properties in each subtable
-    var propertyCount = [4, 3, 1, 2, 6]; 
+    var propertyCount = [5, 3, 1, 2, 6]; 
     // Add rows corresponding to each table
     var j = 0;
     for ( var i = 0; i < tableHeadings.length; i++ )
@@ -103,7 +128,7 @@ function makeImpactTableData(data)
 }
 
 
-
+// table is the ID of the html table element
 // tableData is an array, each element of which 
 // is another array containing row data
 // the first row is conisdered as the table head.
@@ -114,7 +139,6 @@ function updateImpactTable( table, tableData)
         table.deleteRow(0);
     }
 
-    
     // Number of rows
     var M = tableData.length;
     // Number of columns
@@ -122,7 +146,7 @@ function updateImpactTable( table, tableData)
 
     // Which rows are headers?
     // Last row is also header for total :)
-    var headerIndices = [0, 6, 11, 14, 18, M-1];
+    var headerIndices = [0, 7, 12, 15, 19, M-1];
 
     // Make All the rows
     for ( var i = 0; i < M; i++ )
@@ -147,6 +171,5 @@ function updateImpactTable( table, tableData)
             table.rows[headerIndices[i]].cells[j].innerHTML = table.rows[headerIndices[i]].cells[j].innerHTML.bold();      
         }
     }
-
     return table;    
 }
