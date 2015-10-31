@@ -9,81 +9,98 @@ function computeQuarterlyBizDevData(pipeLineDataArray, contractDataArray)
 
     // This is the object returned:
     var data = {};
-    data.pipeLineQualified = [];
-    data.pipeLineQualifiedOut = [];
-    data.pipeLineSuccessful = [];
-    data.pipeLineUnsuccessful = [];
-    data.pipeLineInProgress = [];
-    data.contractAwardPerQuarter = [];
+
+    // All the fields we need to compute
+    // The array sizes are 5 for the 4 quarters and the FY15/16
+    data.pipeLineQualified = [0, 0, 0, 0, 0];
+    data.pipeLineQualifiedOut = [0, 0, 0, 0, 0];
+    data.pipeLineSuccessful = [0, 0, 0, 0, 0];
+    data.pipeLineUnsuccessful = [0, 0, 0, 0, 0];
+    data.pipeLineInProgress = [0, 0, 0, 0, 0];
+    data.contractAwardPerQuarter = [0, 0, 0, 0, 0];
+    data.pipeLineTotal = [0, 0, 0, 0, 0];
+    data.pipeLineTotalQualified = [0, 0, 0, 0, 0];
+    data.percentAgeQualified = [0, 0, 0, 0, 0];
+    data.percentAgeSuccessful = [0, 0, 0, 0, 0];
+    data.contractAwardPerQuarter = [0, 0, 0, 0, 0];
+
 
     data.quarterNames = ["Q1", "Q2", "Q3", "Q4"];
+    data.statusStrings = {successful: "successful", unsuccessful: "unsuccessful", inProgress:"in progress", qualifiedOut: "qulified out"};
 
-    var property = []; 
-    
     // At the moment we only have one quarter
-    var numOfQuarters = 1;
+    var numOfQuarters = 4;
 
     for ( var i = 0; i < numOfQuarters; i++ )
     {
-        property = dashBoardData.bizDevData.propertyList[2]; 
-        data.pipeLineQualified[i] = sumArrayProperty( pipeLineDataArray, property);
+        // Divide the data based on their statuses:
+        var statusProperty = dashBoardData.bizDevData.propertyList[14]; 
+        var successfulData = pipeLineDataArray.filter( function(d) { return d[statusProperty] == data.statusStrings.successful; } );
+        var unsuccessfulData = pipeLineDataArray.filter( function(d) { return d[statusProperty] == data.statusStrings.unsuccessful; } );
+        var inProgressData = pipeLineDataArray.filter( function(d) { return d[statusProperty] == data.statusStrings.inProgress; } );
+        var qualifiedOutData = pipeLineDataArray.filter( function(d) { return d[statusProperty] == data.statusStrings.qualifiedOut; } );
 
+        // Record each status and Convert to £k
+        var valueProperty = dashBoardData.bizDevData.propertyList[3];
+        data.pipeLineQualifiedOut[i] = (sumArrayProperty( qualifiedOutData, valueProperty) / 1000.0) || 0.0;
+        // TODO: How is this different from the above?
+        data.pipeLineQualified[i] = (sumArrayProperty( qualifiedOutData, valueProperty)/1000.0) || 0.0;
+        data.pipeLineSuccessful[i] = (sumArrayProperty( successfulData, valueProperty)/1000.0) || 0.0;
+        data.pipeLineUnsuccessful[i] = (sumArrayProperty( unsuccessfulData, valueProperty)/1000.0) || 0.0;
+        data.pipeLineInProgress[i] = (sumArrayProperty( inProgressData, valueProperty)/1000.0) || 0.0;
 
-        property = dashBoardData.bizDevData.propertyList[3]; 
-        data.pipeLineQualifiedOut[i] = sumArrayProperty( pipeLineDataArray, property);
-
-        // TODO: This property is matching out of sheer luck, do it proper:
-        property = dashBoardData.bizDevData.propertyList[2]; 
-        data.contractAwardPerQuarter[i] = sumArrayProperty( contractDataArray, property);
+        /**********************************************/
+        var valueTotalProperty = dashBoardData.bizDevData.contractsPropertyList[2];
+        data.contractAwardPerQuarter[i] = sumArrayProperty( contractDataArray, valueTotalProperty)/1000.0 || 0.0;
 
     }
 
-
-    data.pipeLineTotal = [];
-    data.pipeLineTotalQualified = [];
-    data.percentAgeQualified = [];
-
-    data.pipeLineTotalSuccessful = [];
-    data.percentAgeSuccessful = [];
 
     // Based on the above computations, calculate other things:
     for ( var i = 0; i < numOfQuarters; i++ )
     {
-        data.pipeLineTotal[i] = data.pipeLineQualified[i] +  data.pipeLineQualifiedOut[i];
-        data.pipeLineTotalQualified[i] = data.pipeLineQualified[i];
+        data.pipeLineTotalQualified[i]= data.pipeLineQualified[i] +  data.pipeLineQualifiedOut[i];
+        data.pipeLineTotal[i] = data.pipeLineSuccessful[i] + data.pipeLineUnsuccessful[i] + data.pipeLineInProgress[i];
 
-        // TODO: Handle divide by zero:
-        if ( data.pipeLineTotal[i] === 0 )
-        {
-            data.pipeLineTotal[i] = 1;
-        }
-
-        data.percentAgeQualified[i] = data.pipeLineTotalQualified[i] / data.pipeLineTotal[i] * 100.0;
-        data.percentAgeSuccessful[i] = data.pipeLineTotalSuccessful[i] / data.pipeLineTotal[i] * 100.0;
+        data.percentAgeQualified[i] = (data.pipeLineQualified[i] / data.pipeLineTotalQualified[i] * 100.0) || 0.0;
+        data.percentAgeSuccessful[i] = (data.pipeLineSuccessful[i] / data.pipeLineTotal[i] * 100.0) || 0.0;
     }
-    
+
+
+    // Format numbers accordingly:
+    for ( var i = 0; i < data.pipeLineQualified.length; i++ )
+    {
+        data.pipeLineQualified[i] = dashBoardSettings.numberFormat(data.pipeLineQualified[i]); 
+        data.pipeLineQualifiedOut[i] = dashBoardSettings.numberFormat(data.pipeLineQualifiedOut[i]);
+        data.pipeLineSuccessful[i] = dashBoardSettings.numberFormat(data.pipeLineSuccessful[i] );
+        data.pipeLineUnsuccessful[i] = dashBoardSettings.numberFormat(data.pipeLineUnsuccessful[i] );
+        data.pipeLineInProgress[i] = dashBoardSettings.numberFormat(data.pipeLineInProgress[i] );
+        data.contractAwardPerQuarter[i] = dashBoardSettings.numberFormat(data.contractAwardPerQuarter[i] );
+        data.pipeLineTotal[i] = dashBoardSettings.numberFormat(data.pipeLineTotal[i] );
+        data.pipeLineTotalQualified[i] = dashBoardSettings.numberFormat(data.pipeLineTotalQualified[i] );
+        data.percentAgeQualified[i] = dashBoardSettings.numberFormat(data.percentAgeQualified[i] );
+        data.percentAgeSuccessful[i] = dashBoardSettings.numberFormat(data.percentAgeSuccessful[i] );
+        data.contractAwardPerQuarter[i] = dashBoardSettings.numberFormat(data.contractAwardPerQuarter[i] );
+    }
     return data;
 }
 
 function makeBizDevTableData(data)
 {
-    var tableHeader = ["Pipeline (£)", "Q1", "Q2", "Q3", "Q4", "FY", "FY15/16", "FY14/15"];
+    var tableHeader = ["Pipeline (£K)", "Q1", "Q2", "Q3", "Q4", "FY"];
     var tableData = [];
     tableData.push(tableHeader);
     
-    var propertyName = ["pipeLineQualified", "pipeLineQualifiedOut", "pipeLineTotal ", "percentAgeQualified", "pipeLineSuccessful", "pipeLineUnsuccessful", "pipeLineInProgress", "pipeLineTotalQualified", "percentageSuccessful", "contractAwardPerQuarter" ];
+    tableData.push( ["Pipeline - Qualified"].concat(data.pipeLineQualified) );
+    tableData.push( ["Pipeline - Qualified Out"].concat(data.pipeLineQualifiedOut) );
+    tableData.push( ["Total Qualified"].concat(data.pipeLineTotalQualified) );
+    tableData.push( ["% Qualified"].concat(data.percentAgeQualified ) );
+    tableData.push( ["Pipeline - Successful"].concat(data.pipeLineSuccessful ) );
+    tableData.push( ["Pipeline - Unsuccessful"].concat(data.pipeLineUnsuccessful ) );
+    tableData.push( ["Pipeline - In Progress"].concat( data.pipeLineInProgress ) );
+    tableData.push( ["Total Pipeline"].concat(data.pipeLineTotal ) );
+    tableData.push( ["% Successful"].concat( data.percentAgeSuccessful ) );
+    tableData.push( ["Contract Awrad per Quarter"].concat( data.contractAwardPerQuarter ) ); 
 
-    var firstColumn = ["Pipeline - Qualified", "Pipeline - Qualified Out", "Total Pipeline", "% Qualified", "Pipeline - Successful", "Pipeline - Unsuccessful", "Pipeline - In progress", "Total Qualified Pipeline", "% Successful", "Contract Award per Quarter" ];
-
-    for ( var i = 0; i < propertyName.length; i++ )
-    {
-        var row = [];
-        row.push( firstColumn[i]);
-
-        row = row.concat( data[propertyName[i]]);
-        // dummy entries to match the number of columns
-        row = row.concat( [0, 0, 0, 0, 0, 0] );
-        tableData.push(row);
-    }    
     return tableData;
 }

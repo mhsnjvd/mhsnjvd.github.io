@@ -146,19 +146,15 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-              <li class="active"><a href="http://www.aleron.org">Home</a></li>
+              <li class="active"><a href="./dashboard.html">Home</a></li>
                 <li><a href="./dashboard.html">Dashboard</a></li>
-	            <li><a href="#">Settings</a></li>
-	            <li><a href="#">Profile</a></li>
 	            <li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
-	            <li><a href="#">Help</a></li>
+	            <li><a href="http://www.aleron.org/contact-us/">Help</a></li>
                 <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<span class="caret"></span></a>
 	                  <ul class="dropdown-menu">
 	            		<li><a href="./dashboard.html">Dashboard</a></li>
-	            		<li><a href="#">Settings</a></li>
-	            		<li><a href="#">Profile</a></li>
 	            		<li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
-	            		<li><a href="#">Help</a></li>
+	            		<li><a href="http://www.aleron.org/contact-us/">Help</a></li>
 	                  </ul>
                 </li>         
           </ul>
@@ -310,6 +306,7 @@
         <script type="text/javascript" src="./js/globals.js"></script>
         <script type="text/javascript" src="./js/utils.js"></script>
         <script type="text/javascript" src="./js/plots.js"></script>
+        <script type="text/javascript" src="./js/bd.js"></script>
         <script type="text/javascript"> 
 
             /////////////////////////////////////////////
@@ -318,12 +315,15 @@
             function bizDevRegionSelectFunction() 
             {
                  var region = document.getElementById("bizDevRegionSelector").value;
+                 var regionProperty = dashBoardData.bizDevData.regionProperty;                                                                          
+                 var localityProperty = dashBoardData.bizDevData.localityProperty; 
+                           
                  // Initialize region data and locality list:
-                 dashBoardData.bizDevData.currentRegionData = dashBoardData.bizDevData.rawData.filter( function(d) { return d.Region === region; } );
-                 dashBoardData.bizDevData.currentRegionContractsData = dashBoardData.bizDevData.contractsData.filter( function(d) { return d.Region === region; } );
+                 dashBoardData.bizDevData.currentRegionData = dashBoardData.bizDevData.rawData.filter( function(d) { return d[regionProperty] === region; } );
+                 dashBoardData.bizDevData.currentRegionContractsData = dashBoardData.bizDevData.contractsData.filter( function(d) { return d[regionProperty] === region; } );
 
                  // Update localities
-                 dashBoardData.bizDevData.localityList = getUniqueSortedList(dashBoardData.bizDevData.currentRegionData, "Locality");
+                 dashBoardData.bizDevData.localityList = getUniqueSortedList(dashBoardData.bizDevData.currentRegionData, localityProperty);
                  updateSelector( document.getElementById("bizDevLocalitySelector"), dashBoardData.bizDevData.localityList );
 
                  // Update Cost Centres
@@ -417,25 +417,39 @@
                  return;
             }
 
-            d3.csv( "./csdata/DataFolder/8_Q1_BusinessPipeline-2015-07-15-Proposals.csv", function(d)
+            // Make sure the file is read before reading the second file. This is the ( function() {})(); construct:
+            (function() {
+               d3.csv( dashBoardSettings.dataDir +  "009_Pipeline_Contracts.csv", function(d)
+               { 
+                 // Copy the data read into the global variable:
+                 dashBoardData.bizDevData.contractsData = d;
+                 // Copy the data locally as well
+                 var data = d;
+                 console.log("Pipeline Contracts file read successfuly");
+                 dashBoardData.bizDevData.contractsPropertyList = Object.getOwnPropertyNames(data[0]);
+
+               }); // end of d3.csv()                                
+             })();
+
+            d3.csv( dashBoardSettings.dataDir +  "008_Pipeline_Opportunities.csv", function(d)
             { 
               // Copy the data read into the global variable:
               dashBoardData.bizDevData.rawData = d;
-              var data = d;
-
-              dashBoardData.bizDevData.regionList = getUniqueSortedList(data, "Region");
-              dashBoardData.bizDevData.localityList = getUniqueSortedList(data, "Locality");
-              dashBoardData.bizDevData.costCentreList = getUniqueSortedList(data, "Name");
-              dashBoardData.bizDevData.propertyList = Object.getOwnPropertyNames(data[0]);
-            });                                 
-
-            d3.csv( "./csdata/DataFolder/9_Q1_BusinessPipeline-2015-07-15-Contracts.csv", function(d)
-            { 
-              // Copy the data read into the global variable:
-              dashBoardData.bizDevData.contractsData = d;
-
+              console.log("Pipeline Opportunities file read successfuly");
               // Copy the data locally as well:
               var data = d;
+
+              dashBoardData.bizDevData.propertyList = Object.getOwnPropertyNames(data[0]);
+
+              // Assign variable names for key properties
+              // Region is property 9, Locality is 12
+              dashBoardData.bizDevData.regionProperty = dashBoardData.bizDevData.propertyList[9];
+              dashBoardData.bizDevData.localityProperty = dashBoardData.bizDevData.propertyList[12];; 
+
+              dashBoardData.bizDevData.regionList = getUniqueSortedList(data, dashBoardData.bizDevData.regionProperty);
+              dashBoardData.bizDevData.localityList = getUniqueSortedList(data, dashBoardData.bizDevData.localityProperty);
+              //dashBoardData.bizDevData.costCentreList = getUniqueSortedList(data, "Name");
+
 
               // Add Regions to the drop down list:
               updateSelector( document.getElementById("bizDevRegionSelector"), dashBoardData.bizDevData.regionList );
@@ -444,7 +458,7 @@
               updateSelector( document.getElementById("bizDevLocalitySelector"), dashBoardData.bizDevData.localityList );
 
               // Add cost centres to the drop down list:
-              updateSelector( document.getElementById("bizDevCostCentreSelector"), dashBoardData.bizDevData.costCentreList );
+              //updateSelector( document.getElementById("bizDevCostCentreSelector"), dashBoardData.bizDevData.costCentreList );
 
               bizDevRegionSelectFunction();
 

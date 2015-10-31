@@ -146,7 +146,7 @@ function updateImpactTable( table, tableData)
 
     // Which rows are headers?
     // Last row is also header for total :)
-    var headerIndices = [0, 7, 12, 15, 19, M-1];
+    var headerIndices = [0, 5, 7, 12, 15, 19, M-1];
 
     // Make All the rows
     for ( var i = 0; i < M; i++ )
