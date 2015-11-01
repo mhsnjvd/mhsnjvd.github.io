@@ -333,6 +333,7 @@
                  var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentRegionData, dashBoardData.bizDevData.currentRegionContractsData);
 
                  svg = d3.select(document.getElementById("quarterlySVG"));
+                 plotQuarterlyBizDevData(svg, data);
                  
                  //plotQuarterlyBizDevData( svg, data);
 
@@ -349,7 +350,7 @@
 
                  // Update data table:
                  var tableData = makeBizDevTableData(data);
-                 updateTable( document.getElementById("dataTable"), tableData);
+                 updateBizDevTable( document.getElementById("dataTable"), tableData);
                  return;
             }
             
@@ -374,7 +375,7 @@
 
                  // Update data table:
                  var tableData = makeBizDevTableData(data);
-                 updateTable( document.getElementById("dataTable"), tableData);                                                          
+                 updateBizDevTable( document.getElementById("dataTable"), tableData);                                                          
                  return;
             }
 
@@ -393,7 +394,7 @@
 
                  // Update data table:
                  var tableData = makeBizDevTableData(data);
-                 updateTable( document.getElementById("dataTable"), tableData);                 
+                 updateBizDevTable( document.getElementById("dataTable"), tableData);                 
 
                  return;
             }
