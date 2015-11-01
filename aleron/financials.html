@@ -407,20 +407,21 @@
             function financialsRegionSelectFunction() 
             {
                  var region = document.getElementById("financialsRegionSelector").value;
+                 var regionProperty = dashBoardData.financialsData.regionProperty;
+                 var localityProperty = dashBoardData.financialsData.localityProperty;
+                 var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
+
                  // Initialize region data and locality list:
-                 dashBoardData.financialsData.currentRegionData = dashBoardData.financialsData.rawData.filter( function(d) { return d.Region === region; } );
+                 dashBoardData.financialsData.currentRegionData = dashBoardData.financialsData.rawData.filter( function(d) { return d[regionProperty] === region; } );
 
                  // Update localities
-                 dashBoardData.financialsData.localityList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData, "Locality");
+                 dashBoardData.financialsData.localityList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData, localityProperty);
                  updateSelector( document.getElementById("financialsLocalitySelector"), dashBoardData.financialsData.localityList );
 
                  // Update Cost Centres
-                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData,"Cost Centres");
+                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData, costCentreProperty);
                  updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
 
-                 // Update localities
-                 dashBoardData.financialsData.funderList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData, "Funder");
-                 updateSelector( document.getElementById("financialsFunderSelector"), dashBoardData.financialsData.funderList );
 
                  var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentRegionData );
 
@@ -448,10 +449,13 @@
             function financialsLocalitySelectFunction() 
             {
                  var locality = document.getElementById("financialsLocalitySelector").value;
-                 dashBoardData.financialsData.currentLocalityData = dashBoardData.financialsData.currentRegionData.filter( function(d) { return d.Locality === locality; } );
+                 var localityProperty = dashBoardData.financialsData.localityProperty;
+                 var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
+
+                 dashBoardData.financialsData.currentLocalityData = dashBoardData.financialsData.currentRegionData.filter( function(d) { return d[localityProperty] === locality; } );
                      
                  // Update Cost Centres
-                 dashBoardData.financialsData.costCentreList= getUniqueSortedList(dashBoardData.financialsData.currentLocalityData,"Cost Centres");
+                 dashBoardData.financialsData.costCentreList= getUniqueSortedList(dashBoardData.financialsData.currentLocalityData,costCentreProperty);
                  updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
 
                  // First Histogram Plot
@@ -473,7 +477,8 @@
             function financialsCostCentreSelectFunction() 
             {
                  var costCentre = document.getElementById("financialsCostCentreSelector").value;
-                 dashBoardData.financialsData.currentCostCentreData = dashBoardData.financialsData.currentLocalityData.filter( function(d) { return d["Cost Centres"] === costCentre; } );
+                 var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
+                 dashBoardData.financialsData.currentCostCentreData = dashBoardData.financialsData.currentLocalityData.filter( function(d) { return d[costCentreProperty] === costCentre; } );
                      
                  var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentCostCentreData );                 
 
@@ -509,9 +514,86 @@
                  return;
             }
 
+
+            // Read all the files needed now!!!:
+            (function() 
+            {                                                                                                                               
+                 var dataFileName = "010_Finance_201415_FY_CC.csv";
+                 var propertyName = "FY1415";
+                 
+                 dashBoardData.financialsData[propertyName] = [];
+                 var fileName = dashBoardSettings.dataDir +  dataFileName;
+                 console.log("reading:" + fileName);
+                 d3.csv( fileName, function(d)
+                 { 
+                        // Copy the data read into the global variable:
+                        dashBoardData.financialsData[propertyName] = d;
+                        console.log(fileName + " read successfully.");
+                        console.log( dashBoardData.financialsData[propertyName].length );
+                 }); // end of d3.csv()                                
+             })();
            
+            (function() 
+            {                                                                                                                               
+                 var dataFileName = "011_a_Finance_201516_P3_CC.csv";
+                 var propertyName = "P31516";
+                 
+                 dashBoardData.financialsData[propertyName] = [];
+                 var fileName = dashBoardSettings.dataDir +  dataFileName;
+                 console.log("reading:" + fileName);
+                 d3.csv( fileName, function(d)
+                 { 
+                        // Copy the data read into the global variable:
+                        dashBoardData.financialsData[propertyName] = d;
+                        console.log(fileName + " read successfully.");
+                        console.log( dashBoardData.financialsData[propertyName].length );
+                 }); // end of d3.csv()                                
+             })();
+
+            (function() 
+            {                                                                                                                               
+                 var dataFileName = "011_b_Finance_201516_P6_CC.csv";
+                 var propertyName = "P61516";
+                 
+                 dashBoardData.financialsData[propertyName] = [];
+                 var fileName = dashBoardSettings.dataDir +  dataFileName;
+                 console.log("reading:" + fileName);
+                 d3.csv( fileName, function(d)
+                 { 
+                        // Copy the data read into the global variable:
+                        dashBoardData.financialsData[propertyName] = d;
+                        console.log(fileName + " read successfully.");
+                        console.log( dashBoardData.financialsData[propertyName].length );
+                 }); // end of d3.csv()                                
+             })();
+
+            // TODO: The following doesn't work, investigate why???????
+            /*
+            (function() 
+            {                                                                                                                               
+                 var dataFileName = ["010_Finance_201415_FY_CC.csv", "011_a_Finance_201516_P3_CC.csv", "011_b_Finance_201516_P6_CC.csv"];
+                 var propertyName = [ "FY1415", "P31516", "P61516"];
+                 console.log("entering grand daddy function");
+                 
+                 for( var i = 0; i < 3; i++ )
+                 {
+                    var fileName = dashBoardSettings.dataDir +  dataFileName[i];
+                    d3.csv( fileName, function(d)
+                    { 
+                           // Copy the data read into the global variable:
+                           console.log(fileName);
+                           dashBoardData.financialsData[propertyName[i]] = d;
+                           console.log("file " + fileName + " read successfully.");
+                           console.log( dashBoardData.financialsData[propertyName[i]].length );
+                    }); // end of d3.csv()                                
+                 }
+                 console.log("leaving grand daddy function");
+             })();
+             */
+
             // Upload the data file and process it:
-            d3.csv( dashBoardSettings.dataDir + "Financials_File_Dummy.csv", function(d)
+            
+            d3.csv( dashBoardSettings.dataDir + "011_b_Finance_201516_P6_CC.csv", function(d)
             { 
               // Copy the data read into the global variable:
               dashBoardData.financialsData.rawData = d;
@@ -519,17 +601,20 @@
               // copy locally as well:
               var data = d;
 
-              dashBoardData.financialsData.regionList = getUniqueSortedList(data, "Region");
-              dashBoardData.financialsData.localityList = getUniqueSortedList(data, "Locality");
-              dashBoardData.financialsData.funderList = getUniqueSortedList(data, "Funder");
-              dashBoardData.financialsData.costCentreList = getUniqueSortedList(data, "Cost Centres");
-              dashBoardData.financialsData.propertyList = Object.getOwnPropertyNames(data[0]);
+              var propertyList = Object.getOwnPropertyNames(data[0]);
+              dashBoardData.financialsData.propertyList = propertyList;
+              dashBoardData.financialsData.regionProperty = propertyList[0];
+              dashBoardData.financialsData.localityProperty = propertyList[1];
+              dashBoardData.financialsData.costCentreProperty = propertyList[3];
+
+
+              dashBoardData.financialsData.regionList = getUniqueSortedList(data, dashBoardData.financialsData.regionProperty );
+              dashBoardData.financialsData.localityList = getUniqueSortedList(data,dashBoardData.financialsData.localityProperty ); 
+              dashBoardData.financialsData.costCentreList = getUniqueSortedList(data,  dashBoardData.financialsData.costCentreProperty ); 
 
               // Add Regions to the drop down list:
               updateSelector( document.getElementById("financialsRegionSelector"), dashBoardData.financialsData.regionList);
               
-              // Add Funders to the drop down list:
-              updateSelector(document.getElementById("financialsFunderSelector"), dashBoardData.financialsData.funderList);
 
               // Add Localities to the drop down list:
               updateSelector( document.getElementById("financialsLocalitySelector"), dashBoardData.financialsData.localityList );
