@@ -166,7 +166,7 @@ function plotQuarterlyBizDevData( svg, data)
       
       var xData =  data.quarterNames;
       // Transposed data, have to be transposed for quarterly plotting:
-      var yTransposedData = [data.pipeLineQualified, data.pipeLineQualifiedOut, data.pipeLineSuccessful, data.pipeLineUnsuccessful];
+      var yTransposedData = [data.pipeLineQualifiedOut, data.pipeLineInProgress, data.pipeLineSuccessful, data.pipeLineUnsuccessful];
       // only the initial entries correspond to the quarters
       yTransposedData = yTransposedData.map( function(d) { return d.slice(0, data.quarterNames.length); } );
       
@@ -202,7 +202,8 @@ function plotQuarterlyBizDevData( svg, data)
 
 
       plotHorisontalGrid( svg, margin, 10);
-      var histColors = ["orange", "green", "yellow", "red"];
+      var color = dashBoardSettings.color;
+      var histColors = [color.pipeLineQualifiedOut, color.pipeLineInProgress, color.successful, color.unsuccessful];
       var bars = plotMultiHistogram( svg, margin, xData, yData, xScale, yScale, hScale, histColors);          
 
       plotXAxis(svg, margin, xData, xScale );
@@ -216,10 +217,10 @@ function plotQuarterlyBizDevData( svg, data)
 
       // TODO: these should be read from the dashboard settings file:
       var labels = [ 
-                     {label:"unsuccessful" , color: "red"},
-                     {label:"qualified out" , color: "yellow"},
-                     {label:"successful" , color: "green"},
-                     {label:"qualified" , color: "orange"}
+                     {label:"Unsuccessful" , color: color.unsuccessful},
+                     {label:"Successful" , color: color.successful},
+                     {label:"In Progress" , color: color.pipeLineInProgress},
+                     {label:"Qualified Out" , color: color.pipeLineQualifiedOut}
                     ]; 
 
       var legend = svg.selectAll('.legend')                     

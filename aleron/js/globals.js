@@ -28,8 +28,14 @@ dashBoardSettings.color.forecast = "steelblue";
 dashBoardSettings.color.budget = "red";
 dashBoardSettings.color.previous = "green";
 dashBoardSettings.color.histogram = "steelblue";
-dashBoardSettings.numberFormat = d3.format(",.2f");
 
+
+dashBoardSettings.color.successful = "green";
+dashBoardSettings.color.unsuccessful = "red";
+dashBoardSettings.color.pipeLineInProgress = "orange";
+dashBoardSettings.color.pipeLineQualifiedOut = "steelblue";
+
+dashBoardSettings.numberFormat = d3.format(",.2f");
 
 // Path of data directory:
 dashBoardSettings.dataDir = "./data/";

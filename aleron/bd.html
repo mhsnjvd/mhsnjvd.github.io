@@ -357,21 +357,24 @@
             function bizDevLocalitySelectFunction() 
             {
                  var locality = document.getElementById("bizDevLocalitySelector").value;
-                 dashBoardData.bizDevData.currentLocalityData = dashBoardData.bizDevData.currentRegionData.filter( function(d) { return d.Locality === locality; } );
+                 var localityProperty = dashBoardData.bizDevData.localityProperty; 
+
+                 dashBoardData.bizDevData.currentLocalityContractsData = dashBoardData.bizDevData.currentRegionContractsData.filter( function(d) { return d[localityProperty] === locality; } );
+
+                 // Update localities
+                 dashBoardData.bizDevData.currentLocalityData = dashBoardData.bizDevData.currentRegionData.filter( function(d) { return d[localityProperty] === locality; } );
                      
                  // Update Cost Centres
-                 dashBoardData.bizDevData.costCentreList= getUniqueSortedList(dashBoardData.bizDevData.currentLocalityData,"Cost Centres");
-                 updateSelector( document.getElementById("bizDevCostCentreSelector"), dashBoardData.bizDevData.costCentreList);
+                 //dashBoardData.bizDevData.costCentreList= getUniqueSortedList(dashBoardData.bizDevData.currentLocalityData,"Cost Centres");
+                 //updateSelector( document.getElementById("bizDevCostCentreSelector"), dashBoardData.bizDevData.costCentreList);
 
-                 // First Histogram Plot
-
-                 var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentLocalityData );                 
+                 var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentLocalityData, dashBoardData.bizDevData.currentLocalityContractsData );                 
 
                  var svg = d3.select(document.getElementById("quarterlySVG"));                 
-                 //plotQuarterlyBizDevData( svg, data );  
+                 plotQuarterlyBizDevData( svg, data );  
 
                  svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                 plotCostCentres(svg, dashBoardData.bizDevData.currentLocalityData)   
+                 //plotCostCentres(svg, dashBoardData.bizDevData.currentLocalityData)   
 
                  // Update data table:
                  var tableData = makeBizDevTableData(data);
