@@ -39,3 +39,28 @@ dashBoardSettings.numberFormat = d3.format(",.2f");
 
 // Path of data directory:
 dashBoardSettings.dataDir = "./data/";
+
+
+// Files needed
+dashBoardData.financialsData.files = [ 
+                    { name: "010_Finance_201415_FY_CC.csv",   propertyName: "FY1415" }, 
+                    { name: "011_a_Finance_201516_P3_CC.csv", propertyName: "P31516" },
+                    { name: "011_b_Finance_201516_P6_CC.csv", propertyName: "P61516"} 
+                    ];
+
+
+// Names of the properties that must be the header of the columns
+// across all financial files
+dashBoardData.financialsData.regionProperty = "R/N/BL";
+dashBoardData.financialsData.localityProperty = "Locality";
+dashBoardData.financialsData.costCentreProperty = "CC";
+
+
+
+
+
+
+
+
+
+

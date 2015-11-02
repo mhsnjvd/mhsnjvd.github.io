@@ -129,3 +129,59 @@ function getUniqueSortedList( data, property)
     list = list.sort();
     return list;
 }
+
+// Assumes every property in the object is an array
+// joins all these arrays into a single array and 
+// returns it
+function concatObjectArrays(obj)
+{
+    var singleArray = [];
+    for ( var property in obj )
+    {
+        singleArray = singleArray.concat( obj[property] );
+    }
+    return singleArray;
+}
+    
+
+
+// Object DATA has arrays specified by ARRAYNAMES.
+// Search these arrays for PROPERTY == VALUE
+// and return an object with filtered arrays
+function searchPropertyInArrays( data, arrayNames, property, value )
+{
+    var filteredData = {};
+
+    if ( value === undefined )
+    {
+        console.log( "utils:searchPropertyInArrays: must specify what to search for." );
+    }
+
+    for ( var i = 0; i < arrayNames.length; i++ )
+    {
+        var dataArray = data[arrayNames[i]]; 
+
+        if ( dataArray === undefined )
+        {
+            console.log( "utils:searchPropertyInArrays: the property " + arrayNames[i] + " not found." );
+        }
+
+        // This is the key search line:
+        filteredData[arrayNames[i]] = dataArray.filter( function(d) { return d[property] === value; } );
+    }
+
+    return filteredData;
+
+}
+
+
+// Add properties to an object
+// Properties themselves are added
+// as empty objects
+function addObjectProperties(obj, propertyList)                                                                                                           {
+    for ( var i = 0; i < propertyList.length; i++ )
+    {
+        obj[propertyList[i]] = {};
+    }
+    return obj;
+}
