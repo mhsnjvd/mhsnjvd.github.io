@@ -293,11 +293,11 @@
              </div>
 
              <div class="col-xs-5">
-                 <svg id="quarterlySVG" height="350" width="500" style="background-color: whitesmoke"></svg>
+                 <svg id="SVG1" height="350" width="500" style="background-color: whitesmoke"></svg>
              </div>
 
              <div class="col-xs-5">
-                 <svg id="quarterlyPieSVG" height="350" width="500" style="background-color: whitesmoke"></svg>
+                 <svg id="SVG2" height="350" width="500" style="background-color: whitesmoke"></svg>
              </div>
 
              <div class="col-xs-1">
@@ -396,6 +396,7 @@
 
         <script type="text/javascript" src="./js/globals.js"></script>
         <script type="text/javascript" src="./js/utils.js"></script>
+        <script type="text/javascript" src="./js/init.js"></script>
         <script type="text/javascript" src="./js/plots.js"></script>
         <script type="text/javascript" src="./js/financials.js"></script>
         <script type="text/javascript"> 
@@ -403,7 +404,6 @@
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
-
             function financialsRegionSelectFunction() 
             {
                  var region = document.getElementById("financialsRegionSelector").value;
@@ -412,22 +412,32 @@
                  var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
 
                  // Initialize region data and locality list:
-                 dashBoardData.financialsData.currentRegionData = dashBoardData.financialsData.rawData.filter( function(d) { return d[regionProperty] === region; } );
+                 //dashBoardData.financialsData.currentRegionData = dashBoardData.financialsData.rawData.filter( function(d) { return d[regionProperty] === region; } );
+
+                 // Get the propertyNames under which files are stored:
+                 var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
+                 // Search for entries matching this region in all files:
+                 dashBoardData.financialsData.currentRegionData = searchPropertyInArrays( dashBoardData.financialsData, arrayNames, regionProperty, region );
+
+                 // Join the data from all files into a single array:
+                 var currentRegionConcat = concatObjectArrays(dashBoardData.financialsData.currentRegionData);
 
                  // Update localities
-                 dashBoardData.financialsData.localityList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData, localityProperty);
+                 dashBoardData.financialsData.localityList = getUniqueSortedList(currentRegionConcat, localityProperty);
                  updateSelector( document.getElementById("financialsLocalitySelector"), dashBoardData.financialsData.localityList );
 
                  // Update Cost Centres
-                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(dashBoardData.financialsData.currentRegionData, costCentreProperty);
+                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentRegionConcat, costCentreProperty);
                  updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
 
 
                  var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentRegionData );
 
-                 svg = d3.select(document.getElementById("quarterlySVG"));
+                 svg = d3.select(document.getElementById("SVG1"));
                  
                  plotQuarterlyFinancialData( svg, data);
+
+                 /*
 
                  var count = getIdentifierCount( dashBoardData.financialsData.currentRegionData, dashBoardData.financialsData.localityList, "Locality");
                  var pieData = [];
@@ -436,9 +446,10 @@
                      pieData.push( {label: dashBoardData.financialsData.localityList[i], count: count[i]});
                  }
                  
-                 svg = d3.select(document.getElementById("quarterlyPieSVG"));
+                 svg = d3.select(document.getElementById("SVG2"));
                  svg.selectAll("*").remove();
                  plotPieChart( svg, pieData);
+                 */
 
                  // Update data table:
                  var tableData = makeFinancialTableData(data);
@@ -452,20 +463,23 @@
                  var localityProperty = dashBoardData.financialsData.localityProperty;
                  var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
 
-                 dashBoardData.financialsData.currentLocalityData = dashBoardData.financialsData.currentRegionData.filter( function(d) { return d[localityProperty] === locality; } );
-                     
+                 var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
+
+                dashBoardData.financialsData.currentLocalityData = searchPropertyInArrays( dashBoardData.financialsData.currentRegionData, arrayNames, localityProperty, locality );
+
+                 var currentLocalityConcat = concatObjectArrays(dashBoardData.financialsData.currentLocalityData);
+
                  // Update Cost Centres
-                 dashBoardData.financialsData.costCentreList= getUniqueSortedList(dashBoardData.financialsData.currentLocalityData,costCentreProperty);
+                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentLocalityConcat, costCentreProperty);
                  updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
 
                  // First Histogram Plot
-
                  var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentLocalityData );                 
 
-                 var svg = d3.select(document.getElementById("quarterlySVG"));                 
+                 var svg = d3.select(document.getElementById("SVG1"));                 
                  plotQuarterlyFinancialData( svg, data );  
 
-                 svg = d3.select(document.getElementById("quarterlyPieSVG"));
+                 svg = d3.select(document.getElementById("SVG2"));
                  plotCostCentres(svg, dashBoardData.financialsData.currentLocalityData)   
 
                  // Update data table:
@@ -482,10 +496,10 @@
                      
                  var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentCostCentreData );                 
 
-                 var svg = d3.select(document.getElementById("quarterlySVG"));                 
+                 var svg = d3.select(document.getElementById("SVG1"));                 
                  plotQuarterlyFinancialData( svg, data );  
 
-                 svg = d3.select(document.getElementById("quarterlyPieSVG"));
+                 svg = d3.select(document.getElementById("SVG2"));
                  plotCostCentres(svg, dashBoardData.financialsData.currentLocalityData);
 
                  // Update data table:
@@ -514,83 +528,6 @@
                  return;
             }
 
-
-            // Read all the files needed now!!!:
-            (function() 
-            {                                                                                                                               
-                 var dataFileName = "010_Finance_201415_FY_CC.csv";
-                 var propertyName = "FY1415";
-                 
-                 dashBoardData.financialsData[propertyName] = [];
-                 var fileName = dashBoardSettings.dataDir +  dataFileName;
-                 console.log("reading:" + fileName);
-                 d3.csv( fileName, function(d)
-                 { 
-                        // Copy the data read into the global variable:
-                        dashBoardData.financialsData[propertyName] = d;
-                        console.log(fileName + " read successfully.");
-                        console.log( dashBoardData.financialsData[propertyName].length );
-                 }); // end of d3.csv()                                
-             })();
-           
-            (function() 
-            {                                                                                                                               
-                 var dataFileName = "011_a_Finance_201516_P3_CC.csv";
-                 var propertyName = "P31516";
-                 
-                 dashBoardData.financialsData[propertyName] = [];
-                 var fileName = dashBoardSettings.dataDir +  dataFileName;
-                 console.log("reading:" + fileName);
-                 d3.csv( fileName, function(d)
-                 { 
-                        // Copy the data read into the global variable:
-                        dashBoardData.financialsData[propertyName] = d;
-                        console.log(fileName + " read successfully.");
-                        console.log( dashBoardData.financialsData[propertyName].length );
-                 }); // end of d3.csv()                                
-             })();
-
-            (function() 
-            {                                                                                                                               
-                 var dataFileName = "011_b_Finance_201516_P6_CC.csv";
-                 var propertyName = "P61516";
-                 
-                 dashBoardData.financialsData[propertyName] = [];
-                 var fileName = dashBoardSettings.dataDir +  dataFileName;
-                 console.log("reading:" + fileName);
-                 d3.csv( fileName, function(d)
-                 { 
-                        // Copy the data read into the global variable:
-                        dashBoardData.financialsData[propertyName] = d;
-                        console.log(fileName + " read successfully.");
-                        console.log( dashBoardData.financialsData[propertyName].length );
-                 }); // end of d3.csv()                                
-             })();
-
-            // TODO: The following doesn't work, investigate why???????
-            /*
-            (function() 
-            {                                                                                                                               
-                 var dataFileName = ["010_Finance_201415_FY_CC.csv", "011_a_Finance_201516_P3_CC.csv", "011_b_Finance_201516_P6_CC.csv"];
-                 var propertyName = [ "FY1415", "P31516", "P61516"];
-                 console.log("entering grand daddy function");
-                 
-                 for( var i = 0; i < 3; i++ )
-                 {
-                    var fileName = dashBoardSettings.dataDir +  dataFileName[i];
-                    d3.csv( fileName, function(d)
-                    { 
-                           // Copy the data read into the global variable:
-                           console.log(fileName);
-                           dashBoardData.financialsData[propertyName[i]] = d;
-                           console.log("file " + fileName + " read successfully.");
-                           console.log( dashBoardData.financialsData[propertyName[i]].length );
-                    }); // end of d3.csv()                                
-                 }
-                 console.log("leaving grand daddy function");
-             })();
-             */
-
             // Upload the data file and process it:
             
             d3.csv( dashBoardSettings.dataDir + "011_b_Finance_201516_P6_CC.csv", function(d)
@@ -603,10 +540,6 @@
 
               var propertyList = Object.getOwnPropertyNames(data[0]);
               dashBoardData.financialsData.propertyList = propertyList;
-              dashBoardData.financialsData.regionProperty = propertyList[0];
-              dashBoardData.financialsData.localityProperty = propertyList[1];
-              dashBoardData.financialsData.costCentreProperty = propertyList[3];
-
 
               dashBoardData.financialsData.regionList = getUniqueSortedList(data, dashBoardData.financialsData.regionProperty );
               dashBoardData.financialsData.localityList = getUniqueSortedList(data,dashBoardData.financialsData.localityProperty ); 
