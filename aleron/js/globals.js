@@ -23,10 +23,11 @@ dashBoardData.financialsData.currentCostCentreData = [];
 
 var dashBoardSettings = {};
 dashBoardSettings.color = {};
-dashBoardSettings.color.actual = "orange";
+dashBoardSettings.color.income = "orange";
 dashBoardSettings.color.forecast = "steelblue";
-dashBoardSettings.color.budget = "red";
-dashBoardSettings.color.previous = "green";
+dashBoardSettings.color.budget = "indianred";
+dashBoardSettings.color.previousYear = "black";
+dashBoardSettings.color.expenditure = "red";
 dashBoardSettings.color.histogram = "steelblue";
 
 

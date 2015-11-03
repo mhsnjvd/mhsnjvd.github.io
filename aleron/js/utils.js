@@ -185,3 +185,14 @@ function addObjectProperties(obj, propertyList)                                 
     }
     return obj;
 }
+
+// Cumsum array
+function cumsumArray(data)
+{
+    var cumulativeData = data;
+    for ( var i = 1; i < data.length; i++ )
+    {
+        cumulativeData[i] = data[i] + cumulativeData[i-1];
+    }
+    return cumulativeData;
+}
