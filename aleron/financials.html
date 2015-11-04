@@ -289,18 +289,18 @@
         <!-- Row starts here *********************** -->
         <div class="row">
             
-             <div class="col-xs-1">
+             <div class="col-xs-2">
              </div>
 
-             <div class="col-xs-5">
+             <div class="col-xs-8">
+                 <!-- 
                  <svg id="SVG1" height="350" width="500" style="background-color: whitesmoke"></svg>
+                 -->
+                 <svg id="SVG1" height="450" width="600" style="background-color: whitesmoke"></svg>
              </div>
 
-             <div class="col-xs-5">
-                 <svg id="SVG2" height="350" width="500" style="background-color: whitesmoke"></svg>
-             </div>
 
-             <div class="col-xs-1">
+             <div class="col-xs-2">
              </div>
 
         </div>
@@ -326,71 +326,6 @@
 
         </div>
         <!-- Row ends here -->
-
-
-        <!-- Row starts here *********************** -->
-        <div class="row">
-             <div class="col-xs-1">
-             </div>
-
-             <div class="col-xs-10">
-                <h3 id="dataSummaryHeading" class="sub-header">Funders' Summary</h3>
-             </div>
-
-             <div class="col-xs-1">
-             </div>
-
-        </div>
-        <!-- Row ends here *********************** -->
-         
-        <!-- Some padding --> 
-        <br>
-
-        <!-- Row starts here *********************** -->
-        <div class="row">
-            
-             <!-- column just for padding -->
-             <div  class="col-xs-1">
-             </div>
-
-             <!-- Second column starts here *********************** -->
-             <div  class="col-xs-5 placeholders">
-                   <select style="width: 200px" id="financialsFunderSelector" onchange="funderSelectFunction()">
-                   </select>               
-             </div>
-        
-             <!-- Third column starts here *********************** -->
-             <div  class="col-xs-5 placeholders">
-                   <select style="width: 200px" id="financialsPropertySelector" onchange="propertySelectFunction()">
-                   </select>
-             </div>
-
-             <!-- column just for padding -->
-             <div  class="col-xs-1">
-             </div>
-
-        </div>
-        <!-- Row ends here *********************** -->
-
-
-        <div class="row">
-             <div class="col-xs-1">
-             </div>
-
-             <div class="col-xs-5">
-                 <svg id="funderSVG" height="350" width="500" style="background-color: whitesmoke"></svg>
-             </div>
-
-             <div id=class="col-xs-5">
-                 <svg id="funderPieSVG" height="350" width="500" style="background-color: whitesmoke"></svg>
-             </div>
-
-             <div class="col-xs-1">
-             </div>
-
-        </div>
-        <!-- Row ends here *********************** -->
-
       </div>
       <!-- Container fluid ends here -->
 
@@ -479,9 +414,6 @@
                  var svg = d3.select(document.getElementById("SVG1"));                 
                  plotQuarterlyFinancialData( svg, data );  
 
-                 svg = d3.select(document.getElementById("SVG2"));
-                 plotCostCentres(svg, dashBoardData.financialsData.currentLocalityData)   
-
                  // Update data table:
                  var tableData = makeFinancialTableData(data);
                  updateTable( document.getElementById("dataTable"), tableData);                                                          
@@ -499,32 +431,10 @@
                  var svg = d3.select(document.getElementById("SVG1"));                 
                  plotQuarterlyFinancialData( svg, data );  
 
-                 svg = d3.select(document.getElementById("SVG2"));
-                 plotCostCentres(svg, dashBoardData.financialsData.currentLocalityData);
-
                  // Update data table:
                  var tableData = makeFinancialTableData(data);
                  updateTable( document.getElementById("dataTable"), tableData);                 
 
-                 return;
-            }
-
-            function showDataSummary(quarterlyData)
-            {
-                var paraDiv = d3.select(document.getElementById("dataSummaryPara"));
-                paraDiv.selectAll("*").remove();
-                paraDiv.append("p").html( "Data Summary: " + region );
-                paraDiv.selectAll("p")
-                .data(quarterlyData)
-                .enter()
-                .append("p")
-                .text("");
-                return;
-            }
-
-            function propertySelectFunction() 
-            {
-                 var property = document.getElementById("propertySelector").value;
                  return;
             }
 
@@ -554,10 +464,6 @@
 
               // Add cost centres to the drop down list:
               updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList );
-
-              // Add properties to the property selector, the first 4 are not needed:
-              dashBoardData.financialsData.propertyList = dashBoardData.financialsData.propertyList.slice(5);
-              updateSelector(document.getElementById("financialsPropertySelector"), dashBoardData.financialsData.propertyList);
 
               financialsRegionSelectFunction();
             });                                 

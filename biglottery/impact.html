@@ -16,6 +16,7 @@
 
   <!-- Custom styles for this template -->
   <link href="./css/dashboard.css" rel="stylesheet">
+  <link href="./css/trend.css" rel="stylesheet">
 
   <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
   <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -130,8 +131,22 @@ rect:hover {  fill:blue; }
           <div class="col-xs-1">
           </div>
           
+          <div class="col-xs-10" id='trendplot'>
+              <h3 class="page-header">Impact Time Series: When did it happen?</i></h3>
+          </div>
+          
+          <div class="col-xs-1">
+          </div>
+      </div>
+
+
+
+      <div class="row">
+          <div class="col-xs-1">
+          </div>
+          
           <div class="col-xs-10" id='network'>
-              <h3 class="page-header">The Impact Network: <i>who is affecting who?</i></h3>
+              <h3 class="page-header">The Impact Network: Who is doing what?</i></h3>
           </div>
           
           <div class="col-xs-1">
@@ -161,6 +176,9 @@ rect:hover {  fill:blue; }
          ****************************************
          **************************************** -->
 <script src="./js/d3.min.js"></script>
+<script src="app.js" type="text/javascript">
+</script>
+
 <script type="text/javascript">
       //Width and height
       var w = 700;
@@ -257,7 +275,6 @@ rect:hover {  fill:blue; }
 
 
 
-
           <script src="./js/defs.js"></script>
           <script type="text/javascript">
                document.getElementById("idFooter").innerHTML =
@@ -278,3 +295,5 @@ rect:hover {  fill:blue; }
     <script src="./js/ie10-viewport-bug-workaround.js"></script>
   </body>
   </html>
+
+
