@@ -1,4 +1,29 @@
 // *******************************************************
+//    Impact Measurement Initialisatoins
+// *****************************************************//
+//
+// Read all the files needed for impact measurement:
+
+// Read file 0:
+(function() 
+{                                                                                                                               
+     var dataFileName = dashBoardData.impactData.files[0].name;
+     var propertyName = dashBoardData.impactData.files[0].propertyName;
+     
+     dashBoardData.impactData[propertyName] = [];
+     var fileName = dashBoardSettings.dataDir +  dataFileName;
+     console.log("reading:" + fileName);
+     d3.csv( fileName, function(d)
+     { 
+            // Copy the data read into the global variable:
+            dashBoardData.impactData[propertyName] = d;
+            console.log(fileName + " read successfully.");
+            console.log( dashBoardData.impactData[propertyName].length );
+     }); // end of d3.csv()                                
+ })();
+
+
+// *******************************************************
 //    Impact Measurement Utility Functions
 // *****************************************************//
 function computeQuarterlyImpactData(impactDataArray, externalInspectionsDataArray)
@@ -20,30 +45,32 @@ function computeQuarterlyImpactData(impactDataArray, externalInspectionsDataArra
         for ( var j = 0; j < headerRow.length; j++ )
         {
             data[headerColumn[i]][headerRow[j]] = 0.0;
-            // var property = dashBoardData.impactData.propertyList[2]; 
-            // TODO: How to have a list of functions to compute for each quantity?
-            //var computedQuantity = sumArrayProperty( impactDataArray, property);
-            /*
-
-            var computedQuantity = 0.0;
-            // This is just the head count:
-            computedQuantity = impactDataArray.length;
-
-            // Full time Equivalent
-            var property = dashBoardData.impactData.propertyList[12];
-            computedQuantity = sumArrayProperty( impactDataArray, property);
-            data[headerColumn[i]][headerRow[j]] = computedQuantity;
-            */
         }
     }
 
     // Count the number of G, A, R, missing and total for the second quarter
-    data[headerColumn[0]][headerRow[1]] = sumArrayProperty( impactDataArray, "G");
-    data[headerColumn[1]][headerRow[1]] = sumArrayProperty( impactDataArray, "A");
-    data[headerColumn[2]][headerRow[1]] = sumArrayProperty( impactDataArray, "R");
-    data[headerColumn[3]][headerRow[1]] = impactDataArray.length - data[headerColumn[0]][headerRow[1]] - data[headerColumn[1]][headerRow[1]] - data[headerColumn[2]][headerRow[1]];
-    data[headerColumn[4]][headerRow[1]] = impactDataArray.length;
+    var cData = impactDataArray.filter( function(d) { return d["G"] == 1; } );
+    data[headerColumn[0]][headerRow[1]] = cData.length;
+    data[headerColumn[0]][headerRow[4]] = sumArrayProperty( cData, "TOTAL");
 
+    cData = impactDataArray.filter( function(d) { return d["A"] == 1; } );
+    data[headerColumn[1]][headerRow[1]] = cData.length;
+    data[headerColumn[1]][headerRow[4]] = sumArrayProperty( cData, "TOTAL");
+
+    cData = impactDataArray.filter( function(d) { return d["R"] == 1; } );
+    data[headerColumn[2]][headerRow[1]] = cData.length;
+    data[headerColumn[2]][headerRow[4]] = sumArrayProperty( cData, "TOTAL");
+
+    data[headerColumn[3]][headerRow[1]] = impactDataArray.length - data[headerColumn[0]][headerRow[1]] - data[headerColumn[1]][headerRow[1]] - data[headerColumn[2]][headerRow[1]];
+    data[headerColumn[3]][headerRow[4]] = sumArrayProperty( impactDataArray, "TOTAL") - data[headerColumn[0]][headerRow[4]] - data[headerColumn[1]][headerRow[4]] - data[headerColumn[2]][headerRow[4]];
+
+    data[headerColumn[4]][headerRow[1]] = impactDataArray.length;
+    data[headerColumn[4]][headerRow[4]] = sumArrayProperty( impactDataArray, "TOTAL");
+
+    // Outcomes
+    data[headerColumn[5]][headerRow[1]] = sumArrayProperty( impactDataArray, "G-Outcome");
+    data[headerColumn[6]][headerRow[1]] = sumArrayProperty( impactDataArray, "A-Outcome");
+    data[headerColumn[7]][headerRow[1]] = sumArrayProperty( impactDataArray, "R-Outcome");
 
 
     // External Inspections:
@@ -57,7 +84,7 @@ function computeQuarterlyImpactData(impactDataArray, externalInspectionsDataArra
       data[headerColumn[12]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Good/Very Good"] == 1; } ).length;
       data[headerColumn[13]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Requires Improvement/Satisfactory/Adequate"] == 1; } ).length;
       data[headerColumn[14]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Unsatisfactory/Inadequate/Poor/Weak"] == 1; } ).length;
-      data[headerColumn[15]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Uncored"] == 1; } ).length;
+      data[headerColumn[15]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Unscored"] == 1; } ).length;
       data[headerColumn[16]][quarterNames[i]] = quarterlyExternalInspectionsData.length;
     }
 
@@ -123,7 +150,6 @@ function makeImpactTableData(data)
         }
     }
 
-    // Indices of rows to be made bold:
     return tableData;
 }
 
@@ -172,4 +198,27 @@ function updateImpactTable( table, tableData)
         }
     }
     return table;    
+}
+
+// All data is assumed positive
+// svg is d3 selected svg
+function plotQuarterlyImpactData( svg, data)
+{
+      svg.selectAll("*").remove();
+      svg.style("background-color", "whitesmoke"); 
+      var height = svg.attr("height");
+      var width = svg.attr("width");
+
+
+      // For second quarter:
+      var currentQuarter = "Q2";
+      var pieData = [];
+      var color = ["Green", "Amber", "Red", "Unscored"];
+      var pieColors = ["Green", "#FFBF00", "Red", "Gray"];
+      for ( var i = 0; i < color.length; i++ )
+      {
+          pieData.push( {label: color[i], count: data[color[i]][currentQuarter]});
+      }
+      
+      plotPieChart( svg, pieData, pieColors);
 }

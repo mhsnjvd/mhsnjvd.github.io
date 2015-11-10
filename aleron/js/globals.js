@@ -25,7 +25,7 @@ var dashBoardSettings = {};
 dashBoardSettings.color = {};
 dashBoardSettings.color.income = "orange";
 dashBoardSettings.color.forecast = "steelblue";
-dashBoardSettings.color.budget = "indianred";
+dashBoardSettings.color.budget = "darkcyan";
 dashBoardSettings.color.previousYear = "black";
 dashBoardSettings.color.expenditure = "red";
 dashBoardSettings.color.histogram = "steelblue";
@@ -49,7 +49,6 @@ dashBoardData.financialsData.files = [
                     { name: "011_b_Finance_201516_P6_CC.csv", propertyName: "P61516"} 
                     ];
 
-
 // Names of the properties that must be the header of the columns
 // across all financial files
 dashBoardData.financialsData.regionProperty = "R/N/BL";
@@ -57,11 +56,12 @@ dashBoardData.financialsData.localityProperty = "Locality";
 dashBoardData.financialsData.costCentreProperty = "CC";
 
 
+dashBoardData.peopleBizModelData.files = [
+                    { name: "007_CAIU_Internal.csv",   propertyName: "internalData"},
+                    { name: "004_b_Staff_Sep15.csv",   propertyName: "rawData" }
+                    ];
 
 
-
-
-
-
-
-
+dashBoardData.impactData.files = [
+                    { name: "003_CAIU_External.csv",   propertyName: "externalInspectionsData" }
+                    ];

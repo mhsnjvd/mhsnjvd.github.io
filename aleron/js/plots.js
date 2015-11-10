@@ -437,7 +437,10 @@ function plotCircles(svg, margin, xData, yData, xScale, yScale, circleColor)
 
 
 // function to handle pieChart.
-function plotPieChart(svg, pieData)
+// svg is a d3 selected svg
+// pieData should have label and count fields
+// color is optional
+function plotPieChart(svg, pieData, color)
 {
         var pieChart = {};
 
@@ -460,7 +463,15 @@ function plotPieChart(svg, pieData)
 
         // create a function to compute the pie slice angles.
         var pie = d3.layout.pie().sort(null).value(function(d) { return d.count; });
-        var color = d3.scale.category20b();
+        if ( color === undefined )
+        {
+            color = d3.scale.category20b();
+        }
+        else
+        {
+            var temp =  d3.scale.ordinal().range(color);
+            color = temp;
+        }
         
         // Design text for the tool tip:
         var tip = d3.tip()

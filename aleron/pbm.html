@@ -9,7 +9,7 @@
   <meta name="author" content="">
   <link rel="icon" href="favicon.jpg">
 
-  <title>Aleron | Children Services Data Drilling</title>
+  <title>Aleron | People and Business Model Data Drilling</title>
 
   <!-- Bootstrap core CSS -->
   <link href="./css/bootstrap.min.css" rel="stylesheet">
@@ -148,17 +148,13 @@
           <ul class="nav navbar-nav navbar-right">
               <li class="active"><a href="http://www.aleron.org">Home</a></li>
                 <li><a href="./dashboard.html">Dashboard</a></li>
-	            <li><a href="#">Settings</a></li>
-	            <li><a href="#">Profile</a></li>
 	            <li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
-	            <li><a href="#">Help</a></li>
+	            <li><a href="http://www.aleron.org/contact-us/">Help</a></li>
                 <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<span class="caret"></span></a>
 	                  <ul class="dropdown-menu">
 	            		<li><a href="./dashboard.html">Dashboard</a></li>
-	            		<li><a href="#">Settings</a></li>
-	            		<li><a href="#">Profile</a></li>
 	            		<li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
-	            		<li><a href="#">Help</a></li>
+	            		<li><a href="http://www.aleron.org/contact-us/">Help</a></li>
 	                  </ul>
                 </li>         
           </ul>
@@ -172,6 +168,7 @@
     </nav>
 
     <div class="container-fluid">
+
         <!-- Row starts here *********************** -->
         <div class="row">
             <!-- Columsn starts here *********************** -->
@@ -180,10 +177,11 @@
             <div class="col-xs-1">
             </div>
 
+
             <!-- Second column starts here *********************** -->
             <div class="col-sm-10">
-              <h1 class="page-header">Children Services Data Analysis</h1> 
-              <h4 class="page-header">Quarterly Financial Data</h4> 
+              <h1 class="page-header">People and Business Model Data Analysis</h1> 
+              <h4 class="page-header">Quarterly People and Business Model Data</h4> 
 
               <!-- Start a row -->
               <div class="row">
@@ -199,46 +197,38 @@
                   <div  class="col-xs-4">
                      Select Cost Centre
                  </div>
-                  
-
 
               </div>
               <!-- End a row -->
 
-              <!-- Start a row -->
-              <div class="row">
+               <!-- strat  row -->
+                <div class="row">
+             
+                   <div class="col-xs-4">
+                         <select style="width: 250px" id="peopleBizModelRegionSelector" onchange="peopleBizModelRegionSelectFunction()">
+                         </select>
+                   </div>
 
+                   <div class="col-xs-4">
+                     <select style="width: 250px" id="peopleBizModelLocalitySelector" onchange="peopleBizModelLocalitySelectFunction()">
+                     </select>
+                   </div>
 
-                 <div  class="col-xs-4">
-                       <select style="width: 250px" id="financialsRegionSelector" onchange="financialsRegionSelectFunction()">
-                       </select>
-                 </div>
-        
-                 <div  class="col-xs-4">
-                   <select style="width: 250px" id="financialsLocalitySelector" onchange="financialsLocalitySelectFunction()">
-                   </select>
-                 </div>
+                   <div class="col-xs-4">
+                     <select style="width: 250px" id="peopleBizModelCostCentreSelector" onchange="peopleBizModelCostCentreSelectFunction()">
+                     </select>
+                   </div>
 
-                 <div  class="col-xs-4">
-                   <select style="width: 250px" id="financialsCostCentreSelector" onchange="financialsCostCentreSelectFunction()">
-                   </select>
-                 </div>
-                  
-              </div>
-              <!-- End a row -->
-              
+               </div>
+                <!-- finish internal row -->
+
             </div>
-            
-
-            <!-- Third column starts here *********************** -->
+           
             <div class="col-xs-1">
             </div>
-            <!-- Columns finish here *********************** -->
-
+           
         </div>
-        <!-- Row ends here *********************** -->
-
-                
+        <!-- End a row -->
 
     </div>
     <!-- Container fluid div ends here *********************** -->
@@ -270,37 +260,23 @@
 
         </div>
         <!-- Row ends here *********************** -->
-        
-        <!-- Row starts here *********************** -->
-        <div class="row">
-             <div class="col-xs-1">
-             </div>
-
-             <div class="col-xs-10">                
-             </div>
-
-             <div class="col-xs-1">
-             </div>
-
-        </div>
-        <!-- Row ends here *********************** -->         
 
 
         <!-- Row starts here *********************** -->
         <div class="row">
             
-             <div class="col-xs-2">
+             <div class="col-xs-1">
              </div>
 
-             <div class="col-xs-8">
-                 <!-- 
+             <div class="col-xs-5">
                  <svg id="SVG1" height="350" width="500" style="background-color: whitesmoke"></svg>
-                 -->
-                 <svg id="SVG1" height="450" width="600" style="background-color: whitesmoke"></svg>
              </div>
 
+             <div class="col-xs-5">
+                 <svg id="SVG2" height="350" width="500" style="background-color: whitesmoke"></svg>
+             </div>
 
-             <div class="col-xs-2">
+             <div class="col-xs-1">
              </div>
 
         </div>
@@ -315,156 +291,135 @@
             
             <div class="col-xs-10">
               <h3 id="dataSummaryHeading" class="sub-header">Data Summary</h3>
-                  <div class="table-responsive">
-                      <table id="dataTable" class="table table-striped">
-                      </table>
+              <div class="table-responsive">
+                <table id="dataTable" class="table table-striped">
+                </table>
                   </div>
-            </div>
+              </div>
 
             <div class="col-xs-1">
             </div>
 
         </div>
         <!-- Row ends here -->
+
       </div>
       <!-- Container fluid ends here -->
 
         <script type="text/javascript" src="./js/globals.js"></script>
         <script type="text/javascript" src="./js/utils.js"></script>
+        <script type="text/javascript" src="./js/pbm.js"></script>
         <script type="text/javascript" src="./js/plots.js"></script>
-        <script type="text/javascript" src="./js/financials.js"></script>
         <script type="text/javascript"> 
 
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
-            function financialsRegionSelectFunction() 
+            function peopleBizModelRegionSelectFunction() 
             {
-                 var region = document.getElementById("financialsRegionSelector").value;
-                 var regionProperty = dashBoardData.financialsData.regionProperty;
-                 var localityProperty = dashBoardData.financialsData.localityProperty;
-                 var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
+                 var region = document.getElementById("peopleBizModelRegionSelector").value;
+                 var regionProperty = dashBoardData.peopleBizModelData.regionProperty;
+                 var localityProperty = dashBoardData.peopleBizModelData.localityProperty;
 
                  // Initialize region data and locality list:
-                 //dashBoardData.financialsData.currentRegionData = dashBoardData.financialsData.rawData.filter( function(d) { return d[regionProperty] === region; } );
 
-                 // Get the propertyNames under which files are stored:
-                 var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
                  // Search for entries matching this region in all files:
-                 dashBoardData.financialsData.currentRegionData = searchPropertyInArrays( dashBoardData.financialsData, arrayNames, regionProperty, region );
-
-                 // Join the data from all files into a single array:
-                 var currentRegionConcat = concatObjectArrays(dashBoardData.financialsData.currentRegionData);
+                 dashBoardData.peopleBizModelData.currentRegionData = dashBoardData.peopleBizModelData.rawData.filter( function(d) { return d[regionProperty] === region; } );
 
                  // Update localities
-                 dashBoardData.financialsData.localityList = getUniqueSortedList(currentRegionConcat, localityProperty);
-                 updateSelector( document.getElementById("financialsLocalitySelector"), dashBoardData.financialsData.localityList );
+                 dashBoardData.peopleBizModelData.localityList = getUniqueSortedList(dashBoardData.peopleBizModelData.currentRegionData, localityProperty);
+                 updateSelector( document.getElementById("peopleBizModelLocalitySelector"), dashBoardData.peopleBizModelData.localityList );
 
-                 // Update Cost Centres
-                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentRegionConcat, costCentreProperty);
-                 updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
-
-
-                 var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentRegionData );
+                 var data = computeQuarterlyPeopleBizModelData( dashBoardData.peopleBizModelData.currentRegionData);
 
                  svg = d3.select(document.getElementById("SVG1"));
                  
-                 plotQuarterlyFinancialData( svg, data);
+                 //plotQuarterlyBizDevData( svg, data);
 
-                 /*
-
-                 var count = getIdentifierCount( dashBoardData.financialsData.currentRegionData, dashBoardData.financialsData.localityList, "Locality");
+                 var count = getIdentifierCount( dashBoardData.peopleBizModelData.currentRegionData, dashBoardData.peopleBizModelData.localityList, "Locality");
                  var pieData = [];
-                 for ( var i = 0; i < dashBoardData.financialsData.localityList.length; i++ )
+                 for ( var i = 0; i < dashBoardData.peopleBizModelData.localityList.length; i++ )
                  {
-                     pieData.push( {label: dashBoardData.financialsData.localityList[i], count: count[i]});
+                     pieData.push( {label: dashBoardData.peopleBizModelData.localityList[i], count: count[i]});
                  }
                  
                  svg = d3.select(document.getElementById("SVG2"));
                  svg.selectAll("*").remove();
                  plotPieChart( svg, pieData);
-                 */
 
                  // Update data table:
-                 var tableData = makeFinancialTableData(data);
+                 var tableData = makePeopleBizModelTableData(data);
                  updateTable( document.getElementById("dataTable"), tableData);
                  return;
             }
             
-            function financialsLocalitySelectFunction() 
+            function peopleBizModelLocalitySelectFunction() 
             {
-                 var locality = document.getElementById("financialsLocalitySelector").value;
-                 var localityProperty = dashBoardData.financialsData.localityProperty;
-                 var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
-
-                 var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
-
-                dashBoardData.financialsData.currentLocalityData = searchPropertyInArrays( dashBoardData.financialsData.currentRegionData, arrayNames, localityProperty, locality );
-
-                 var currentLocalityConcat = concatObjectArrays(dashBoardData.financialsData.currentLocalityData);
-
+                 var locality = document.getElementById("peopleBizModelLocalitySelector").value;
+                 dashBoardData.peopleBizModelData.currentLocalityData = dashBoardData.peopleBizModelData.currentRegionData.filter( function(d) { return d.Locality === locality; } );
+                     
                  // Update Cost Centres
-                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentLocalityConcat, costCentreProperty);
-                 updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
+                 dashBoardData.peopleBizModelData.costCentreList= getUniqueSortedList(dashBoardData.peopleBizModelData.currentLocalityData,"Cost Centres");
+                 updateSelector( document.getElementById("peopleBizModelCostCentreSelector"), dashBoardData.peopleBizModelData.costCentreList);
 
                  // First Histogram Plot
-                 var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentLocalityData );                 
+
+                 var data = computeQuarterlyBizDevData( dashBoardData.peopleBizModelData.currentLocalityData );                 
 
                  var svg = d3.select(document.getElementById("SVG1"));                 
-                 plotQuarterlyFinancialData( svg, data );  
+                 //plotQuarterlyBizDevData( svg, data );  
+
+                 svg = d3.select(document.getElementById("SVG2"));
+                 plotCostCentres(svg, dashBoardData.peopleBizModelData.currentLocalityData)   
 
                  // Update data table:
-                 var tableData = makeFinancialTableData(data);
+                 var tableData = makeBizDevTableData(data);
                  updateTable( document.getElementById("dataTable"), tableData);                                                          
                  return;
             }
 
-            function financialsCostCentreSelectFunction() 
+            function peopleBizModelCostCentreSelectFunction() 
             {
-                 var costCentre = document.getElementById("financialsCostCentreSelector").value;
-                 var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
-                 dashBoardData.financialsData.currentCostCentreData = dashBoardData.financialsData.currentLocalityData.filter( function(d) { return d[costCentreProperty] === costCentre; } );
+                 var costCentre = document.getElementById("peopleBizModelCostCentreSelector").value;
+                 dashBoardData.peopleBizModelData.currentCostCentreData = dashBoardData.peopleBizModelData.currentLocalityData.filter( function(d) { return d["Cost Centres"] === costCentre; } );
                      
-                 var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentCostCentreData );                 
+                 var data = computeQuarterlyBizDevData( dashBoardData.peopleBizModelData.currentCostCentreData );                 
 
                  var svg = d3.select(document.getElementById("SVG1"));                 
-                 plotQuarterlyFinancialData( svg, data );  
+                 //plotQuarterlyBizDevData( svg, data );  
+
+                 svg = d3.select(document.getElementById("SVG2"));
+                 //plotCostCentres(svg, dashBoardData.peopleBizModelData.currentLocalityData);
 
                  // Update data table:
-                 var tableData = makeFinancialTableData(data);
+                 var tableData = makeBizDevTableData(data);
                  updateTable( document.getElementById("dataTable"), tableData);                 
 
                  return;
             }
 
-            // Upload the data file and process it:
-            
-            d3.csv( dashBoardSettings.dataDir + "011_b_Finance_201516_P6_CC.csv", function(d)
+            // Read the main file, refer to globals.js for details
+            d3.csv( dashBoardSettings.dataDir +   dashBoardData.peopleBizModelData.files[1].name, function(d)
             { 
               // Copy the data read into the global variable:
-              dashBoardData.financialsData.rawData = d;
-
-              // copy locally as well:
+              var propertyName = dashBoardData.peopleBizModelData.files[1].propertyName;
+              dashBoardData.peopleBizModelData[propertyName] = d;
               var data = d;
 
-              var propertyList = Object.getOwnPropertyNames(data[0]);
-              dashBoardData.financialsData.propertyList = propertyList;
+              dashBoardData.peopleBizModelData.propertyList = Object.getOwnPropertyNames(data[0]);
+              dashBoardData.peopleBizModelData.regionProperty = dashBoardData.peopleBizModelData.propertyList[1]; 
+              dashBoardData.peopleBizModelData.localityProperty = dashBoardData.peopleBizModelData.propertyList[4]; 
 
-              dashBoardData.financialsData.regionList = getUniqueSortedList(data, dashBoardData.financialsData.regionProperty );
-              dashBoardData.financialsData.localityList = getUniqueSortedList(data,dashBoardData.financialsData.localityProperty ); 
-              dashBoardData.financialsData.costCentreList = getUniqueSortedList(data,  dashBoardData.financialsData.costCentreProperty ); 
+              // Get the lists of regions etc:
+              dashBoardData.peopleBizModelData.regionList = getUniqueSortedList(dashBoardData.peopleBizModelData[propertyName], dashBoardData.peopleBizModelData.regionProperty);
+              dashBoardData.peopleBizModelData.localityList = getUniqueSortedList(dashBoardData.peopleBizModelData[propertyName], dashBoardData.peopleBizModelData.localityProperty);
 
-              // Add Regions to the drop down list:
-              updateSelector( document.getElementById("financialsRegionSelector"), dashBoardData.financialsData.regionList);
-              
+              // Update selectors based on the lists above:
+              updateSelector( document.getElementById("peopleBizModelRegionSelector"), dashBoardData.peopleBizModelData.regionList );
+              updateSelector( document.getElementById("peopleBizModelLocalitySelector"), dashBoardData.peopleBizModelData.localityList );
 
-              // Add Localities to the drop down list:
-              updateSelector( document.getElementById("financialsLocalitySelector"), dashBoardData.financialsData.localityList );
+              peopleBizModelRegionSelectFunction();
 
-              // Add cost centres to the drop down list:
-              updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList );
-
-              financialsRegionSelectFunction();
             });                                 
 
          </script>

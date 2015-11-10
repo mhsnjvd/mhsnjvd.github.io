@@ -1,3 +1,28 @@
+// **************************************************
+// Initialisations for People and Business Model
+// **************************************************
+//
+// Read all the files needed for financials:
+
+// Read file 0:
+(function() 
+{                                                                                                                               
+     var dataFileName = dashBoardData.peopleBizModelData.files[0].name;
+     var propertyName = dashBoardData.peopleBizModelData.files[0].propertyName;
+     
+     dashBoardData.peopleBizModelData[propertyName] = [];
+     var fileName = dashBoardSettings.dataDir +  dataFileName;
+     console.log("reading:" + fileName);
+     d3.csv( fileName, function(d)
+     { 
+            // Copy the data read into the global variable:
+            dashBoardData.peopleBizModelData[propertyName] = d;
+            console.log(fileName + " read successfully.");
+            console.log( dashBoardData.peopleBizModelData[propertyName].length );
+     }); // end of d3.csv()                                
+ })();
+
+
 // *******************************************************
 //    People and Business Model Utility functions
 // *****************************************************//
@@ -25,7 +50,7 @@ function computeQuarterlyPeopleBizModelData(peopleBizModelDataArray)
     var headerColumn = ["AD", "CSMs", "Team Managers", "CSM + Team Leaders", "Practitioners", "Administrators", "Others", "TOTAL"];
     //var headerRow = ["Q1", "Q2", "Q3", "Q4"];
     // Only Q1 at the moment:
-    var headerRow = ["Q1"];
+    var headerRow = ["Q2"];
     var quantityForEachSubColumn = ["HC", "FTE"];
 
     for ( var i = 0; i < headerColumn.length; i++ )
@@ -43,7 +68,8 @@ function computeQuarterlyPeopleBizModelData(peopleBizModelDataArray)
                 if ( quantityForEachSubColumn[k] == "HC" )
                 {
                     // This is just the head count:
-                    computedQuantity = peopleBizModelDataArray.length;
+                    var property = dashBoardData.peopleBizModelData.propertyList[11];
+                    computedQuantity = sumArrayProperty(peopleBizModelDataArray, property);
                 }
 
                 if ( quantityForEachSubColumn[k] == "FTE" )
@@ -52,7 +78,6 @@ function computeQuarterlyPeopleBizModelData(peopleBizModelDataArray)
                     var property = dashBoardData.peopleBizModelData.propertyList[12];
                     computedQuantity = sumArrayProperty( peopleBizModelDataArray, property);
                 }
-
                 data[headerColumn[i]][headerRow[j]][quantityForEachSubColumn[k]] = computedQuantity;
             }
         }
@@ -92,7 +117,7 @@ function makePeopleBizModelTableData(data)
     {
         var row = [];
         row.push( firstColumn[i] );
-        console.log(topRow.length);
+        //console.log(topRow.length);
         for ( var j = 0; j < topRow.length; j++ )
         {
             for ( var k = 0; k < subTopRow.length; k++ )

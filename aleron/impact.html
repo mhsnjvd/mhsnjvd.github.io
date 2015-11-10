@@ -148,17 +148,13 @@
           <ul class="nav navbar-nav navbar-right">
               <li class="active"><a href="./dashboard.html">Home</a></li>
                 <li><a href="./dashboard.html">Dashboard</a></li>
-	            <li><a href="#">Settings</a></li>
-	            <li><a href="#">Profile</a></li>
 	            <li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
-	            <li><a href="#">Help</a></li>
+	            <li><a href="http://www.aleron.org/contact-us/">Help</a></li>
                 <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<span class="caret"></span></a>
 	                  <ul class="dropdown-menu">
 	            		<li><a href="./dashboard.html">Dashboard</a></li>
-	            		<li><a href="#">Settings</a></li>
-	            		<li><a href="#">Profile</a></li>
 	            		<li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
-	            		<li><a href="#">Help</a></li>
+                        <li><a href="http://www.aleron.org/contact-us/">Help</a></li>
 	                  </ul>
                 </li>         
           </ul>
@@ -273,11 +269,11 @@
              </div>
 
              <div class="col-xs-5">
-                 <svg id="quarterlySVG" height="350" width="500" style="background-color: whitesmoke"></svg>
+                 <svg id="SVG1" height="350" width="500" style="background-color: whitesmoke"></svg>
              </div>
 
              <div class="col-xs-5">
-                 <svg id="quarterlyPieSVG" height="350" width="500" style="background-color: whitesmoke"></svg>
+                 <svg id="SVG2" height="350" width="500" style="background-color: whitesmoke"></svg>
              </div>
 
              <div class="col-xs-1">
@@ -341,10 +337,10 @@
 
                  var data = computeQuarterlyImpactData( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentRegionExternalInspectionsData );
 
-                 svg = d3.select(document.getElementById("quarterlySVG"));
-                 
-                 //plotQuarterlyBizDevData( svg, data);
+                 svg = d3.select(document.getElementById("SVG1"));
 
+                 plotQuarterlyImpactData(svg, data);
+                 
                  var count = getIdentifierCount( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.localityList, "Locality");
                  var pieData = [];
                  for ( var i = 0; i < dashBoardData.impactData.localityList.length; i++ )
@@ -352,7 +348,7 @@
                      pieData.push( {label: dashBoardData.impactData.localityList[i], count: count[i]});
                  }
                  
-                 svg = d3.select(document.getElementById("quarterlyPieSVG"));
+                 svg = d3.select(document.getElementById("SVG2"));
                  svg.selectAll("*").remove();
                  plotPieChart( svg, pieData);
 
@@ -365,39 +361,54 @@
             function impactLocalitySelectFunction() 
             {
                  var locality = document.getElementById("impactLocalitySelector").value;
-                 dashBoardData.impactData.currentLocalityData = dashBoardData.impactData.currentRegionData.filter( function(d) { return d.Locality === locality; } );
-                     
-                 // Update Cost Centres
-                 dashBoardData.impactData.contractNameList= getUniqueSortedList(dashBoardData.impactData.currentLocalityData,"Cost Centres");
+                 var localityProperty = dashBoardData.impactData.localityProperty; 
+                 var contractNameProperty = dashBoardData.impactData.contractNameProperty; 
+
+                 // Initialize region data and locality list:
+                 dashBoardData.impactData.currentLocalityData = dashBoardData.impactData.rawData.filter( function(d) { return d[localityProperty] ===
+                         locality; } );
+                 dashBoardData.impactData.currentLocalityExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter(
+                         function(d) { return d[localityProperty] === locality; } ); 
+
+                 // Update Contracts
+                 dashBoardData.impactData.contractNameList = getUniqueSortedList(dashBoardData.impactData.currentLocalityData, contractNameProperty);
                  updateSelector( document.getElementById("impactContractNameSelector"), dashBoardData.impactData.contractNameList);
 
-                 // First Histogram Plot
+                 var data = computeQuarterlyImpactData( dashBoardData.impactData.currentLocalityData, dashBoardData.impactData.currentLocalityExternalInspectionsData );
 
-                 var data = computeQuarterlyBizDevData( dashBoardData.impactData.currentLocalityData );                 
+                 svg = d3.select(document.getElementById("SVG1"));
 
-                 var svg = d3.select(document.getElementById("quarterlySVG"));                 
-                 //plotQuarterlyBizDevData( svg, data );  
-
-                 svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                 plotContractNames(svg, dashBoardData.impactData.currentLocalityData)   
+                 plotQuarterlyImpactData(svg, data);
+                 
+                 var count = getIdentifierCount( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.localityList, "Locality");
+                 var pieData = [];
+                 for ( var i = 0; i < dashBoardData.impactData.localityList.length; i++ )
+                 {
+                     pieData.push( {label: dashBoardData.impactData.localityList[i], count: count[i]});
+                 }
+                 
+                 svg = d3.select(document.getElementById("SVG2"));
+                 svg.selectAll("*").remove();
+                 plotPieChart( svg, pieData);
 
                  // Update data table:
                  var tableData = makeImpactTableData(data);
-                 updateImpactTable( document.getElementById("dataTable"), tableData);                                                          
+                 updateImpactTable( document.getElementById("dataTable"), tableData);
                  return;
             }
 
             function impactContractNameSelectFunction() 
             {
                  var contractName = document.getElementById("impactContractNameSelector").value;
-                 dashBoardData.impactData.currentContractNameData = dashBoardData.impactData.currentLocalityData.filter( function(d) { return d["Cost Centres"] === contractName; } );
+                 var contractNameProperty = dashBoardData.impactData.contractNameProperty; 
+                 dashBoardData.impactData.currentContractNameData = dashBoardData.impactData.currentLocalityData.filter( function(d) { return d[contractNameProperty] === contractName; } );
                      
-                 var data = computeQuarterlyBizDevData( dashBoardData.impactData.currentContractNameData );                 
+                 //var data = computeQuarterlyBizDevData( dashBoardData.impactData.currentContractNameData );                 
 
-                 var svg = d3.select(document.getElementById("quarterlySVG"));                 
+                 var svg = d3.select(document.getElementById("SVG1"));                 
                  //plotQuarterlyBizDevData( svg, data );  
 
-                 svg = d3.select(document.getElementById("quarterlyPieSVG"));
+                 svg = d3.select(document.getElementById("SVG2"));
                  //plotContractNames(svg, dashBoardData.impactData.currentLocalityData);
 
                  // Update data table:
@@ -425,13 +436,6 @@
                  return;
             }
 
-            d3.csv( dashBoardSettings.dataDir + "003_CAIU_External.csv", function(d)
-            {
-               dashBoardData.impactData.externalInspectionsData = d;
-               console.log("Done reading external inspections file");
-            });
-
-
 
             d3.csv( dashBoardSettings.dataDir + "001_Contract_DB_Q2.csv", function(d)
             { 
@@ -439,7 +443,7 @@
               dashBoardData.impactData.rawData = d;
               var data = d;
 
-              console.log("Done reading constracts files");
+              console.log("Done reading contracts files");
 
               dashBoardData.impactData.propertyList = Object.getOwnPropertyNames(data[0]);
               dashBoardData.impactData.regionProperty = dashBoardData.impactData.propertyList[0]; 
