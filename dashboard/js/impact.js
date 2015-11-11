@@ -37,7 +37,7 @@ function computeQuarterlyImpactData(impactDataArray, externalInspectionsDataArra
     var data = {};
 
     var headerColumn = ["Green", "Amber", "Red", "Unscored", "Total Number of Contracts", "Green (Outcomes)", "Amber (Outcomes)", "Red (Outcomes)", "Percentage %", "#CYP WS work with intensively", "#CYP WS work with", "Outstanding", "Good/Very Good", "Satisfactory/Requires Improvement", "Unsatisfactory", "Performance Unscored", "Total"];
-    var headerRow = ["Q1", "Q2", "Q3", "Q4", "FY"];
+    var headerRow = ["Q1", "Q2", "Q3", "Q4", "Income"];
 
     for ( var i = 0; i < headerColumn.length; i++ )
     {
@@ -221,4 +221,26 @@ function plotQuarterlyImpactData( svg, data)
       }
       
       plotPieChart( svg, pieData, pieColors);
+}
+
+function plotRegionalContractsCount( svg )
+{
+      svg.selectAll("*").remove();
+      svg.style("background-color", "whitesmoke"); 
+      var height = svg.attr("height");
+      var width = svg.attr("width");
+
+
+      // For second quarter:
+      var pieData = [];
+      var region = dashBoardData.impactData.regionList;
+      // Delete the fist element, which is not a region
+      region.shift();
+      for ( var i = 0; i < region.length; i++ )
+      {
+          var thisRegion = dashBoardData.impactData.rawData.filter( function(d){ return d[dashBoardData.impactData.regionProperty] == region[i]; } );
+          pieData.push( {label: region[i], count: thisRegion.length});
+      }
+      
+      plotPieChart( svg, pieData);
 }

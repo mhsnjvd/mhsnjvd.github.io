@@ -289,18 +289,19 @@
         <!-- Row starts here *********************** -->
         <div class="row">
             
-             <div class="col-xs-2">
+             <div class="col-xs-1">
              </div>
 
-             <div class="col-xs-8">
-                 <!-- 
+             <div class="col-xs-5">
                  <svg id="SVG1" height="350" width="500" style="background-color: whitesmoke"></svg>
-                 -->
-                 <svg id="SVG1" height="450" width="600" style="background-color: whitesmoke"></svg>
+             </div>
+
+             <div class="col-xs-5">
+                 <svg id="SVG2" height="350" width="500" style="background-color: whitesmoke"></svg>
              </div>
 
 
-             <div class="col-xs-2">
+             <div class="col-xs-1">
              </div>
 
         </div>
@@ -353,15 +354,26 @@
                  // Search for entries matching this region in all files:
                  dashBoardData.financialsData.currentRegionData = searchPropertyInArrays( dashBoardData.financialsData, arrayNames, regionProperty, region );
 
+
+                 if ( region == dashBoardData.allUKString )
+                 {
+                    for ( var i = 0; i < arrayNames.length; i++ )
+                    {
+                        dashBoardData.financialsData.currentRegionData[arrayNames[i]] = dashBoardData.financialsData[arrayNames[i]];
+                    }
+                 }
+
                  // Join the data from all files into a single array:
                  var currentRegionConcat = concatObjectArrays(dashBoardData.financialsData.currentRegionData);
 
                  // Update localities
                  dashBoardData.financialsData.localityList = getUniqueSortedList(currentRegionConcat, localityProperty);
+                 dashBoardData.financialsData.localityList.unshift("");
                  updateSelector( document.getElementById("financialsLocalitySelector"), dashBoardData.financialsData.localityList );
 
                  // Update Cost Centres
                  dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentRegionConcat, costCentreProperty);
+                 dashBoardData.financialsData.costCentreList.unshift("");
                  updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
 
 
@@ -371,9 +383,7 @@
                  
                  plotQuarterlyFinancialData( svg, data);
 
-                 /*
-
-                 var count = getIdentifierCount( dashBoardData.financialsData.currentRegionData, dashBoardData.financialsData.localityList, "Locality");
+                 var count = getIdentifierCount( currentRegionConcat, dashBoardData.financialsData.localityList, localityProperty);
                  var pieData = [];
                  for ( var i = 0; i < dashBoardData.financialsData.localityList.length; i++ )
                  {
@@ -383,7 +393,6 @@
                  svg = d3.select(document.getElementById("SVG2"));
                  svg.selectAll("*").remove();
                  plotPieChart( svg, pieData);
-                 */
 
                  // Update data table:
                  var tableData = makeFinancialTableData(data);
@@ -405,6 +414,7 @@
 
                  // Update Cost Centres
                  dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentLocalityConcat, costCentreProperty);
+                 dashBoardData.financialsData.costCentreList.unshift("");
                  updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
 
                  // First Histogram Plot
@@ -412,6 +422,11 @@
 
                  var svg = d3.select(document.getElementById("SVG1"));                 
                  plotQuarterlyFinancialData( svg, data );  
+
+
+                 var svg = d3.select(document.getElementById("SVG2"));                 
+                 // Use quarter 2 data file:
+                 plotCostCentres( svg, dashBoardData.financialsData.currentLocalityData[arrayNames[1]]);  
 
                  // Update data table:
                  var tableData = makeFinancialTableData(data);
@@ -455,6 +470,7 @@
               dashBoardData.financialsData.costCentreList = getUniqueSortedList(data,  dashBoardData.financialsData.costCentreProperty ); 
 
               // Add Regions to the drop down list:
+              dashBoardData.financialsData.regionList.unshift(dashBoardData.allUKString);
               updateSelector( document.getElementById("financialsRegionSelector"), dashBoardData.financialsData.regionList);
               
 

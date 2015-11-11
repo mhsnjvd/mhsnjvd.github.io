@@ -377,8 +377,8 @@ function plotCostCentres(svg, data)
       var height = svg.attr("height");
       var width  = svg.attr("width");
 
-      // Extract Q1 actual and cast it to number:
-      var yData = data.map( function(d) { return +d["Q1 Actual"]; });
+      // Extract income actual and cast it to number:
+      var yData = data.map( function(d) { return +d["Inc-YTD-Act"]; });
 
       // Extract the cost centre number
       var xData = data.map( function(d) { return d[dashBoardData.financialsData.costCentreProperty]; });
@@ -393,7 +393,7 @@ function plotCostCentres(svg, data)
       
       plotVerticalGrid( svg, margin, 25);
       plotHorisontalBars(svg, margin, xData, yData);
-      plotXLabel( svg, margin, "Cost Centres within the Locality")
+      plotXLabel( svg, margin, "Latest income of Cost Centres within the Locality")
       plotYLabel( svg, margin, "CC ID")
       
 }   

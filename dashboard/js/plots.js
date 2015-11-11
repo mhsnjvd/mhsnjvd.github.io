@@ -683,7 +683,7 @@ function plotHorisontalBars(svg, margin, categories, values)
          .html(function(d, i) {
                 var name = categories[i];
                 var value = d;                
-                var displayText = "<span style='color:red'>CC: " + name + "</span>" + " Q1 Income: " + value;
+                var displayText = "<span style='color:red'>name: " + name + "</span> value: " + value;
                 return displayText;
            });        
 

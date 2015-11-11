@@ -323,16 +323,23 @@
                  var contractNameProperty = dashBoardData.impactData.contractNameProperty; 
 
                  // Initialize region data and locality list:
-                 dashBoardData.impactData.currentRegionData = dashBoardData.impactData.rawData.filter( function(d) { return d[regionProperty] === region; } );
-                 dashBoardData.impactData.currentRegionExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter( function(d)
-                         { return d[regionProperty] === region; } );
+                 dashBoardData.impactData.currentRegionData = dashBoardData.impactData.rawData.filter( function(d) { return d[regionProperty] == region; } );
+                 dashBoardData.impactData.currentRegionExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter( function(d) { return d[regionProperty] === region; } );
+
+                 if ( region == dashBoardData.allUKString )
+                 {
+                     dashBoardData.impactData.currentRegionData = dashBoardData.impactData.rawData;
+                     dashBoardData.impactData.currentRegionExternalInspectionsData = dashBoardData.impactData.externalInspectionsData;
+                 }
 
                  // Update localities
                  dashBoardData.impactData.localityList = getUniqueSortedList(dashBoardData.impactData.currentRegionData, localityProperty);
+                 dashBoardData.impactData.localityList.unshift("");
                  updateSelector( document.getElementById("impactLocalitySelector"), dashBoardData.impactData.localityList );
 
                  // Update Contracts
                  dashBoardData.impactData.contractNameList = getUniqueSortedList(dashBoardData.impactData.currentRegionData, contractNameProperty);
+                 dashBoardData.impactData.contractNameList.unshift("");
                  updateSelector( document.getElementById("impactContractNameSelector"), dashBoardData.impactData.contractNameList);
 
                  var data = computeQuarterlyImpactData( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentRegionExternalInspectionsData );
@@ -341,7 +348,7 @@
 
                  plotQuarterlyImpactData(svg, data);
                  
-                 var count = getIdentifierCount( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.localityList, "Locality");
+                 var count = getIdentifierCount( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.localityList, localityProperty);
                  var pieData = [];
                  for ( var i = 0; i < dashBoardData.impactData.localityList.length; i++ )
                  {
@@ -350,7 +357,15 @@
                  
                  svg = d3.select(document.getElementById("SVG2"));
                  svg.selectAll("*").remove();
-                 plotPieChart( svg, pieData);
+                 svg.style("background-color", "white");
+                 if ( region != dashBoardData.allUKString )
+                 {
+                     plotPieChart( svg, pieData);
+                 }
+                 else
+                 {
+                     plotRegionalContractsCount(svg);
+                 }
 
                  // Update data table:
                  var tableData = makeImpactTableData(data);
@@ -365,13 +380,12 @@
                  var contractNameProperty = dashBoardData.impactData.contractNameProperty; 
 
                  // Initialize region data and locality list:
-                 dashBoardData.impactData.currentLocalityData = dashBoardData.impactData.rawData.filter( function(d) { return d[localityProperty] ===
-                         locality; } );
-                 dashBoardData.impactData.currentLocalityExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter(
-                         function(d) { return d[localityProperty] === locality; } ); 
+                 dashBoardData.impactData.currentLocalityData = dashBoardData.impactData.rawData.filter( function(d) { return d[localityProperty] === locality; } );
+                 dashBoardData.impactData.currentLocalityExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter( function(d) { return d[localityProperty] === locality; } ); 
 
                  // Update Contracts
                  dashBoardData.impactData.contractNameList = getUniqueSortedList(dashBoardData.impactData.currentLocalityData, contractNameProperty);
+                 dashBoardData.impactData.contractNameList.unshift("");
                  updateSelector( document.getElementById("impactContractNameSelector"), dashBoardData.impactData.contractNameList);
 
                  var data = computeQuarterlyImpactData( dashBoardData.impactData.currentLocalityData, dashBoardData.impactData.currentLocalityExternalInspectionsData );
@@ -418,24 +432,6 @@
                  return;
             }
 
-            function showDataSummary(quarterlyData)
-            {
-                var paraDiv = d3.select(document.getElementById("dataSummaryPara"));
-                paraDiv.selectAll("*").remove();
-                paraDiv.append("p").html( "Data Summary: " + region );
-                paraDiv.selectAll("p")
-                .data(quarterlyData)
-                .enter()
-                .append("p")
-                .text("");
-                return;
-            }
-
-            function propertySelectFunction() 
-            {
-                 return;
-            }
-
 
             d3.csv( dashBoardSettings.dataDir + "001_Contract_DB_Q2.csv", function(d)
             { 
@@ -456,9 +452,8 @@
               dashBoardData.impactData.contractNameList = getUniqueSortedList(data, dashBoardData.impactData.contractNameProperty);
 
               // Update selectors based on the lists above:
+              dashBoardData.impactData.regionList.unshift(dashBoardData.allUKString);
               updateSelector( document.getElementById("impactRegionSelector"), dashBoardData.impactData.regionList );
-              updateSelector( document.getElementById("impactLocalitySelector"), dashBoardData.impactData.localityList );
-              updateSelector( document.getElementById("impactContractNameSelector"), dashBoardData.impactData.contractNameList );
 
               impactRegionSelectFunction();
 

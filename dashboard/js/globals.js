@@ -65,3 +65,9 @@ dashBoardData.peopleBizModelData.files = [
 dashBoardData.impactData.files = [
                     { name: "003_CAIU_External.csv",   propertyName: "externalInspectionsData" }
                     ];
+
+
+
+
+// String for selecting all of UK:
+dashBoardData.allUKString = "All of UK";
