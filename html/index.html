@@ -94,28 +94,19 @@
              کوئی نہ کوئی ایسی  چیز ضرور شیئر کی ہو گی جس سے آپ کا قہقہہ نکل گیا ہو گا۔  مگر سوال یہ ہے کہ آخری مرتبہ آپ روئے کب  تھے؟  شائد بچپن میں ؟ شائد کچھ سال پہلے؟  شائد آپ کو ٹھیک سے یاد بھی نہ ہو۔  مگر ہم بات کر رہے ہیں
               سنجیدگی سے رونے کی، سوچ سمجھ کر رونے کی، رونے کو کام سمجھ کر رونے کی
             </p>
-            <pre style="text-align: left"><code dir="ltr" >
-            x = 1; y = 1;
-            for(i = 0; i < n; i++ )
-            {
-            	x = x + y;
-	    }
-	</code></pre>
-            <p>Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa.</p>
-            <h3>یہ مسائل محبت</h3>
-            <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <ul>
-              <li>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</li>
-              <li>Donec id elit non mi porta gravida at eget metus.</li>
-              <li>Nulla vitae elit libero, a pharetra augue.</li>
-            </ul>
-            <p>Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue.</p>
-            <ol>
-              <li>Vestibulum id ligula porta felis euismod semper.</li>
-              <li>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</li>
-              <li>Maecenas sed diam eget risus varius blandit sit amet non magna.</li>
-            </ol>
-            <p>Cras mattis consectetur purus sit amet fermentum. Sed posuere consectetur est at lobortis.</p>
+         
+            <h3>یہ مسائل محبت</h3>         
+            
+         <pre style="text-align: left"><code dir="ltr" >
+x = 0; y = 1;
+for(i = 0; i < n; i++ )
+{
+   temp = x + y;
+   x = y;
+   y = temp;             	
+}
+	     </code></pre>
+
           </div><!-- /.blog-post -->
 
 
@@ -165,6 +156,74 @@
         </div>
           
           
+        <div class="blog-post">
+            <h2 class="blog-post-title">Poetry and Depression</h2>
+            <h3>Is one possible without the other?</h3>
+            <p class="blog-post-meta">South Kensington, London, 11th November, 2015 <a href="#"> Mohsin </a></p>
+            
+            <p>
+            It's a cold day in London as I wait for my appointment to collect 
+            my passport from the French consulate, most likely without a visa.
+            Sitting in a Pret shop opposite
+            the South Kensington tube station and probably under the influence of a 
+            hot-chocolate, I began to wonder whether it is possible to write poetry 
+            without having a serious bout of depression or without going through a 
+            long and painful period of depression.
+            </p>
+            
+            <p style="text-align: center" dir="rtl">
+            کوئی مہر نہیں کوئی قہر نہیں، اب سچا شعر سنائیں کیا
+            </p>
+
+            <p style="text-align: center" >
+            <i> There is no love, there is no pain, how can I write a true verse. </i>
+            </p>
+                        
+            <p>
+            To begin with, the opposite is certainly possible, one can go through
+            a lot of depression without writing a single word of poetry. But the
+            interesting question is whether one can write anything interesting
+            and genuine about life, without having to go through the kind of depression 
+            which shakes the very foundations of life, which threatens the very existence 
+            of life, which makes everything around you without a point, i.e. pointless,
+            which renders life around you devoid of all meaning, i.e. meaningless. 
+            
+            It is perhaps a great poverty of the English language that there is no 
+            appropriate word to describe "depression" as I would like to use it here. 
+            The existential angst, the anxiety of nothingness, the 
+            feeling that the whole world is indifferent to you existence, the 
+            realisation that in the matrix of life, your existence is a mere rounding 
+            error--this is what I mean by depression.
+            
+            </p>
+            <p>
+            Depression is very powerful but it requires immense discipline and 
+            extreme courage to harness its power and to turn it into words. Words 
+            with meaning about life. Life, which at that very time seems utterly meaningless. 
+            </p>
+
+
+        </div>
+          
+          
+        <div class="blog-post">
+            <h2 class="blog-post-title">Love and Pain</h2>
+            <h3>Is one possible without the other?</h3>
+            <p class="blog-post-meta">Hunza Sugar Mill, 66-RB, Faisalabad, 20th November, 2015 <a href="#"> Mohsin </a></p>
+
+            <p>The amount of suffering, the amount of pain, the amount of angst one has to go through in love is unimaginable. 
+            I am tired, so very tired. It seems that I can not take it anymore, the burden of love crushes my soul
+            every morning, every evening, every night. But from these ruins, I am determined to rise, to rule, to 
+            conquer and to be in power. To make best of my own life and the short time I have before it's 
+            all over.
+            </p>
+
+
+        </div>
+
+        <div class="blog-post" id="d3para">
+        </div>
+          
           <nav>
             <ul class="pager">
               <li><a href="#">Previous</a></li>
@@ -208,16 +267,6 @@
       </div><!-- /.row -->
 
     </div><!-- /.container -->
-
-    <script src="../js/d3.min.js"></script>
-    <script type="text/javascript">
-        d3.select("body").style("background-color", "white");
-        console.log("This is d3!");
-        d3.select("body").selectAll("p")
-            .data([4, 8, 15, 16, 23, 42])
-              .enter().append("p")
-                  .text(function(d) { return "I’m number " + d + "!"; });
-    </script>
 
     <footer class="blog-footer">
       <p>Blog for <a href="http://zindajaved.com">zindajaved</a> by <a href="https://github.com/mhsnjvd">@mohsin</a>.</p>
