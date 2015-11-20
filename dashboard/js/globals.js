@@ -29,6 +29,7 @@ dashBoardSettings.color.budget = "darkcyan";
 dashBoardSettings.color.previousYear = "black";
 dashBoardSettings.color.expenditure = "red";
 dashBoardSettings.color.histogram = "steelblue";
+dashBoardSettings.color.imageBackGround = "none";
 
 
 dashBoardSettings.color.successful = "green";
