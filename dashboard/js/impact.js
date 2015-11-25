@@ -183,6 +183,11 @@ function updateImpactTable( table, tableData)
         {
             var cell = row.insertCell(j);   
             cell.innerHTML = tableData[i][j];
+            // Align all but the first column to the right:
+            if ( j !== 0 )
+            {
+                cell.align = "right";
+            }
         }
     }
 
