@@ -410,7 +410,7 @@ function plotCircles(svg, margin, xData, yData, xScale, yScale, circleColor)
 
      circles.on("mouseover", function(d){
         var mouseOnRadius = 9;
-        circle = d3.select(this);
+        var circle = d3.select(this);
         circle.transition()
        .duration(250)
        .attr("r", mouseOnRadius)
@@ -422,7 +422,7 @@ function plotCircles(svg, margin, xData, yData, xScale, yScale, circleColor)
 
      circles.on("mouseout", function(d){    
         var mouseOutRadius = 5
-        circle = d3.select(this);
+        var circle = d3.select(this);
         circle.transition()
        .duration(250)
        .attr("opacity", 1.0)
