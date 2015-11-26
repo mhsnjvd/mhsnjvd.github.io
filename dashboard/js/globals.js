@@ -29,6 +29,7 @@ dashBoardSettings.color.budget = "darkcyan";
 dashBoardSettings.color.previousYear = "black";
 dashBoardSettings.color.expenditure = "red";
 dashBoardSettings.color.histogram = "steelblue";
+dashBoardSettings.color.imageBackGround = "none";
 
 
 dashBoardSettings.color.successful = "green";
@@ -37,6 +38,7 @@ dashBoardSettings.color.pipeLineInProgress = "orange";
 dashBoardSettings.color.pipeLineQualifiedOut = "steelblue";
 
 dashBoardSettings.numberFormat = d3.format(",.2f");
+dashBoardSettings.pieNumberFormat = d3.format(",.1f");
 
 // Path of data directory:
 dashBoardSettings.dataDir = "./data/";

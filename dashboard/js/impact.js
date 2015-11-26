@@ -183,6 +183,11 @@ function updateImpactTable( table, tableData)
         {
             var cell = row.insertCell(j);   
             cell.innerHTML = tableData[i][j];
+            // Align all but the first column to the right:
+            if ( j !== 0 )
+            {
+                cell.align = "right";
+            }
         }
     }
 
@@ -205,7 +210,9 @@ function updateImpactTable( table, tableData)
 function plotQuarterlyImpactData( svg, data)
 {
       svg.selectAll("*").remove();
-      svg.style("background-color", "whitesmoke"); 
+      var backGroundColor = dashBoardSettings.color.imageBackGround;                               
+      svg.style("background-color", backGroundColor); 
+    
       var height = svg.attr("height");
       var width = svg.attr("width");
 
@@ -226,7 +233,8 @@ function plotQuarterlyImpactData( svg, data)
 function plotRegionalContractsCount( svg )
 {
       svg.selectAll("*").remove();
-      svg.style("background-color", "whitesmoke"); 
+      var backGroundColor = dashBoardSettings.color.imageBackGround;                               
+      svg.style("background-color", backGroundColor); 
       var height = svg.attr("height");
       var width = svg.attr("width");
 
