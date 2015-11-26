@@ -23,5 +23,3 @@ for ( i = 0;i < nBckGrounds; i++ )
 {
     bckGroundURL.push(i);
 }
-
-
