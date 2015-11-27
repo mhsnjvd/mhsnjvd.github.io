@@ -8,11 +8,11 @@
     "children":
         []
     },
-    {"name":"Model", "description":"Profiles of Country", "address":"./pbm.html",
+    {"name":"People & Business Model", "description":"Profiles of Country", "address":"./pbm.html",
     "children":
         []
     },
-    {"name":"Dev", "description":"How much risk can we take?", "address": "./bd.html",
+    {"name":"Business Development", "description":"How much risk can we take?", "address": "./bd.html",
     "children":
         []
     }

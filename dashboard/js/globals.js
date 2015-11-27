@@ -71,5 +71,48 @@ dashBoardData.impactData.files = [
 
 
 
+/***************************************************
+/***************************************************
+ *  Definitions for Regions and Nations
+ *  ***********************************************/
+/**************************************************/
+
+dashBoardData.nationPropertyName = "Nation";
 // String for selecting all of UK:
 dashBoardData.allUKString = "All of UK";
+dashBoardData.nationDefinitions = {
+                                   "Business Lines": ["Employment Training & Skills", "Family Placement"],
+                                   "Celtic Nations": ["Cymru", "Northern Ireland", "Scotland"],
+                                   "England": ["East", "London", "Midlands & South West", "South East & Anglia", "West"]
+                                  };
+
+// A list of all the nations
+dashBoardData.nationList = Object.getOwnPropertyNames(dashBoardData.nationDefinitions);
+
+// A list of all the regions:
+dashBoardData.regionList = [];
+dashBoardData.nationList.forEach( function(nation) { 
+    dashBoardData.regionList = dashBoardData.regionList.concat( dashBoardData.nationDefinitions[nation] ) } );
+
+// Create an object with the format: { region: nation, region: nation, ...}
+dashBoardData.regionToNation = {};
+dashBoardData.regionList.forEach( function(region)
+        {
+            var nations = dashBoardData.nationList;
+            for ( var i = 0; i < nations.length; i++ )
+            {
+                if ( dashBoardData.nationDefinitions[nations[i]].indexOf(region) !== -1 )
+                {
+                    dashBoardData.regionToNation[region] = nations[i];
+                }
+            }
+        });
+
+
+function addNationProperty(data, regionProperty, nationProperty)
+{
+    for ( var i = 0; i < data.length; i++ )
+    {
+        data[i][nationProperty]= dashBoardData.regionToNation[data[i][regionProperty]];
+    }
+}

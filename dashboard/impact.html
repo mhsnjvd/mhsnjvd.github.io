@@ -14,9 +14,8 @@
   <!-- Bootstrap core CSS -->
   <link href="./css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Custom styles for this template 
+ <!-- Custom styles for this template, needed for the right spacging on top etc.-->                                                                    
   <link href="./css/dashboard.css" rel="stylesheet">
-   -->
 
   <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
   <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -92,7 +91,6 @@
         <div class="row">
 
             <div class="col-sm-12">
-              <br>
               <h1 class="page-header">Impact Data Analysis</h1> 
               <h4 class="page-header">Quarterly Impact Data</h4> 
             </div>
@@ -104,9 +102,13 @@
         <!-- Row starts here *********************** -->
         <div class="row">
               <div  class="col-xs-3">
-                 Select Region
+                 Select Nation
              </div>
         
+              <div  class="col-xs-3">
+                 Select Region
+             </div>
+
               <div  class="col-xs-3">
                  Select Locality
              </div>
@@ -115,17 +117,18 @@
                  Select Contract
              </div>
 
-              <div  class="col-xs-3">
-                 Select Something
-             </div>
-
         </div>
         <!-- End a row -->
 
 
            <!-- strat  row -->
             <div class="row">
-         
+
+               <div class="col-xs-3">
+                 <select style="width: 250px" id="impactNationSelector" onchange="impactNationSelectFunction()">
+                 </select>
+               </div>
+
                <div class="col-xs-3">
                      <select style="width: 250px" id="impactRegionSelector" onchange="impactRegionSelectFunction()">
                      </select>
@@ -141,14 +144,9 @@
                  </select>
                </div>
 
-               <div class="col-xs-3">
-                 <select style="width: 250px" id="" onchange="">
-                 </select>
-               </div>
-
+               
            </div>
             <!-- finish row -->
-
 
     </div>
     <!-- Container fluid div ends here *********************** -->
@@ -163,24 +161,45 @@
         <div class="row">
 
              <div class="col-xs-3">
-                 <svg id="SVG1" height="250" width="250" style="background-color: none"></svg>
+                 <svg id="SVG01" height="250" width="250" style="background-color: white"></svg>
              </div>
 
              <div class="col-xs-3">
-                 <svg id="SVG2" height="250" width="250" style="background-color: none"></svg>
+                 <svg id="SVG02" height="250" width="250" style="background-color: white"></svg>
              </div>
              
              <div class="col-xs-3">
-                 <svg id="SVG3" height="250" width="250" style="background-color: none"></svg>
+                 <svg id="SVG03" height="250" width="250" style="background-color: white"></svg>
              </div>
 
              <div class="col-xs-3">
-                 <svg id="SVG4" height="250" width="250" style="background-color: none"></svg>
+                 <svg id="SVG04" height="250" width="250" style="background-color: white"></svg>
              </div>
 
         </div>
         <!-- Row ends here *********************** -->
 
+        <!-- Row starts here *********************** -->
+        <div class="row">
+
+             <div class="col-xs-3">
+                 <svg id="SVG05" height="250" width="250" style="background-color: white"></svg>
+             </div>
+
+             <div class="col-xs-3">
+                 <svg id="SVG06" height="250" width="250" style="background-color: white"></svg>
+             </div>
+             
+             <div class="col-xs-3">
+                 <svg id="SVG07" height="250" width="250" style="background-color: white"></svg>
+             </div>
+
+             <div class="col-xs-3">
+                 <svg id="SVG08" height="250" width="250" style="background-color: white"></svg>
+             </div>
+
+        </div>
+        <!-- Row ends here *********************** -->
         
         <!-- Row starts here *********************** -->
         <div class="row">
@@ -216,6 +235,68 @@
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
+            function impactNationSelectFunction() 
+            {
+                 var nation = document.getElementById("impactNationSelector").value;
+                 var nationProperty = dashBoardData.impactData.nationProperty;
+                 var regionProperty = dashBoardData.impactData.regionProperty;
+                 var localityProperty = dashBoardData.impactData.localityProperty; 
+                 var contractNameProperty = dashBoardData.impactData.contractNameProperty; 
+
+                 // Initialize region data and locality list:
+                 dashBoardData.impactData.currentNationData = dashBoardData.impactData.rawData.filter( function(d) { return d[nationProperty] ==
+                         nation; } );
+                 dashBoardData.impactData.currentNationExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter( function(d) { return d[nationProperty] === nation; } );
+
+                 if ( nation == dashBoardData.allUKString )
+                 {
+                     dashBoardData.impactData.currentNationData = dashBoardData.impactData.rawData;
+                     dashBoardData.impactData.currentNationExternalInspectionsData = dashBoardData.impactData.externalInspectionsData;
+                 }
+
+                 // Update Regions
+                 dashBoardData.impactData.regionList = getUniqueSortedList(dashBoardData.impactData.currentNationData, regionProperty);
+                 updateSelector( document.getElementById("impactRegionSelector"), [""].concat(dashBoardData.impactData.regionList) );
+
+                 // Update localities
+                 dashBoardData.impactData.localityList = getUniqueSortedList(dashBoardData.impactData.currentNationData, localityProperty);
+                 updateSelector( document.getElementById("impactLocalitySelector"), [""].concat(dashBoardData.impactData.localityList) );
+
+                 // Update Contracts
+                 dashBoardData.impactData.contractNameList = getUniqueSortedList(dashBoardData.impactData.currentNationData, contractNameProperty);
+                 updateSelector( document.getElementById("impactContractNameSelector"), [""].concat(dashBoardData.impactData.contractNameList));
+
+                 var data = computeQuarterlyImpactData( dashBoardData.impactData.currentNationData, dashBoardData.impactData.currentNationExternalInspectionsData );
+
+                 svg = d3.select(document.getElementById("SVG01"));
+
+                 plotQuarterlyImpactData(svg, data);
+                 
+                 var count = getIdentifierCount( dashBoardData.impactData.currentNationData, dashBoardData.impactData.regionList, regionProperty);
+                 var pieData = [];
+                 dashBoardData.impactData.regionList.forEach( function(d, i) { 
+                         pieData[i] = {}; pieData[i].label = d; pieData[i].count = count[i]; return; } );
+                 
+                 svg = d3.select(document.getElementById("SVG02"));
+                 svg.selectAll("*").remove();
+                 //svg.style("background-color", "white");
+                 if ( nation != dashBoardData.allUKString )
+                 {
+                     plotPieChart( svg, pieData);
+                 }
+                 else
+                 {
+                     plotRegionalContractsCount(svg);
+                 }
+
+                 // Update data table:
+                 var tableData = makeImpactTableData(data);
+                 updateImpactTable( document.getElementById("dataTable"), tableData);
+                 return;
+            }
+
+
+
             function impactRegionSelectFunction() 
             {
                  var region = document.getElementById("impactRegionSelector").value;
@@ -245,18 +326,16 @@
 
                  var data = computeQuarterlyImpactData( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentRegionExternalInspectionsData );
 
-                 svg = d3.select(document.getElementById("SVG1"));
+                 svg = d3.select(document.getElementById("SVG01"));
 
                  plotQuarterlyImpactData(svg, data);
                  
                  var count = getIdentifierCount( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.localityList, localityProperty);
                  var pieData = [];
-                 for ( var i = 0; i < dashBoardData.impactData.localityList.length; i++ )
-                 {
-                     pieData.push( {label: dashBoardData.impactData.localityList[i], count: count[i]});
-                 }
+                 dashBoardData.impactData.localityList.forEach( function(d, i) { 
+                         pieData[i] = {}; pieData[i].label = d; pieData[i].count = count[i]; return; } );
                  
-                 svg = d3.select(document.getElementById("SVG2"));
+                 svg = d3.select(document.getElementById("SVG02"));
                  svg.selectAll("*").remove();
                  //svg.style("background-color", "white");
                  if ( region != dashBoardData.allUKString )
@@ -291,7 +370,7 @@
 
                  var data = computeQuarterlyImpactData( dashBoardData.impactData.currentLocalityData, dashBoardData.impactData.currentLocalityExternalInspectionsData );
 
-                 svg = d3.select(document.getElementById("SVG1"));
+                 svg = d3.select(document.getElementById("SVG01"));
 
                  plotQuarterlyImpactData(svg, data);
                  
@@ -302,7 +381,7 @@
                      pieData.push( {label: dashBoardData.impactData.localityList[i], count: count[i]});
                  }
                  
-                 svg = d3.select(document.getElementById("SVG2"));
+                 svg = d3.select(document.getElementById("SVG02"));
                  svg.selectAll("*").remove();
                  plotPieChart( svg, pieData);
 
@@ -320,10 +399,10 @@
                      
                  //var data = computeQuarterlyBizDevData( dashBoardData.impactData.currentContractNameData );                 
 
-                 var svg = d3.select(document.getElementById("SVG1"));                 
+                 var svg = d3.select(document.getElementById("SVG01"));                 
                  //plotQuarterlyBizDevData( svg, data );  
 
-                 svg = d3.select(document.getElementById("SVG2"));
+                 svg = d3.select(document.getElementById("SVG02"));
                  //plotContractNames(svg, dashBoardData.impactData.currentLocalityData);
 
                  // Update data table:
@@ -338,25 +417,29 @@
             { 
               // Copy the data read into the global variable:
               dashBoardData.impactData.rawData = d;
-              var data = d;
 
               console.log("Done reading contracts files");
 
-              dashBoardData.impactData.propertyList = Object.getOwnPropertyNames(data[0]);
+              dashBoardData.impactData.propertyList = Object.getOwnPropertyNames(d[0]);
+              // The nation property is global:
+              dashBoardData.impactData.nationProperty = dashBoardData.nationPropertyName;
               dashBoardData.impactData.regionProperty = dashBoardData.impactData.propertyList[0]; 
               dashBoardData.impactData.localityProperty = dashBoardData.impactData.propertyList[1]; 
               dashBoardData.impactData.contractNameProperty = dashBoardData.impactData.propertyList[3]; 
 
+              addNationProperty(dashBoardData.impactData.rawData, dashBoardData.impactData.regionProperty, dashBoardData.impactData.nationProperty);
+
               // Get the lists of regions etc:
-              dashBoardData.impactData.regionList = getUniqueSortedList(data, dashBoardData.impactData.regionProperty);
-              dashBoardData.impactData.localityList = getUniqueSortedList(data, dashBoardData.impactData.localityProperty);
-              dashBoardData.impactData.contractNameList = getUniqueSortedList(data, dashBoardData.impactData.contractNameProperty);
+              dashBoardData.impactData.nationList = getUniqueSortedList(dashBoardData.impactData.rawData, dashBoardData.impactData.nationProperty);
+              dashBoardData.impactData.regionList = getUniqueSortedList(dashBoardData.impactData.rawData, dashBoardData.impactData.regionProperty);
+              dashBoardData.impactData.localityList = getUniqueSortedList(dashBoardData.impactData.rawData, dashBoardData.impactData.localityProperty);
+              dashBoardData.impactData.contractNameList = getUniqueSortedList(dashBoardData.impactData.rawData, dashBoardData.impactData.contractNameProperty);
 
               // Update selectors based on the lists above:
-              dashBoardData.impactData.regionList.unshift(dashBoardData.allUKString);
-              updateSelector( document.getElementById("impactRegionSelector"), dashBoardData.impactData.regionList );
+              dashBoardData.impactData.nationList.unshift(dashBoardData.allUKString);
+              updateSelector( document.getElementById("impactNationSelector"), dashBoardData.impactData.nationList );
 
-              impactRegionSelectFunction();
+              impactNationSelectFunction();
 
             });                                 
 
