@@ -186,19 +186,25 @@ function computeQuarterlyFinancialData(data)
     // Forecast income and expenditure
     var lastInc = dataOut.income.quarterly[dataOut.numReportedQuarters - 1];
     var lastExp = dataOut.expenditure.quarterly[dataOut.numReportedQuarters - 1];
+    var lastBudget = dataOut.budget.quarterly[dataOut.numReportedQuarters - 1];
     var incFC   = dataOut.income.FY;
     var expFC   = dataOut.expenditure.FY;
+
+    // What should this quantity be?
+    var budgetFC = dataOut.income.FY;
 
     // How many predictions needed?
     var n = dataOut.quarterNames.length - dataOut.numReportedQuarters;
 
     var incDelta = (incFC - lastInc)/n;
     var expDelta = (expFC - lastExp)/n; 
+    var budgetDelta = (budgetFC - lastBudget)/n;
 
     for ( var i = dataOut.numReportedQuarters; i < dataOut.quarterNames.length; i++ )
     {
         dataOut.income.quarterly[i] = dataOut.income.quarterly[i-1] + incDelta;
         dataOut.expenditure.quarterly[i] = dataOut.expenditure.quarterly[i-1] + expDelta;
+        dataOut.budget.quarterly[i] = dataOut.budget.quarterly[i-1] + budgetDelta;
     }
 
     //*****************************************
@@ -252,7 +258,7 @@ function makeFinancialTableData(data)
         row.push( data[propertyNames[i]].variation );
         row.push( data[propertyNames[i]].variationPercentage );
 
-        // Format this row, missing the first element which is a string:
+        // Format this row, leaving the first element which is a string:
         for ( var j = 1; j < row.length; j++ )
         {
             row[j] = (dashBoardSettings.numberFormat(row[j]));
@@ -263,14 +269,64 @@ function makeFinancialTableData(data)
     return tableData;
 }
 
+// table is the ID of the html table element
+// tableData is an array, each element of which 
+// is another array containing row data
+// the first row is conisdered as the table head.
+function updateFinancialTable( table, tableData)
+{
+    while ( table.rows.length > 0 )
+    {
+        table.deleteRow(0);
+    }
 
+    // Number of rows
+    var M = tableData.length;
+    // Number of columns
+    var N = tableData[0].length;
+
+    // Which rows are headers?
+
+    // Make All the rows
+    for ( var i = 0; i < M; i++ )
+    {    
+        var row;
+        row = table.insertRow(i);
+        for ( var j = 0; j < N; j++ )
+        {
+            var cell = row.insertCell(j);   
+            cell.innerHTML = tableData[i][j];
+            // Align all but the first column to the right:
+            if ( j !== 0 )
+            {
+                cell.align = "right";
+            }
+        }
+    }
+
+    // Only the first row is the header row for this table:
+    var headerIndices = [0];
+
+    // Make header rows specified by their indices to be bold:
+    for ( var i = 0; i < headerIndices.length; i++ )
+    {
+        // Make table header
+        //var header = table.createTHead();
+        //var row = header.insertRow(0);
+        for ( var j = 0; j < N; j++ )
+        {
+            table.rows[headerIndices[i]].cells[j].innerHTML = table.rows[headerIndices[i]].cells[j].innerHTML.bold();      
+        }
+    }
+    return table;    
+}
 
 // All data is assumed positive
 // svg is d3 selected svg
 function plotQuarterlyFinancialData( svg, data)
 {
       svg.selectAll("*").remove();
-      svg.style("background-color", "whitesmoke"); 
+      svg.style("background-color", "white"); 
       var height = svg.attr("height");
       var width = svg.attr("width");
 
@@ -337,7 +393,7 @@ function plotQuarterlyFinancialData( svg, data)
                      {label:"Forecast" , color: color.forecast},
                      {label:"Budget" , color: color.budget},
                      {label:"Previous" , color: color.previousYear},
-                     {label:"expenditure" , color: color.expenditure},
+                     {label:"Expenditure" , color: color.expenditure},
 
                     ]; 
 
@@ -371,7 +427,7 @@ function plotQuarterlyFinancialData( svg, data)
 function plotCostCentres(svg, data)
 {
       svg.selectAll("*").remove();
-      svg.style("background-color", "whitesmoke");
+      svg.style("background-color", "white");
       
       // Second Histogram Plot on the adjacent svg                      
       var height = svg.attr("height");
