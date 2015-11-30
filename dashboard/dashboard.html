@@ -170,8 +170,9 @@
     // Select font size based on length of the text:
     function selectFontSize(text)
     {
+        var fontSize = 11;
+        /*
         var len = text.length;
-        var fontSize = 0;
         if ( len >= 10 )
         {
             fontSize = 15;
@@ -180,6 +181,7 @@
         {
             fontSize = 30;
         }
+        */
         return fontSize;
     }
  
@@ -218,6 +220,7 @@
             .attr("y", (h+oR)/3)
         .style("fill", function(d,i) { return colVals(i); }) // #1f77b4
         .attr("font-size", selectFontSize)
+        //.attr("font-size", 15)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .attr("alignment-baseline", "middle")
