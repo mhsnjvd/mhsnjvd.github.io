@@ -797,8 +797,8 @@ function initLegendSettings(pieStyle)
     legendStyle.height = 12;
     legendStyle.spacing = 3;
     legendStyle.cssClass = ".legend";
-    var colors = ["#dc3912", "#ff9900", "#109618", "grey"];
-    legendStyle.color = colors; //pieStyle.color;
+    //var colors = ["#dc3912", "#ff9900", "#109618", "grey"];
+    legendStyle.color = pieStyle.color;
 
     // Top left for the legend:
     legendStyle.x = pieStyle.cx - 2.5*pieStyle.outerRadius; 
@@ -1090,8 +1090,8 @@ function legendObjectConstructor(svg, legendData, legendStyle)
         legend.append(legendStyle.shape)                                     
           .attr('width', legendStyle.width)                          
           .attr('height', legendStyle.height)                          
-          .style('fill', function(d, i) { return legendStyle.color[i]; } )
-          .style('stroke', function(d, i) { return legendStyle.color[i]; } );
+          .style('fill', function(d, i) { return legendStyle.color(i); } )
+          .style('stroke', function(d, i) { return legendStyle.color(i); } );
           
         legend.append('text')                                     
           .attr('x', legendStyle.width + legendStyle.spacing)              

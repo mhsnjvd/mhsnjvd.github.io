@@ -90,6 +90,17 @@ function computeQuarterlyImpactData(impactDataArray, externalInspectionsDataArra
     data[headerColumn[6]][headerRow[1]] = nA / totalContracts * 100.0;
     data[headerColumn[7]][headerRow[1]] = nR / totalContracts * 100.0;
 
+    // % of beneficiary outcomes
+    cData = impactDataArray.filter( function(d) { return d["Beneficiary Feedback Collected"] == "Yes"; } );
+    data[headerColumn[8]][headerRow[1]] = cData.length/impactDataArray.length * 100;
+    // Add extra fields to be used in visualisation:
+    data["Good Feedback"] = {};
+    data["Good Feedback"]["Q2"] = data[headerColumn[8]][headerRow[1]];
+    data["No Feedback"] = {};
+    data["No Feedback"]["Q2"] = 100.00 - data["Good Feedback"]["Q2"];
+    data["Negative Feedback"] = {};
+    data["Negative Feedback"]["Q2"] = 0.0; // Oh yeah!!!
+
 
     // External Inspections:
     // The first four entries of the headerRow must be quarter names

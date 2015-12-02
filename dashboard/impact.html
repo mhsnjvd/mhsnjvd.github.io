@@ -139,9 +139,8 @@
                <div class="col-xs-3">
                  <select style="width: 250px" id="impactContractNameSelector" onchange="impactContractNameSelectFunction()">
                  </select>
-                 -->
-
                </div>
+                 -->
 
                
            </div>
@@ -196,7 +195,49 @@
 
         </div>
         <!-- Row ends here *********************** -->
+
+        <!-- Row starts here *********************** -->
+        <div class="row">
+
+            <div class ="col-xs-1">
+            </div>
+
+             <div class="col-xs-5">
+                 <svg id="SVG07" height="300" width="300" style="background-color: white"></svg>
+             </div>
+
+             <div class="col-xs-5">
+                 <svg id="SVG08" height="300" width="300" style="background-color: white"></svg>
+             </div>
+
+            <div class ="col-xs-1">
+            </div>
+
+        </div>
+        <!-- Row ends here *********************** -->
         
+        <!-- Row starts here *********************** -->
+        <div class="row">
+
+            <div class ="col-xs-1">
+            </div>
+
+             <div class="col-xs-5">
+                 <svg id="SVG10" height="300" width="300" style="background-color: white"></svg>
+             </div>
+
+             <div class="col-xs-5">
+                 <svg id="SVG11" height="300" width="300" style="background-color: white"></svg>
+             </div>
+
+            <div class ="col-xs-1">
+            </div>
+
+        </div>
+        <!-- Row ends here *********************** -->
+
+
+
         <!-- Row starts here *********************** -->
         <div class="row">
             <div class="col-xs-12">
@@ -347,27 +388,88 @@ function plotImpactVisualisation(data, subLevelData, subLevelList)
 
     plotStack(svg, subLevelData, propertyName, subLevelList);
     addTitle(svg, "Next Level Breakdown (%)")
+
+    /*  ************************* Fifth Plot ***********************************/
+    svg = d3.select(document.getElementById("SVG07"));
+    svg.selectAll("*").remove();
+    svg.style("background-color", "white");
+
+    currentQuarter = "Q2";
+    pieData = [];
+    propertyName = ["Negative Feedback", "No Feedback", "Good Feedback"];
+    legendData = ["-ve Feedback", "No Feedback", "+ve Feedback"];
+    for ( var i = 0; i < propertyName.length; i++ )
+    {
+        pieData.push( {label: legendData[i], count: data[propertyName[i]][currentQuarter]});
+    }
+
+    var pie7 = plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
+    var title7 = addTitle(svg, "Beneficiary Feedback Contracts (%)");
+
+    /* ****************** Sixth Plot ***************************************/
+    svg = d3.select(document.getElementById("SVG08"));
+    svg.selectAll("*").remove();
+    svg.style("background-color", "white");
+
+    // Add fields to subLevelData 
+    plotStack(svg, subLevelData, propertyName, subLevelList);
+    addTitle(svg, "Next Level Breakdown (%)")
+
+    /*  ************************* Seventh Plot ***********************************/
+    svg = d3.select(document.getElementById("SVG10"));
+    svg.selectAll("*").remove();
+    svg.style("background-color", "white");
+
+    currentQuarter = "Q2";
+    pieData = [];
+    propertyName = ["Unsatisfactory", "Satisfactory/Requires Improvement", "Good/Very Good", "Outstanding",  "Performance Unscored"];
+    legendData = ["Unsatisfactory","Satisfactory", "Good", "Outstanding", "Unscored"];
+    pieStyle.color = d3.scale.category20();
+    legendStyle.color = pieStyle.color;
+    rayStyle.color = pieStyle.color;
+    for ( var i = 0; i < propertyName.length; i++ )
+    {
+        pieData.push( {label: legendData[i], count: data[propertyName[i]][currentQuarter]});
+    }
+
+    var pie10 = plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
+    var title10 = addTitle(svg, "External Inspections (%)");
+
+    /* ****************** Eight Plot ***************************************/
+    svg = d3.select(document.getElementById("SVG11"));
+    svg.selectAll("*").remove();
+    svg.style("background-color", "white");
+
+    // Add fields to subLevelData 
+    var stackSettings = {};
+    stackSettings.color = pieStyle.color;
+    plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings);
+    addTitle(svg, "Next Level Breakdown (%)")
+
     return;
 }
 
 
-function plotStack(svg, data, layerNames, nameList)
+function plotStack(svg, data, layerNames, nameList, stackSettings)
 {
     var width = +svg.attr("width");
     var height = +svg.attr("height");
     var margin = defineMargins(height, width);
     margin.bottom = 2*margin.bottom;
 
+    // Optional settings:
+    stackSettings = stackSettings || {};
+
 
     plotHorisontalGrid(svg, margin, 25);
 
     var x = d3.scale.ordinal()
-        .rangeRoundBands([0, width-margin.left-margin.right], .4);
+        .rangeRoundBands([0, width-margin.left-margin.right], .5);
     
     var y = d3.scale.linear()
         .rangeRound([height-margin.top-margin.bottom, 0]);
     
-    var z = dashBoardSettings.ragColors;
+    var z = stackSettings.color || dashBoardSettings.ragColors;
     
     var xAxis = d3.svg.axis()
         .scale(x)
@@ -524,7 +626,7 @@ function plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
               dashBoardData.impactData.contractNameProperty = dashBoardData.impactData.propertyList[3]; 
 
               addNationProperty(dashBoardData.impactData.rawData, dashBoardData.impactData.regionProperty, dashBoardData.impactData.nationProperty);
-
+              addNationProperty(dashBoardData.impactData.externalInspectionsData, dashBoardData.impactData.regionProperty, dashBoardData.impactData.nationProperty); 
               // Get the lists of regions etc:
               dashBoardData.impactData.nationList = getUniqueSortedList(dashBoardData.impactData.rawData, dashBoardData.impactData.nationProperty);
               dashBoardData.impactData.regionList = getUniqueSortedList(dashBoardData.impactData.rawData, dashBoardData.impactData.regionProperty);
