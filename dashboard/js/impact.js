@@ -26,6 +26,20 @@
 // *******************************************************
 //    Impact Measurement Utility Functions
 // *****************************************************//
+function computeSubData(data1, data2, subLevelList, subLevelProperty)
+{
+   var subLevelData1 = [];
+   var subLevelData2 = [];
+   var subLevelData = [];
+   for ( var i = 0; i < subLevelList.length; i++ )
+   {
+       subLevelData1[i] = data1.filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
+       subLevelData2[i] = data2.filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
+       subLevelData[i] = computeQuarterlyImpactData(subLevelData1[i], subLevelData2[i]);
+   }
+   return subLevelData;
+}
+
 function computeQuarterlyImpactData(impactDataArray, externalInspectionsDataArray)
 {
     /*****************************************
@@ -67,10 +81,14 @@ function computeQuarterlyImpactData(impactDataArray, externalInspectionsDataArra
     data[headerColumn[4]][headerRow[1]] = impactDataArray.length;
     data[headerColumn[4]][headerRow[4]] = sumArrayProperty( impactDataArray, "TOTAL");
 
-    // Outcomes
-    data[headerColumn[5]][headerRow[1]] = sumArrayProperty( impactDataArray, "G-Outcome");
-    data[headerColumn[6]][headerRow[1]] = sumArrayProperty( impactDataArray, "A-Outcome");
-    data[headerColumn[7]][headerRow[1]] = sumArrayProperty( impactDataArray, "R-Outcome");
+    // Outcomes as a %
+    var nR = sumArrayProperty( impactDataArray, "R-Outcome");  
+    var nA = sumArrayProperty( impactDataArray, "A-Outcome");  
+    var nG = sumArrayProperty( impactDataArray, "G-Outcome");  
+    var totalContracts = nR + nA + nG; 
+    data[headerColumn[5]][headerRow[1]] = nG / totalContracts * 100.0;
+    data[headerColumn[6]][headerRow[1]] = nA / totalContracts * 100.0;
+    data[headerColumn[7]][headerRow[1]] = nR / totalContracts * 100.0;
 
 
     // External Inspections:
@@ -107,7 +125,7 @@ function makeImpactTableData(data)
 
     // Make the top header rows for each table
     var tableHeaders = [];
-    var tableHeadings = ["Overall Contract Performance", "Outcomes/ Quality Performance", "Contracts with Beneficiary Feedback", "Number of CYP", "External Inspections"];
+    var tableHeadings = ["Overall Contract Performance", "Outcomes/Quality Performance (%)", "Contracts with Beneficiary Feedback", "Number of CYP", "External Inspections"];
     for ( var i = 0; i < tableHeadings.length; i++ )
     {
         var thisHeader = [tableHeadings[i]];
@@ -202,53 +220,16 @@ function updateImpactTable( table, tableData)
             table.rows[headerIndices[i]].cells[j].innerHTML = table.rows[headerIndices[i]].cells[j].innerHTML.bold();      
         }
     }
+
+
+    // TODO: this is a dirty solution for removing 
+    // the "Income" column in all but the first 
+    // subtable
+    for ( var i = headerIndices[2]; i < M; i++ )
+    {
+        table.rows[i].cells[N-1].innerHTML = "";
+    }
+
     return table;    
 }
 
-// All data is assumed positive
-// svg is d3 selected svg
-function plotQuarterlyImpactData( svg, data)
-{
-      svg.selectAll("*").remove();
-      var backGroundColor = dashBoardSettings.color.imageBackGround;                               
-      svg.style("background-color", backGroundColor); 
-    
-      var height = svg.attr("height");
-      var width = svg.attr("width");
-
-
-      // For second quarter:
-      var currentQuarter = "Q2";
-      var pieData = [];
-      var color = ["Green", "Amber", "Red", "Unscored"];
-      var pieColors = ["Green", "#FFBF00", "Red", "Gray"];
-      for ( var i = 0; i < color.length; i++ )
-      {
-          pieData.push( {label: color[i], count: data[color[i]][currentQuarter]});
-      }
-      
-      plotPieChart( svg, pieData, pieColors);
-}
-
-function plotRegionalContractsCount( svg )
-{
-      svg.selectAll("*").remove();
-      var backGroundColor = dashBoardSettings.color.imageBackGround;                               
-      svg.style("background-color", backGroundColor); 
-      var height = svg.attr("height");
-      var width = svg.attr("width");
-
-
-      // For second quarter:
-      var pieData = [];
-      var region = dashBoardData.impactData.regionList;
-      // Delete the fist element, which is not a region
-      region.shift();
-      for ( var i = 0; i < region.length; i++ )
-      {
-          var thisRegion = dashBoardData.impactData.rawData.filter( function(d){ return d[dashBoardData.impactData.regionProperty] == region[i]; } );
-          pieData.push( {label: region[i], count: thisRegion.length});
-      }
-      
-      plotPieChart( svg, pieData);
-}

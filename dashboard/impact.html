@@ -47,6 +47,25 @@
 
     </style>
 
+<style>
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis--x path {
+  display: none;
+}
+
+</style>
+
   </head>
 
     <body>
@@ -98,50 +117,30 @@
         </div>
         <!-- Row ends here *********************** -->
 
-
-        <!-- Row starts here *********************** -->
-        <div class="row">
-              <div  class="col-xs-3">
-                 Select Nation
-             </div>
-        
-              <div  class="col-xs-3">
-                 Select Region
-             </div>
-
-              <div  class="col-xs-3">
-                 Select Locality
-             </div>
-
-              <div  class="col-xs-3">
-                 Select Contract
-             </div>
-
-        </div>
-        <!-- End a row -->
-
-
            <!-- strat  row -->
             <div class="row">
 
-               <div class="col-xs-3">
+               <div class="col-xs-4">
                  <select style="width: 250px" id="impactNationSelector" onchange="impactNationSelectFunction()">
                  </select>
                </div>
 
-               <div class="col-xs-3">
+               <div class="col-xs-4">
                      <select style="width: 250px" id="impactRegionSelector" onchange="impactRegionSelectFunction()">
                      </select>
                </div>
 
-               <div class="col-xs-3">
+               <div class="col-xs-4">
                  <select style="width: 250px" id="impactLocalitySelector" onchange="impactLocalitySelectFunction()">
                  </select>
                </div>
 
+               <!--
                <div class="col-xs-3">
                  <select style="width: 250px" id="impactContractNameSelector" onchange="impactContractNameSelectFunction()">
                  </select>
+                 -->
+
                </div>
 
                
@@ -160,20 +159,19 @@
         <!-- Row starts here *********************** -->
         <div class="row">
 
-             <div class="col-xs-3">
-                 <svg id="SVG01" height="250" width="250" style="background-color: white"></svg>
+            
+             <div class="col-xs-1">
              </div>
 
-             <div class="col-xs-3">
-                 <svg id="SVG02" height="250" width="250" style="background-color: white"></svg>
-             </div>
-             
-             <div class="col-xs-3">
-                 <svg id="SVG03" height="250" width="250" style="background-color: white"></svg>
+             <div class="col-xs-5">
+                 <svg id="SVG01" height="300" width="300" style="background-color: white"></svg>
              </div>
 
-             <div class="col-xs-3">
-                 <svg id="SVG04" height="250" width="250" style="background-color: white"></svg>
+             <div class="col-xs-5">
+                 <svg id="SVG02" height="300" width="300" style="background-color: white"></svg>
+             </div>
+
+             <div class="col-xs-1">
              </div>
 
         </div>
@@ -182,21 +180,19 @@
         <!-- Row starts here *********************** -->
         <div class="row">
 
-             <div class="col-xs-3">
-                 <svg id="SVG05" height="250" width="250" style="background-color: white"></svg>
+            <div class ="col-xs-1">
+            </div>
+
+             <div class="col-xs-5">
+                 <svg id="SVG04" height="300" width="300" style="background-color: white"></svg>
              </div>
 
-             <div class="col-xs-3">
-                 <svg id="SVG06" height="250" width="250" style="background-color: white"></svg>
-             </div>
-             
-             <div class="col-xs-3">
-                 <svg id="SVG07" height="250" width="250" style="background-color: white"></svg>
+             <div class="col-xs-5">
+                 <svg id="SVG05" height="300" width="300" style="background-color: white"></svg>
              </div>
 
-             <div class="col-xs-3">
-                 <svg id="SVG08" height="250" width="250" style="background-color: white"></svg>
-             </div>
+            <div class ="col-xs-1">
+            </div>
 
         </div>
         <!-- Row ends here *********************** -->
@@ -248,53 +244,214 @@
                          nation; } );
                  dashBoardData.impactData.currentNationExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter( function(d) { return d[nationProperty] === nation; } );
 
+                 // Update Regions
+                 dashBoardData.impactData.regionList = getUniqueSortedList(dashBoardData.impactData.currentNationData, regionProperty);
+                 updateSelector( document.getElementById("impactRegionSelector"), ["Select Region"].concat(dashBoardData.impactData.regionList) );
+
+                 // Update localities
+                 dashBoardData.impactData.localityList = getUniqueSortedList(dashBoardData.impactData.currentNationData, localityProperty);
+                 updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(dashBoardData.impactData.localityList) );
+
+                 var subLevelProperty = regionProperty;
+                 var subLevelList = dashBoardData.impactData.regionList;
+
                  if ( nation == dashBoardData.allUKString )
                  {
                      dashBoardData.impactData.currentNationData = dashBoardData.impactData.rawData;
                      dashBoardData.impactData.currentNationExternalInspectionsData = dashBoardData.impactData.externalInspectionsData;
+                     subLevelProperty = nationProperty;
+                     subLevelList = getUniqueSortedList(dashBoardData.impactData.currentNationData, subLevelProperty);
+                     // Remove All UK string from the item:
+                     var allUKIndex = subLevelList.indexOf(dashBoardData.allUKString);
+                     if ( allUKIndex > -1 )
+                     {
+                         subLevelList.splice(allUKIndex, 1);
+                     }
                  }
 
-                 // Update Regions
-                 dashBoardData.impactData.regionList = getUniqueSortedList(dashBoardData.impactData.currentNationData, regionProperty);
-                 updateSelector( document.getElementById("impactRegionSelector"), [""].concat(dashBoardData.impactData.regionList) );
-
-                 // Update localities
-                 dashBoardData.impactData.localityList = getUniqueSortedList(dashBoardData.impactData.currentNationData, localityProperty);
-                 updateSelector( document.getElementById("impactLocalitySelector"), [""].concat(dashBoardData.impactData.localityList) );
-
+                 var subLevelData = computeSubData(dashBoardData.impactData.currentNationData, dashBoardData.impactData.currentNationExternalInspectionsData, subLevelList, subLevelProperty);
                  // Update Contracts
+                 /*
                  dashBoardData.impactData.contractNameList = getUniqueSortedList(dashBoardData.impactData.currentNationData, contractNameProperty);
-                 updateSelector( document.getElementById("impactContractNameSelector"), [""].concat(dashBoardData.impactData.contractNameList));
+                 updateSelector( document.getElementById("impactContractNameSelector"), ["Select Contract"].concat(dashBoardData.impactData.contractNameList));
+                 */
 
                  var data = computeQuarterlyImpactData( dashBoardData.impactData.currentNationData, dashBoardData.impactData.currentNationExternalInspectionsData );
 
-                 svg = d3.select(document.getElementById("SVG01"));
-
-                 plotQuarterlyImpactData(svg, data);
-                 
-                 var count = getIdentifierCount( dashBoardData.impactData.currentNationData, dashBoardData.impactData.regionList, regionProperty);
-                 var pieData = [];
-                 dashBoardData.impactData.regionList.forEach( function(d, i) { 
-                         pieData[i] = {}; pieData[i].label = d; pieData[i].count = count[i]; return; } );
-                 
-                 svg = d3.select(document.getElementById("SVG02"));
-                 svg.selectAll("*").remove();
-                 //svg.style("background-color", "white");
-                 if ( nation != dashBoardData.allUKString )
-                 {
-                     plotPieChart( svg, pieData);
-                 }
-                 else
-                 {
-                     plotRegionalContractsCount(svg);
-                 }
-
-                 // Update data table:
-                 var tableData = makeImpactTableData(data);
-                 updateImpactTable( document.getElementById("dataTable"), tableData);
-                 return;
+                 plotImpactVisualisation(data, subLevelData, subLevelList);
             }
 
+function plotImpactVisualisation(data, subLevelData, subLevelList)
+{
+    // Update data table:
+    var tableData = makeImpactTableData(data);
+    updateImpactTable( document.getElementById("dataTable"), tableData);
+
+    //**************** First plot ********************
+    svg = d3.select(document.getElementById("SVG01"));
+    svg.selectAll("*").remove();
+    svg.style("background-color", "white"); 
+    var height = svg.attr("height");
+    var width = svg.attr("width");
+
+    // For second quarter:
+    var currentQuarter = "Q2";
+    var pieData = [];
+    var propertyName = ["Red", "Amber", "Green", "Unscored"];
+    var legendData = propertyName;
+    for ( var i = 0; i < propertyName.length; i++ )
+    {
+        pieData.push( {label: propertyName[i], count: data[propertyName[i]][currentQuarter]});
+    }
+
+    var pieStyle = initPieSettings(width, height);
+    var rayStyle = initRaySettings(pieStyle);
+    var legendStyle = initLegendSettings(pieStyle);
+
+
+    var pie1 = plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
+    var title1 = addTitle(svg, "Overall Contract Perfromance (%)");
+
+    // *********************** Second Plot ****************////
+
+    svg = d3.select(document.getElementById("SVG02"));
+    svg.selectAll("*").remove();
+    svg.style("background-color", "white");
+
+    plotStack(svg, subLevelData, propertyName, subLevelList);
+    addTitle(svg, "Breakdown (Total No. of Contracts)"); 
+
+
+    // ******************** Third Plot ******************************///
+
+    svg = d3.select(document.getElementById("SVG04"));
+    svg.selectAll("*").remove();
+    svg.style("background-color", "white");
+
+    currentQuarter = "Q2";
+    pieData = [];
+    propertyName = ["Red (Outcomes)", "Amber (Outcomes)", "Green (Outcomes)"];
+    legendData = ["Red", "Amber", "Green"];
+    for ( var i = 0; i < propertyName.length; i++ )
+    {
+        pieData.push( {label: legendData[i], count: data[propertyName[i]][currentQuarter]});
+    }
+
+    var pie4 = plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
+    var title4 = addTitle(svg, "Outcome/Quality Performance (%)");
+
+    /* ****************** Fourth Plot ***************************************/
+    svg = d3.select(document.getElementById("SVG05"));
+    svg.selectAll("*").remove();
+    svg.style("background-color", "white");
+
+    plotStack(svg, subLevelData, propertyName, subLevelList);
+    addTitle(svg, "Next Level Breakdown (%)")
+    return;
+}
+
+
+function plotStack(svg, data, layerNames, nameList)
+{
+    var width = +svg.attr("width");
+    var height = +svg.attr("height");
+    var margin = defineMargins(height, width);
+    margin.bottom = 2*margin.bottom;
+
+
+    plotHorisontalGrid(svg, margin, 25);
+
+    var x = d3.scale.ordinal()
+        .rangeRoundBands([0, width-margin.left-margin.right], .4);
+    
+    var y = d3.scale.linear()
+        .rangeRound([height-margin.top-margin.bottom, 0]);
+    
+    var z = dashBoardSettings.ragColors;
+    
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+    
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("right");
+    
+    
+    var graph = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+
+    var layeredData = [];
+
+    for ( var i = 0; i < layerNames.length; i++ )
+    {
+        layeredData[i] = [];
+        for ( var j = 0; j < data.length; j++ )
+        {
+            layeredData[i][j] = {x: nameList[j], y: data[j][layerNames[i]]["Q2"]};
+        }
+    }
+
+    var stackLayOut = d3.layout.stack();
+    var stackedData = stackLayOut(layeredData);
+    
+      x.domain(stackedData[0].map(function(d) { return d.x; }));
+      y.domain([0, d3.max(stackedData[stackedData.length - 1], function(d) { return d.y0 + d.y; })]).nice();
+    
+      var layer = graph.selectAll(".layer")
+          .data(stackedData)
+          .enter().append("g")
+          .attr("class", "layer")
+          .style("fill", function(d, i) { return z(i); });
+    
+      layer.selectAll("rect")
+          .data(function(d) { return d; })
+        .enter().append("rect")
+          .attr("x", function(d) { return x(d.x); })
+          .attr("y", function(d) { return y(d.y + d.y0); })
+          .attr("height", function(d) { return y(d.y0) - y(d.y + d.y0); })
+          .attr("width", x.rangeBand());
+    
+      graph.append("g")
+          .attr("class", "axis axis--x")
+          .attr("transform", "translate(0" + "," + (height-margin.top-margin.bottom) + ")")
+          .call(xAxis);
+    
+      graph.append("g")
+          .attr("class", "axis axis--y")
+          .attr("transform", "translate(" + 0.0 + ",0)")
+          .call(yAxis);
+}
+
+
+//function pieCreator()
+// svg is d3 selected svg
+// pieData is an array of objects with format: 
+// pieData = [ {label: xxxx, count: xxxx}, {}, {}, ...]
+function plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
+{
+    // The mother of all objects:
+    var pie = {};
+
+    var dataSet = pieData.map(function(d){ return d.count; } );
+    var dummyData = dataSet.map(function(d) { return 1.0; } );
+
+    pie.piePlot = new pieObjectConstructor(svg, dummyData, pieStyle);
+    pie.piePlot.update(dataSet);
+
+    pie.rayPlot = new rayObjectConstructor(svg, dataSet, rayStyle);
+    pie.legend = new legendObjectConstructor( svg, legendData, legendStyle )
+    pie.legend = new legendObjectConstructor( svg, legendData, legendStyle )
+
+    // Update everything in the pie:
+    pie.update = function(data)
+    {
+        pie.piePlot.update(data);
+        pie.rayPlot.update(data);
+    }
+    return pie;
+}
 
 
             function impactRegionSelectFunction() 
@@ -308,49 +465,25 @@
                  dashBoardData.impactData.currentRegionData = dashBoardData.impactData.rawData.filter( function(d) { return d[regionProperty] == region; } );
                  dashBoardData.impactData.currentRegionExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter( function(d) { return d[regionProperty] === region; } );
 
-                 if ( region == dashBoardData.allUKString )
-                 {
-                     dashBoardData.impactData.currentRegionData = dashBoardData.impactData.rawData;
-                     dashBoardData.impactData.currentRegionExternalInspectionsData = dashBoardData.impactData.externalInspectionsData;
-                 }
-
                  // Update localities
                  dashBoardData.impactData.localityList = getUniqueSortedList(dashBoardData.impactData.currentRegionData, localityProperty);
-                 dashBoardData.impactData.localityList.unshift("");
-                 updateSelector( document.getElementById("impactLocalitySelector"), dashBoardData.impactData.localityList );
+                 updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(dashBoardData.impactData.localityList) );
 
                  // Update Contracts
+                 /*
                  dashBoardData.impactData.contractNameList = getUniqueSortedList(dashBoardData.impactData.currentRegionData, contractNameProperty);
-                 dashBoardData.impactData.contractNameList.unshift("");
-                 updateSelector( document.getElementById("impactContractNameSelector"), dashBoardData.impactData.contractNameList);
+                 updateSelector( document.getElementById("impactContractNameSelector"), [""].concat(dashBoardData.impactData.contractNameList));
+                 */
 
+                 var subLevelProperty = localityProperty;
+                 var subLevelList = dashBoardData.impactData.localityList;
+                 var subLevelData = computeSubData(dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentNationExternalInspectionsData, subLevelList, subLevelProperty);
                  var data = computeQuarterlyImpactData( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentRegionExternalInspectionsData );
 
-                 svg = d3.select(document.getElementById("SVG01"));
+                 plotImpactVisualisation(data, subLevelData, subLevelList);
 
-                 plotQuarterlyImpactData(svg, data);
-                 
-                 var count = getIdentifierCount( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.localityList, localityProperty);
-                 var pieData = [];
-                 dashBoardData.impactData.localityList.forEach( function(d, i) { 
-                         pieData[i] = {}; pieData[i].label = d; pieData[i].count = count[i]; return; } );
-                 
-                 svg = d3.select(document.getElementById("SVG02"));
-                 svg.selectAll("*").remove();
-                 //svg.style("background-color", "white");
-                 if ( region != dashBoardData.allUKString )
-                 {
-                     plotPieChart( svg, pieData);
-                 }
-                 else
-                 {
-                     plotRegionalContractsCount(svg);
-                 }
-
-                 // Update data table:
-                 var tableData = makeImpactTableData(data);
-                 updateImpactTable( document.getElementById("dataTable"), tableData);
                  return;
+                    
             }
             
             function impactLocalitySelectFunction() 
@@ -364,51 +497,14 @@
                  dashBoardData.impactData.currentLocalityExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter( function(d) { return d[localityProperty] === locality; } ); 
 
                  // Update Contracts
+                 /*
                  dashBoardData.impactData.contractNameList = getUniqueSortedList(dashBoardData.impactData.currentLocalityData, contractNameProperty);
-                 dashBoardData.impactData.contractNameList.unshift("");
-                 updateSelector( document.getElementById("impactContractNameSelector"), dashBoardData.impactData.contractNameList);
+                 updateSelector( document.getElementById("impactContractNameSelector"), [""].concat(dashBoardData.impactData.contractNameList));
+                 */
 
                  var data = computeQuarterlyImpactData( dashBoardData.impactData.currentLocalityData, dashBoardData.impactData.currentLocalityExternalInspectionsData );
 
-                 svg = d3.select(document.getElementById("SVG01"));
-
-                 plotQuarterlyImpactData(svg, data);
-                 
-                 var count = getIdentifierCount( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.localityList, "Locality");
-                 var pieData = [];
-                 for ( var i = 0; i < dashBoardData.impactData.localityList.length; i++ )
-                 {
-                     pieData.push( {label: dashBoardData.impactData.localityList[i], count: count[i]});
-                 }
-                 
-                 svg = d3.select(document.getElementById("SVG02"));
-                 svg.selectAll("*").remove();
-                 plotPieChart( svg, pieData);
-
-                 // Update data table:
-                 var tableData = makeImpactTableData(data);
-                 updateImpactTable( document.getElementById("dataTable"), tableData);
-                 return;
-            }
-
-            function impactContractNameSelectFunction() 
-            {
-                 var contractName = document.getElementById("impactContractNameSelector").value;
-                 var contractNameProperty = dashBoardData.impactData.contractNameProperty; 
-                 dashBoardData.impactData.currentContractNameData = dashBoardData.impactData.currentLocalityData.filter( function(d) { return d[contractNameProperty] === contractName; } );
-                     
-                 //var data = computeQuarterlyBizDevData( dashBoardData.impactData.currentContractNameData );                 
-
-                 var svg = d3.select(document.getElementById("SVG01"));                 
-                 //plotQuarterlyBizDevData( svg, data );  
-
-                 svg = d3.select(document.getElementById("SVG02"));
-                 //plotContractNames(svg, dashBoardData.impactData.currentLocalityData);
-
-                 // Update data table:
-                 var tableData = makeImpactTableData(data);
-                 updateImpactTable( document.getElementById("dataTable"), tableData);                 
-
+                 plotImpactVisualisation(data, [], [])
                  return;
             }
 

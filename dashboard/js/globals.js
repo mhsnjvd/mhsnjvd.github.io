@@ -38,7 +38,7 @@ dashBoardSettings.color.pipeLineInProgress = "orange";
 dashBoardSettings.color.pipeLineQualifiedOut = "steelblue";
 
 dashBoardSettings.numberFormat = d3.format(",.2f");
-dashBoardSettings.pieNumberFormat = d3.format(",.1f");
+dashBoardSettings.pieNumberFormat = d3.format(",.0f");
 
 // Path of data directory:
 dashBoardSettings.dataDir = "./data/";
@@ -116,3 +116,19 @@ function addNationProperty(data, regionProperty, nationProperty)
         data[i][nationProperty]= dashBoardData.regionToNation[data[i][regionProperty]];
     }
 }
+
+
+// Function for defining colors for RAG
+//
+dashBoardSettings.ragColors = function (d)
+{
+    if ( d == 0 )
+       return "red";
+    if ( d == 1 )
+       return "#FF9900"
+    if ( d == 2 )
+       return "green";
+    if ( d ==  3)
+       return "grey";
+}
+
