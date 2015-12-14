@@ -162,32 +162,32 @@
              <div class="col-xs-1">
              </div>
 
-             <div class="col-xs-5">
-                 <svg id="SVG01" height="300" width="300" style="background-color: white"></svg>
+             <div class="col-xs-4">
+                 <svg id="SVG01" height="500" width="400" style="background-color: white"></svg>
              </div>
 
-             <div class="col-xs-5">
-                 <svg id="SVG02" height="300" width="300" style="background-color: white"></svg>
+             <div class="col-xs-6">
+                 <svg id="SVG02" height="500" width="600" style="background-color: white"></svg>
              </div>
 
              <div class="col-xs-1">
              </div>
 
         </div>
-        <!-- Row ends here *********************** -->
+        <!-- Row ends here **************500******              -->
 
-        <!-- Row starts here *********************** -->
+        <!-- Row starts here ************500******              -->
         <div class="row">
 
             <div class ="col-xs-1">
             </div>
 
-             <div class="col-xs-5">
-                 <svg id="SVG04" height="300" width="300" style="background-color: white"></svg>
+             <div class="col-xs-4">
+                 <svg id="SVG04" height="500" width="400" style="background-color: white"></svg>
              </div>
 
-             <div class="col-xs-5">
-                 <svg id="SVG05" height="300" width="300" style="background-color: white"></svg>
+             <div class="col-xs-6">
+                 <svg id="SVG05" height="500" width="600" style="background-color: white"></svg>
              </div>
 
             <div class ="col-xs-1">
@@ -202,32 +202,32 @@
             <div class ="col-xs-1">
             </div>
 
-             <div class="col-xs-5">
-                 <svg id="SVG07" height="300" width="300" style="background-color: white"></svg>
+             <div class="col-xs-4">
+                 <svg id="SVG07" height="500" width="400" style="background-color: white"></svg>
              </div>
 
-             <div class="col-xs-5">
-                 <svg id="SVG08" height="300" width="300" style="background-color: white"></svg>
+             <div class="col-xs-6">
+                 <svg id="SVG08" height="500" width="600" style="background-color: white"></svg>
              </div>
 
             <div class ="col-xs-1">
             </div>
 
         </div>
-        <!-- Row ends here *********************** -->
+        <!-- Row ends here **************500******   500             -->
         
-        <!-- Row starts here *********************** -->
+        <!-- Row starts here ************500******** 500               -->
         <div class="row">
 
             <div class ="col-xs-1">
             </div>
 
-             <div class="col-xs-5">
-                 <svg id="SVG10" height="300" width="300" style="background-color: white"></svg>
+             <div class="col-xs-4">
+                 <svg id="SVG10" height="500" width="400" style="background-color: white"></svg>
              </div>
 
-             <div class="col-xs-5">
-                 <svg id="SVG11" height="300" width="300" style="background-color: white"></svg>
+             <div class="col-xs-6">
+                 <svg id="SVG11" height="500" width="600" style="background-color: white"></svg>
              </div>
 
             <div class ="col-xs-1">
@@ -265,10 +265,10 @@
 
         <script type="text/javascript" src="./js/globals.js"></script>
         <script type="text/javascript" src="./js/utils.js"></script>
-        <script type="text/javascript" src="./js/impact.js"></script>
         <script type="text/javascript" src="./js/plots.js"></script>
-        <script type="text/javascript"> 
+        <script type="text/javascript" src="./js/impact.js"></script>
 
+        <script type="text/javascript"> 
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
@@ -310,7 +310,7 @@
                      }
                  }
 
-                 var subLevelData = computeSubData(dashBoardData.impactData.currentNationData, dashBoardData.impactData.currentNationExternalInspectionsData, subLevelList, subLevelProperty);
+                 var subLevelData = computeImpactSubData(dashBoardData.impactData.currentNationData, dashBoardData.impactData.currentNationExternalInspectionsData, subLevelList, subLevelProperty);
                  // Update Contracts
                  /*
                  dashBoardData.impactData.contractNameList = getUniqueSortedList(dashBoardData.impactData.currentNationData, contractNameProperty);
@@ -319,241 +319,8 @@
 
                  var data = computeQuarterlyImpactData( dashBoardData.impactData.currentNationData, dashBoardData.impactData.currentNationExternalInspectionsData );
 
-                 plotImpactVisualisation(data, subLevelData, subLevelList);
+                 plotImpactVisualisation(data, subLevelData, subLevelList, nationProperty, nation, subLevelProperty);
             }
-
-function plotImpactVisualisation(data, subLevelData, subLevelList)
-{
-    // Update data table:
-    var tableData = makeImpactTableData(data);
-    updateImpactTable( document.getElementById("dataTable"), tableData);
-
-    //**************** First plot ********************
-    svg = d3.select(document.getElementById("SVG01"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white"); 
-    var height = svg.attr("height");
-    var width = svg.attr("width");
-
-    // For second quarter:
-    var currentQuarter = "Q2";
-    var pieData = [];
-    var propertyName = ["Red", "Amber", "Green", "Unscored"];
-    var legendData = propertyName;
-    for ( var i = 0; i < propertyName.length; i++ )
-    {
-        pieData.push( {label: propertyName[i], count: data[propertyName[i]][currentQuarter]});
-    }
-
-    var pieStyle = initPieSettings(width, height);
-    var rayStyle = initRaySettings(pieStyle);
-    var legendStyle = initLegendSettings(pieStyle);
-
-
-    var pie1 = plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
-    var title1 = addTitle(svg, "Overall Contract Perfromance (%)");
-
-    // *********************** Second Plot ****************////
-
-    svg = d3.select(document.getElementById("SVG02"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white");
-
-    plotStack(svg, subLevelData, propertyName, subLevelList);
-    addTitle(svg, "Breakdown (Total No. of Contracts)"); 
-
-
-    // ******************** Third Plot ******************************///
-
-    svg = d3.select(document.getElementById("SVG04"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white");
-
-    currentQuarter = "Q2";
-    pieData = [];
-    propertyName = ["Red (Outcomes)", "Amber (Outcomes)", "Green (Outcomes)"];
-    legendData = ["Red", "Amber", "Green"];
-    for ( var i = 0; i < propertyName.length; i++ )
-    {
-        pieData.push( {label: legendData[i], count: data[propertyName[i]][currentQuarter]});
-    }
-
-    var pie4 = plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
-    var title4 = addTitle(svg, "Outcome/Quality Performance (%)");
-
-    /* ****************** Fourth Plot ***************************************/
-    svg = d3.select(document.getElementById("SVG05"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white");
-
-    plotStack(svg, subLevelData, propertyName, subLevelList);
-    addTitle(svg, "Next Level Breakdown (%)")
-
-    /*  ************************* Fifth Plot ***********************************/
-    svg = d3.select(document.getElementById("SVG07"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white");
-
-    currentQuarter = "Q2";
-    pieData = [];
-    propertyName = ["Negative Feedback", "No Feedback", "Good Feedback"];
-    legendData = ["-ve Feedback", "No Feedback", "+ve Feedback"];
-    for ( var i = 0; i < propertyName.length; i++ )
-    {
-        pieData.push( {label: legendData[i], count: data[propertyName[i]][currentQuarter]});
-    }
-
-    var pie7 = plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
-    var title7 = addTitle(svg, "Beneficiary Feedback Contracts (%)");
-
-    /* ****************** Sixth Plot ***************************************/
-    svg = d3.select(document.getElementById("SVG08"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white");
-
-    // Add fields to subLevelData 
-    plotStack(svg, subLevelData, propertyName, subLevelList);
-    addTitle(svg, "Next Level Breakdown (%)")
-
-    /*  ************************* Seventh Plot ***********************************/
-    svg = d3.select(document.getElementById("SVG10"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white");
-
-    currentQuarter = "Q2";
-    pieData = [];
-    propertyName = ["Unsatisfactory", "Satisfactory/Requires Improvement", "Good/Very Good", "Outstanding",  "Performance Unscored"];
-    legendData = ["Unsatisfactory","Satisfactory", "Good", "Outstanding", "Unscored"];
-    pieStyle.color = d3.scale.category20();
-    legendStyle.color = pieStyle.color;
-    rayStyle.color = pieStyle.color;
-    for ( var i = 0; i < propertyName.length; i++ )
-    {
-        pieData.push( {label: legendData[i], count: data[propertyName[i]][currentQuarter]});
-    }
-
-    var pie10 = plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
-    var title10 = addTitle(svg, "External Inspections (%)");
-
-    /* ****************** Eight Plot ***************************************/
-    svg = d3.select(document.getElementById("SVG11"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white");
-
-    // Add fields to subLevelData 
-    var stackSettings = {};
-    stackSettings.color = pieStyle.color;
-    plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings);
-    addTitle(svg, "Next Level Breakdown (%)")
-
-    return;
-}
-
-
-function plotStack(svg, data, layerNames, nameList, stackSettings)
-{
-    var width = +svg.attr("width");
-    var height = +svg.attr("height");
-    var margin = defineMargins(height, width);
-    margin.bottom = 2*margin.bottom;
-
-    // Optional settings:
-    stackSettings = stackSettings || {};
-
-
-    plotHorisontalGrid(svg, margin, 25);
-
-    var x = d3.scale.ordinal()
-        .rangeRoundBands([0, width-margin.left-margin.right], .5);
-    
-    var y = d3.scale.linear()
-        .rangeRound([height-margin.top-margin.bottom, 0]);
-    
-    var z = stackSettings.color || dashBoardSettings.ragColors;
-    
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom");
-    
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("right");
-    
-    
-    var graph = svg.append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    
-
-    var layeredData = [];
-
-    for ( var i = 0; i < layerNames.length; i++ )
-    {
-        layeredData[i] = [];
-        for ( var j = 0; j < data.length; j++ )
-        {
-            layeredData[i][j] = {x: nameList[j], y: data[j][layerNames[i]]["Q2"]};
-        }
-    }
-
-    var stackLayOut = d3.layout.stack();
-    var stackedData = stackLayOut(layeredData);
-    
-      x.domain(stackedData[0].map(function(d) { return d.x; }));
-      y.domain([0, d3.max(stackedData[stackedData.length - 1], function(d) { return d.y0 + d.y; })]).nice();
-    
-      var layer = graph.selectAll(".layer")
-          .data(stackedData)
-          .enter().append("g")
-          .attr("class", "layer")
-          .style("fill", function(d, i) { return z(i); });
-    
-      layer.selectAll("rect")
-          .data(function(d) { return d; })
-        .enter().append("rect")
-          .attr("x", function(d) { return x(d.x); })
-          .attr("y", function(d) { return y(d.y + d.y0); })
-          .attr("height", function(d) { return y(d.y0) - y(d.y + d.y0); })
-          .attr("width", x.rangeBand());
-    
-      graph.append("g")
-          .attr("class", "axis axis--x")
-          .attr("transform", "translate(0" + "," + (height-margin.top-margin.bottom) + ")")
-          .call(xAxis);
-    
-      graph.append("g")
-          .attr("class", "axis axis--y")
-          .attr("transform", "translate(" + 0.0 + ",0)")
-          .call(yAxis);
-}
-
-
-//function pieCreator()
-// svg is d3 selected svg
-// pieData is an array of objects with format: 
-// pieData = [ {label: xxxx, count: xxxx}, {}, {}, ...]
-function plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
-{
-    // The mother of all objects:
-    var pie = {};
-
-    var dataSet = pieData.map(function(d){ return d.count; } );
-    var dummyData = dataSet.map(function(d) { return 1.0; } );
-
-    pie.piePlot = new pieObjectConstructor(svg, dummyData, pieStyle);
-    pie.piePlot.update(dataSet);
-
-    pie.rayPlot = new rayObjectConstructor(svg, dataSet, rayStyle);
-    pie.legend = new legendObjectConstructor( svg, legendData, legendStyle )
-    pie.legend = new legendObjectConstructor( svg, legendData, legendStyle )
-
-    // Update everything in the pie:
-    pie.update = function(data)
-    {
-        pie.piePlot.update(data);
-        pie.rayPlot.update(data);
-    }
-    return pie;
-}
 
 
             function impactRegionSelectFunction() 
@@ -579,10 +346,10 @@ function plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
 
                  var subLevelProperty = localityProperty;
                  var subLevelList = dashBoardData.impactData.localityList;
-                 var subLevelData = computeSubData(dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentNationExternalInspectionsData, subLevelList, subLevelProperty);
+                 var subLevelData = computeImpactSubData(dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentNationExternalInspectionsData, subLevelList, subLevelProperty);
                  var data = computeQuarterlyImpactData( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentRegionExternalInspectionsData );
 
-                 plotImpactVisualisation(data, subLevelData, subLevelList);
+                 plotImpactVisualisation(data, subLevelData, subLevelList, regionProperty, region, subLevelProperty);
 
                  return;
                     
@@ -606,7 +373,7 @@ function plotPieChart(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
 
                  var data = computeQuarterlyImpactData( dashBoardData.impactData.currentLocalityData, dashBoardData.impactData.currentLocalityExternalInspectionsData );
 
-                 plotImpactVisualisation(data, [], [])
+                 plotImpactVisualisation(data, [], [], localityProperty, locality, [])
                  return;
             }
 

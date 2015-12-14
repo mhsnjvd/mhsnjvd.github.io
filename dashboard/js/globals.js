@@ -123,12 +123,39 @@ function addNationProperty(data, regionProperty, nationProperty)
 dashBoardSettings.ragColors = function (d)
 {
     if ( d == 0 )
-       return "red";
+       return "rgb(255, 0, 0)";
     if ( d == 1 )
-       return "#FF9900"
+       return "rgb(255, 153, 0)";
+       //return "#FF9900"
     if ( d == 2 )
-       return "green";
+       return "rgb(0, 128, 0)";
     if ( d ==  3)
        return "grey";
+}
+
+dashBoardData.impactData.impactColorToImpactProperty = function (d)
+{
+    if ( d == "rgb(255, 0, 0)" )
+    {
+        return "R";
+    }
+    else
+    {
+        if ( d == "rgb(255, 153, 0)" )
+        {
+            return "A";
+        }
+        else
+        {
+            if ( d == "rgb(0, 128, 0)" )
+            {
+                return "G";
+            }
+            else
+            {
+                console.log("color: " + d + " not recognized");
+            }
+        }
+    }
 }
 

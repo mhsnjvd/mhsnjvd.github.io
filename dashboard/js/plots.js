@@ -27,7 +27,6 @@ function getVerticalScales(svg, margin, data)
         minyData = 0;
     }
 
-  
     // y scale
     scales.yScale = d3.scale.linear()
               .domain([minyData, maxyData])
@@ -42,30 +41,30 @@ function getVerticalScales(svg, margin, data)
 // Takes  a d3 selected SVG element and makes a histogram
 function plotHistogram( svg, margin, xData, yData, xScale, yScale, heightScale, barColor)
 {
-     // Object to be returned which will have an update function
-     histogram = {};
-     var height = svg.attr("height");
-     var width  = svg.attr("width");
-     
-     // Switch to default if no color is passed
-     barColor = barColor || dashBoardSettings.color.histogram;
-     
-     if ( typeof(barColor) === "string")
-     {
-         // Copy the same string n times, for each data entry
-         barColor = yData.map( function(d) { return barColor;});
-     }
-     else
-     {
-         // Should be an array of colors
-         if ( barColor.length !== yData.length)
-         {
-              console.log( "plotHistogram: number of colors not the same as number of bars.");
-         }
-     }
-     
-     // Draw the rectangles with 0 height:
-     var bars = svg.selectAll("rect")
+    // Object to be returned which will have an update function
+    histogram = {};
+    var height = svg.attr("height");
+    var width  = svg.attr("width");
+    
+    // Switch to default if no color is passed
+    barColor = barColor || dashBoardSettings.color.histogram;
+    
+    if ( typeof(barColor) === "string")
+    {
+        // Copy the same string n times, for each data entry
+        barColor = yData.map( function(d) { return barColor;});
+    }
+    else
+    {
+        // Should be an array of colors
+        if ( barColor.length !== yData.length)
+        {
+             console.log( "plotHistogram: number of colors not the same as number of bars.");
+        }
+    }
+    
+    // Draw the rectangles with 0 height:
+    var bars = svg.selectAll("rect")
     .data(yData)
     .enter()
     .append("rect")
@@ -264,7 +263,7 @@ function addTitle( svg, title)
   var plotTitle = svg.append("text")
         .attr( "id", "plotTitle")
         .attr("x", (width - title.length) / 2.0 + 10)
-        .attr("y", height - 15 )
+        .attr("y", 15 )
         .style("text-anchor", "middle")
         .style("font-weight", "bold")
         .text(title);  
@@ -863,17 +862,35 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
     // Cannot use this.color for nested functions
     // as "this" refers to this only in non-nested functions
 
-    piePath.on("mouseover", function(d)
-            {
-                d3.select(this);
-                return;
-            });
+    var tip = d3.tip()
+       .attr('class', 'd3-tip')
+       .offset([-10, 0])
+       .html(function(d, i) {
+            var percent = d.percent;                
+            var displayText = "<span style='color:red'>" + i + "</span>" + " count: " + percent + " (" + dashBoardSettings.numberFormat(percent) + "%)";
+                return displayText;
+           });        
+     
+    piePath.call(tip);
 
-    piePath.on("mouseout", function(d)
-            {
-                d3.select(this);
-                return;
-            });
+    piePath.on("mouseover", function(d, i)
+    {
+        //d3.select(this);
+        var total = d3.sum(dataSet);
+        d.percent = d/total * 100;                                                              
+        if ( pieStyle.tipEnabled )
+        {
+            tip.show(d, i);
+        }
+    })
+    .on("mouseout", function(d)
+    {
+        //d3.select(this);
+        if ( pieStyle.tipEnabled )
+        {
+            tip.hide();            
+        }
+    });
 
     // Function for adding text:
     function addText(dataSet)
