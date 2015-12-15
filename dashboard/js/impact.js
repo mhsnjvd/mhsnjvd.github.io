@@ -462,41 +462,17 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
           var property = dashBoardData.impactData.impactColorToImpactProperty(bar.style("fill"));
           subData = subData.filter(function(dataEntry) { return dataEntry[property] == 1; } );
           console.log(subData.length);
-          addTable(subData);
+          openTablePage(subData);
           return;
       }
 }
 
 
-function addTable(tableData)
+function openTablePage(tableData)
 {
-    var tableWindow = window.open("./table.html");
-    var tableWindowRoot = d3.select(tableWindow.document.body);
-
-    var table = d3.select(tableWindowRoot).append('table');
-    var thead = table.append("thead");
-    
-    thead.selectAll("th")
-         .data(d3.keys(tableData[0]))
-         .enter()
-         .append("th")
-         .text(function(d){return d});
-
-
-    // fill the table
-    // create rows
-    var tr = table.append("tbody");
-    tr.selectAll("tr")
-    .data(tableData)
-    .enter()
-    .append("tr")
-
-    // cells
-    var td = tr.selectAll("td")
-    .data(function(d){return d3.values(d)})
-    .enter()
-    .append("td")
-    .text(function(d) {return d})
+    dashBoardData.impactData.selectedData = tableData;
+    var tablePageWindow = window.open("./table.html");
+    tablePageWindow.selecteData = tableData;
 }
 
 //function pieCreator()

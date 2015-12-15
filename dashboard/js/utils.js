@@ -31,6 +31,7 @@ function sumArrayProperty( data, property)
 // tableData is an array, each element of which 
 // is another array containing row data
 // the first row is conisdered as the table head.
+// existing table will be deleted
 function updateTable( table, tableData)
 {
     while ( table.rows.length > 0 )
@@ -67,6 +68,32 @@ function updateTable( table, tableData)
         }
     }
     return table;    
+}
+
+
+// jsonData is an array with each element being in json style: 
+//       jsonData = [{prop: value, ...}, {prop: value, ...}, ... ]
+// tableArray is returned:
+//  tableArray = [[prop, prop, ..], [value, value, ...], [value, value, ..]... ]
+// eventually calls updateTable()
+function jsonToArray(jsonData)
+{
+    keys = Object.getOwnPropertyNames(jsonData[0]);
+
+    var tableArray = [];
+    for ( var i = 0; i < jsonData.length; i++ )
+    {
+        var row = [];
+        for ( var j = 0; j < keys.length; j++ )
+        {
+            row[j] = jsonData[i][keys[j]];
+        }
+        tableArray[i] = row;
+    }
+
+    // Add header row:
+    tableArray.unshift(keys);
+    return tableArray
 }
 
 // Example: Count how many times each locality (property) in 
