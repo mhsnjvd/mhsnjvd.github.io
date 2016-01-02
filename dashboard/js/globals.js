@@ -7,6 +7,7 @@ dashBoardData.impactData = {};
 dashBoardData.financialsData = {};
 dashBoardData.bizDevData = {};
 dashBoardData.peopleBizModelData = {};
+dashBoardData.impactData.clickedData = {};
 
 // These can be created on the runtime but
 // given here just to give a template idea:

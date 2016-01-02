@@ -1206,7 +1206,17 @@ function stackObjectConstructor(svg, layeredData, stackSettings)
           .attr("x", function(d) { return x(d.y0); })
           .attr("y", function(d, i) { return y(d.label); })
           .attr("width", function(d) { return x(d.y) ; })
-          .attr("height", y.rangeBand());
+          .attr("height", y.rangeBand())
+          .on("mouseover", stackMouseOver);
+
+    function stackMouseOver(d)
+    {
+        var currentBar = d3.select(this);
+        var currentData = d;
+        dashBoardData.impactData.clickedData.object = currentBar;
+        dashBoardData.impactData.clickedData.data = currentData;
+        return;
+    }
 
     var xAxis = d3.svg.axis()
         .scale(x)

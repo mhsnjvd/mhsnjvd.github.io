@@ -404,20 +404,20 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
     }
 
     stack.stackPlot = new stackObjectConstructor(svg, layeredData, stackSettings);
-
     stack.stackPlot.stackLayer.on("click", stackClick);
-    
 
     function stackClick(d)
     {
-        return ;
-
+        var label = dashBoardData.impactData.clickedData.data.label;
+        var color = dashBoardData.impactData.clickedData.object.style("fill");
+        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; });    var property = dashBoardData.impactData.impactColorToImpactProperty(color);
+        subData = subData.filter(function(d) { return d[property] == 1; } );
+        console.log(subData.length);
+        openTablePage(subData);
+        return;
     }
-
-
     
 }
-
 
 function openTablePage(tableData)
 {
