@@ -380,37 +380,17 @@ function plotImpactVisualisation(data, subLevelData, subLevelList, areaProperty,
 
 function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty, area, subAreaProperty)
 {
+    // The mother object:
+    var stack = {};
+
     var width = +svg.attr("width");
     var height = +svg.attr("height");
     var margin = defineMargins(height, width);
+    // More space on the left for long names
     margin.left = 2*margin.left;
-
-    // Optional settings:
-    stackSettings = stackSettings || {};
-
+    stackSettings.margin = stackSettings.margin || margin;
 
     plotVerticalGrid(svg, margin, 10);
-
-    var y = d3.scale.ordinal()
-        .rangeRoundBands([height-margin.top-margin.bottom, 0], .5);
-    
-    var x = d3.scale.linear()
-        .rangeRound([0, width-margin.left-margin.right]);
-    
-    var z = stackSettings.color || dashBoardSettings.ragColors;
-    
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom");
-    
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left");
-    
-    
-    var graph = svg.append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    
 
     var layeredData = [];
 
@@ -423,50 +403,21 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
         }
     }
 
-    var stackLayOut = d3.layout.stack();
-    var stackedData = stackLayOut(layeredData);
-    
-      y.domain(stackedData[0].map(function(d) { return d.label; }));
-      x.domain([0, d3.max(stackedData[stackedData.length - 1], function(d) { return d.y0 + d.y; })]).nice();
-    
-      var layer = graph.selectAll(".layer")
-          .data(stackedData)
-          .enter().append("g")
-          .attr("class", "layer")
-          .style("fill", function(d, i) { return z(i); });
-    
-      layer.selectAll("rect")
-          .data(function(d) { return d; })
-          .enter().append("rect")
-          .attr("x", function(d) { return x(d.y0); })
-          .attr("y", function(d, i) { return y(d.label); })
-          .attr("width", function(d) { return x(d.y) ; })
-          .attr("height", y.rangeBand())
-          .on("click", stackClick);
-    
-      graph.append("g")
-          .attr("class", "axis axis--x")
-          .attr("transform", "translate(0" + "," + (height-margin.top-margin.bottom) + ")")
-          .call(xAxis);
-    
-      graph.append("g")
-          .attr("class", "axis axis--y")
-          .attr("transform", "translate(" + 0.0 + ",0)")
-          .call(yAxis);
+    stack.stackPlot = new stackObjectConstructor(svg, layeredData, stackSettings);
+    stack.stackPlot.stackLayer.on("click", stackClick);
 
-
-      function stackClick(d)
-      {
-          var bar = d3.select(this);
-          var subData = dashBoardData.impactData.currentNationData.filter( function(dataEntry) { return dataEntry[subAreaProperty] === d.label; });
-          var property = dashBoardData.impactData.impactColorToImpactProperty(bar.style("fill"));
-          subData = subData.filter(function(dataEntry) { return dataEntry[property] == 1; } );
-          console.log(subData.length);
-          openTablePage(subData);
-          return;
-      }
+    function stackClick(d)
+    {
+        var label = stack.stackPlot.stackLayer.clickedData.data.label;
+        var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
+        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; });    var property = dashBoardData.impactData.impactColorToImpactProperty(color);
+        subData = subData.filter(function(d) { return d[property] == 1; } );
+        console.log(subData.length);
+        openTablePage(subData);
+        return;
+    }
+    
 }
-
 
 function openTablePage(tableData)
 {
@@ -499,5 +450,12 @@ function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
         pie.piePlot.update(data);
         pie.rayPlot.update(data);
     }
+    pie.piePlot.piePath.on("click", function(d)
+            { 
+                var p = d3.select(this);
+                p.style("fill", "blue");
+            });
+
+
     return pie;
 }

@@ -892,6 +892,18 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
         }
     });
 
+
+    function pieClick(d)
+    {
+        var thisPie = d3.select(this);
+        //var subData = dashBoardData.impactData.currentNationData.filter( function(dataEntry) { return dataEntry[subAreaProperty] === d.label; });
+        //var property = dashBoardData.impactData.impactColorToImpactProperty(bar.style("fill"));
+        //subData = subData.filter(function(dataEntry) { return dataEntry[property] == 1; } );
+        //console.log(subData.length);
+        //openTablePage(subData);
+        //return;
+    }
+
     // Function for adding text:
     function addText(dataSet)
     {
@@ -1153,3 +1165,80 @@ function addTip()
            });        
 }
 
+
+function stackObjectConstructor(svg, layeredData, stackSettings)
+{
+    stackSettings.color = stackSettings.color || d3.scale.category20();
+    this.color = stackSettings.color;
+    var color = this.color
+
+    var width = +svg.attr("width");
+    var height = +svg.attr("height");
+    var margin = stackSettings.margin || defineMargins(height, width);
+
+    // Optional settings:
+    stackSettings = stackSettings || {};
+
+    var y = d3.scale.ordinal()
+        .rangeRoundBands([height-margin.top - margin.bottom, 0], .5);
+    
+    var x = d3.scale.linear()
+        .rangeRound([0, width-margin.left-margin.right]);
+    
+    var stackSVG = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+    var stackLayOut = d3.layout.stack();
+    var stackedData = stackLayOut(layeredData);
+    
+      y.domain(stackedData[0].map(function(d) { return d.label; }));
+      x.domain([0, d3.max(stackedData[stackedData.length - 1], function(d) { return d.y0 + d.y; })]).nice();
+    
+    var stackLayer = stackSVG.selectAll(".layer")
+          .data(stackedData)
+          .enter().append("g")
+          .attr("class", "layer")
+          .style("fill", function(d, i) { return color(i); });
+    
+    stackLayer.selectAll("rect")
+          .data(function(d) { return d; })
+          .enter().append("rect")
+          .attr("x", function(d) { return x(d.y0); })
+          .attr("y", function(d, i) { return y(d.label); })
+          .attr("width", function(d) { return x(d.y) ; })
+          .attr("height", y.rangeBand())
+          .on("mouseover", stackMouseOver);
+    stackLayer.clickedData = {};
+    stackLayer.clickedData.object = {};
+    stackLayer.clickedData.data = {};
+
+    function stackMouseOver(d)
+    {
+        var currentBar = d3.select(this);
+        var currentData = d;
+        stackLayer.clickedData.object = currentBar;
+        stackLayer.clickedData.data = currentData;
+        return;
+    }
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+    
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+
+    stackSVG.append("g")
+        .attr("class", "axis axis--x")
+        .attr("transform", "translate(0" + "," + (height-margin.top-margin.bottom) + ")")
+        .call(xAxis);
+    
+    stackSVG.append("g")
+        .attr("class", "axis axis--y")
+        .attr("transform", "translate(" + 0.0 + ",0)")
+        .call(yAxis);
+
+    this.stackSVG = stackSVG;
+    this.stackLayer = stackLayer;
+}
