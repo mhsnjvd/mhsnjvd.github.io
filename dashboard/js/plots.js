@@ -1208,13 +1208,16 @@ function stackObjectConstructor(svg, layeredData, stackSettings)
           .attr("width", function(d) { return x(d.y) ; })
           .attr("height", y.rangeBand())
           .on("mouseover", stackMouseOver);
+    stackLayer.clickedData = {};
+    stackLayer.clickedData.object = {};
+    stackLayer.clickedData.data = {};
 
     function stackMouseOver(d)
     {
         var currentBar = d3.select(this);
         var currentData = d;
-        dashBoardData.impactData.clickedData.object = currentBar;
-        dashBoardData.impactData.clickedData.data = currentData;
+        stackLayer.clickedData.object = currentBar;
+        stackLayer.clickedData.data = currentData;
         return;
     }
 

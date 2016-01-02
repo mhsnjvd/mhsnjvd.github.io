@@ -408,8 +408,8 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
 
     function stackClick(d)
     {
-        var label = dashBoardData.impactData.clickedData.data.label;
-        var color = dashBoardData.impactData.clickedData.object.style("fill");
+        var label = stack.stackPlot.stackLayer.clickedData.data.label;
+        var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
         var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; });    var property = dashBoardData.impactData.impactColorToImpactProperty(color);
         subData = subData.filter(function(d) { return d[property] == 1; } );
         console.log(subData.length);
