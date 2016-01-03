@@ -321,16 +321,36 @@
                  var localityProperty = dashBoardData.financialsData.localityProperty; 
                  var costCentreProperty = dashBoardData.financialsData.costCentreProperty; 
 
-                 // Initialize region data and locality list:
-                 dashBoardData.financialsData.currentNationData = dashBoardData.financialsData.rawData.filter( function(d) { return d[nationProperty] == nation; } ); 
+                 // Get the propertyNames under which files are stored:
+                 var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
+
+
+                 dashBoardData.financialsData.currentNationData = {};
+
+                 if( nation == dashBoardData.allUKString )
+                 {
+                     for ( var i = 0; i < arrayNames.length; i++ )
+                     {
+                         dashBoardData.financialsData.currentNationData[arrayNames[i]] = dashBoardData.financialsData[arrayNames[i]];
+                     }
+                 }
+                 else
+                 {
+                    // Search for entries matching this region in all files:
+                    dashBoardData.financialsData.currentNationData = searchPropertyInArrays( dashBoardData.financialsData, arrayNames, nationProperty, nation );
+                 }
+
+                 // Join the data from all files into a single array:
+                 var currentNationConcat = concatObjectArrays(dashBoardData.financialsData.currentNationData);
+
                  // Update Regions
-                 dashBoardData.financialsData.regionList = getUniqueSortedList(dashBoardData.financialsData.currentNationData, regionProperty);
+                 dashBoardData.financialsData.regionList = getUniqueSortedList(currentNationConcat, regionProperty);
                  updateSelector( document.getElementById("financialsRegionSelector"), ["Select Region"].concat(dashBoardData.financialsData.regionList) ); 
                  // Update localities
-                 dashBoardData.financialsData.localityList = getUniqueSortedList(dashBoardData.financialsData.currentNationData, localityProperty);
+                 dashBoardData.financialsData.localityList = getUniqueSortedList(currentNationConcat, localityProperty);
                  updateSelector( document.getElementById("financialsLocalitySelector"), ["Select Locality"].concat(dashBoardData.financialsData.localityList) ); 
                  // Update cost centres
-                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(dashBoardData.financialsData.currentNationData, costCentreProperty);
+                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentNationConcat, costCentreProperty);
                  updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Locality"].concat(dashBoardData.financialsData.localityList) ); 
 
                  var subLevelProperty = regionProperty;
@@ -338,9 +358,8 @@
 
                  if ( nation == dashBoardData.allUKString )
                  {
-                     dashBoardData.financialsData.currentNationData = dashBoardData.financialsData.rawData;
                      subLevelProperty = nationProperty;
-                     subLevelList = getUniqueSortedList(dashBoardData.financialsData.currentNationData, subLevelProperty);
+                     subLevelList = getUniqueSortedList(currentNationConcat, subLevelProperty);
                      // Remove All UK string from the item:
                      var allUKIndex = subLevelList.indexOf(dashBoardData.allUKString);
                      if ( allUKIndex > -1 )
@@ -353,7 +372,10 @@
 
                  var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentNationData );
 
-                 plotFinancialsVisualisation(data, subLevelData, subLevelList, nationProperty, nation, subLevelProperty);
+                 //plotFinancialsVisualisation(data, subLevelData, subLevelList, nationProperty, nation, subLevelProperty);
+
+                 svg = d3.select(document.getElementById("SVG01"));
+                 plotQuarterlyFinancialsData( svg, data);
             }
 
 
@@ -364,42 +386,38 @@
                  var localityProperty = dashBoardData.financialsData.localityProperty;
                  var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
 
-                 // Initialize region data and locality list:
-                 //dashBoardData.financialsData.currentRegionData = dashBoardData.financialsData.rawData.filter( function(d) { return d[regionProperty] === region; } );
-
                  // Get the propertyNames under which files are stored:
                  var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
+
+
+                 dashBoardData.financialsData.currentRegionData = {};
+
                  // Search for entries matching this region in all files:
-                 dashBoardData.financialsData.currentRegionData = searchPropertyInArrays( dashBoardData.financialsData, arrayNames, regionProperty, region );
-
-
-                 if ( region == dashBoardData.allUKString )
-                 {
-                    for ( var i = 0; i < arrayNames.length; i++ )
-                    {
-                        dashBoardData.financialsData.currentRegionData[arrayNames[i]] = dashBoardData.financialsData[arrayNames[i]];
-                    }
-                 }
-
+                 dashBoardData.financialsData.currentRegionData = searchPropertyInArrays( dashBoardData.financialsData, arrayNames, regionProperty, region ); 
                  // Join the data from all files into a single array:
                  var currentRegionConcat = concatObjectArrays(dashBoardData.financialsData.currentRegionData);
 
                  // Update localities
                  dashBoardData.financialsData.localityList = getUniqueSortedList(currentRegionConcat, localityProperty);
-                 dashBoardData.financialsData.localityList.unshift("");
-                 updateSelector( document.getElementById("financialsLocalitySelector"), dashBoardData.financialsData.localityList );
-
-                 // Update Cost Centres
+                 updateSelector( document.getElementById("financialsLocalitySelector"), ["Select Locality"].concat(dashBoardData.financialsData.localityList) ); 
+                 // Update cost centres
                  dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentRegionConcat, costCentreProperty);
-                 dashBoardData.financialsData.costCentreList.unshift("");
-                 updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
+                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Locality"].concat(dashBoardData.financialsData.localityList) ); 
 
+                 var subLevelProperty = localityProperty;
+                 var subLevelList = dashBoardData.financialsData.localityList;
+
+                 var subLevelData = computeFinancialsSubData(dashBoardData.financialsData.currentRegionData, subLevelList, subLevelProperty);
+
+                 var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentRegionData );
+
+                 //plotFinancialsVisualisation(data, subLevelData, subLevelList, nationProperty, nation, subLevelProperty);
 
                  var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentRegionData );
 
                  svg = d3.select(document.getElementById("SVG01"));
                  
-                 plotQuarterlyFinancialData( svg, data);
+                 plotQuarterlyFinancialsData( svg, data);
 
                  var count = getIdentifierCount( currentRegionConcat, dashBoardData.financialsData.localityList, localityProperty);
                  var pieData = [];
@@ -414,7 +432,7 @@
 
                  // Update data table:
                  var tableData = makeFinancialTableData(data);
-                 updateFinancialTable( document.getElementById("dataTable"), tableData);
+                 updateFinancialsTable( document.getElementById("dataTable"), tableData);
                  return;
             }
             
@@ -436,7 +454,7 @@
                  updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
 
                  // First Histogram Plot
-                 var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentLocalityData );                 
+                 var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentLocalityData );                 
 
                  var svg = d3.select(document.getElementById("SVG01"));                 
                  plotQuarterlyFinancialData( svg, data );  
@@ -458,7 +476,7 @@
                  var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
                  dashBoardData.financialsData.currentCostCentreData = dashBoardData.financialsData.currentLocalityData.filter( function(d) { return d[costCentreProperty] === costCentre; } );
                      
-                 var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentCostCentreData );                 
+                 var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentCostCentreData );                 
 
                  var svg = d3.select(document.getElementById("SVG01"));                 
                  plotQuarterlyFinancialData( svg, data );  
@@ -490,12 +508,18 @@
               dashBoardData.financialsData.localityProperty = dashBoardData.financialsData.propertyList[1]; 
               dashBoardData.financialsData.costCentreProperty = dashBoardData.financialsData.propertyList[3]; 
 
-              addNationProperty(dashBoardData.financialsData.rawData, dashBoardData.financialsData.regionProperty, dashBoardData.financialsData.nationProperty);
-              // Get the lists of regions etc:
-              dashBoardData.financialsData.nationList = getUniqueSortedList(dashBoardData.financialsData.rawData, dashBoardData.financialsData.nationProperty);
-              dashBoardData.financialsData.regionList = getUniqueSortedList(dashBoardData.financialsData.rawData, dashBoardData.financialsData.regionProperty);
-              dashBoardData.financialsData.localityList = getUniqueSortedList(dashBoardData.financialsData.rawData, dashBoardData.financialsData.localityProperty);
-              dashBoardData.financialsData.costCentreList = getUniqueSortedList(dashBoardData.financialsData.rawData, dashBoardData.financialsData.costCentreProperty);
+              // Get the propertyNames under which files are stored:
+              var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
+              for ( var i = 0; i < arrayNames.length; i++ )
+              {
+                 addNationProperty(dashBoardData.financialsData[arrayNames[i]], dashBoardData.financialsData.regionProperty, dashBoardData.financialsData.nationProperty);
+              }
+
+              // Get the lists of regions etc from any file, all files should have same lists!!!
+              dashBoardData.financialsData.nationList = getUniqueSortedList(dashBoardData.financialsData[arrayNames[0]], dashBoardData.financialsData.nationProperty);
+              dashBoardData.financialsData.regionList = getUniqueSortedList(dashBoardData.financialsData[arrayNames[0]], dashBoardData.financialsData.regionProperty);
+              dashBoardData.financialsData.localityList = getUniqueSortedList(dashBoardData.financialsData[arrayNames[0]], dashBoardData.financialsData.localityProperty);
+              dashBoardData.financialsData.costCentreList = getUniqueSortedList(dashBoardData.financialsData[arrayNames[0]], dashBoardData.financialsData.costCentreProperty);
 
               // Update selectors based on the lists above:
               dashBoardData.financialsData.nationList.unshift(dashBoardData.allUKString);
@@ -503,67 +527,6 @@
 
               financialsNationSelectFunction();
             });                                 
-
-            /////////////////////////////////////////////
-            //          Select Functions               //
-            /////////////////////////////////////////////
-
-            function impactRegionSelectFunction() 
-            {
-                 var region = document.getElementById("impactRegionSelector").value;
-                 var regionProperty = dashBoardData.impactData.regionProperty;
-                 var localityProperty = dashBoardData.impactData.localityProperty; 
-                 var contractNameProperty = dashBoardData.impactData.contractNameProperty; 
-
-                 // Initialize region data and locality list:
-                 dashBoardData.impactData.currentRegionData = dashBoardData.impactData.rawData.filter( function(d) { return d[regionProperty] == region; } );
-                 dashBoardData.impactData.currentRegionExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter( function(d) { return d[regionProperty] === region; } );
-
-                 // Update localities
-                 dashBoardData.impactData.localityList = getUniqueSortedList(dashBoardData.impactData.currentRegionData, localityProperty);
-                 updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(dashBoardData.impactData.localityList) );
-
-                 // Update Contracts
-                 /*
-                 dashBoardData.impactData.contractNameList = getUniqueSortedList(dashBoardData.impactData.currentRegionData, contractNameProperty);
-                 updateSelector( document.getElementById("impactContractNameSelector"), [""].concat(dashBoardData.impactData.contractNameList));
-                 */
-
-                 var subLevelProperty = localityProperty;
-                 var subLevelList = dashBoardData.impactData.localityList;
-                 var subLevelData = computeImpactSubData(dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentNationExternalInspectionsData, subLevelList, subLevelProperty);
-                 var data = computeQuarterlyImpactData( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentRegionExternalInspectionsData );
-
-                 plotImpactVisualisation(data, subLevelData, subLevelList, regionProperty, region, subLevelProperty);
-
-                 return;
-                    
-            }
-            
-            function impactLocalitySelectFunction() 
-            {
-                 var locality = document.getElementById("impactLocalitySelector").value;
-                 var localityProperty = dashBoardData.impactData.localityProperty; 
-                 var contractNameProperty = dashBoardData.impactData.contractNameProperty; 
-
-                 // Initialize region data and locality list:
-                 dashBoardData.impactData.currentLocalityData = dashBoardData.impactData.rawData.filter( function(d) { return d[localityProperty] === locality; } );
-                 dashBoardData.impactData.currentLocalityExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter( function(d) { return d[localityProperty] === locality; } ); 
-
-                 // Update Contracts
-                 /*
-                 dashBoardData.impactData.contractNameList = getUniqueSortedList(dashBoardData.impactData.currentLocalityData, contractNameProperty);
-                 updateSelector( document.getElementById("impactContractNameSelector"), [""].concat(dashBoardData.impactData.contractNameList));
-                 */
-
-                 var data = computeQuarterlyImpactData( dashBoardData.impactData.currentLocalityData, dashBoardData.impactData.currentLocalityExternalInspectionsData );
-
-                 plotImpactVisualisation(data, [], [], localityProperty, locality, [])
-                 return;
-            }
-
-
-
          </script>
          
           <!-- FOOTER -->

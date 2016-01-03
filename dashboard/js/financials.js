@@ -87,15 +87,21 @@
 //  *************************************//
 function computeFinancialsSubData(data, subLevelList, subLevelProperty)
 {
-   var subLevelData = [];
-   for ( var i = 0; i < subLevelList.length; i++ )
-   {
-       var filteredData = data.filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
-       subLevelData[i] = computeQuarterlyFinancialsData(filteredData);
-   }
-   return subLevelData;
-}
+    // Get the propertyNames under which files are stored:
+    var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
 
+    var subLevelData = {};
+    for ( var i = 0; i < subLevelList.length; i++ )
+    {
+        var filteredData = {};
+        for ( var j = 0; j < arrayNames.length; j++ )
+        {
+           filteredData[arrayNames[j]] = data[arrayNames[j]].filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
+        }
+        subLevelData[i] = computeQuarterlyFinancialsData(filteredData);
+    }
+    return subLevelData;
+}
 
 // Returns an object with four fields, each is an array of length 4
 // one entry for each quarter.
