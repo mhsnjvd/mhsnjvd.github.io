@@ -85,6 +85,17 @@
 // ****************************************
 //  Financials Utilities
 //  *************************************//
+function computeFinancialsSubData(data, subLevelList, subLevelProperty)
+{
+   var subLevelData = [];
+   for ( var i = 0; i < subLevelList.length; i++ )
+   {
+       var filteredData = data.filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
+       subLevelData[i] = computeQuarterlyFinancialsData(filteredData);
+   }
+   return subLevelData;
+}
+
 
 // Returns an object with four fields, each is an array of length 4
 // one entry for each quarter.
@@ -99,7 +110,7 @@ function addFinancialDataFields(data)
     return data;
 }
 
-function computeQuarterlyFinancialData(data)
+function computeQuarterlyFinancialsData(data)
 {
     var dataOut = {};
 
@@ -237,7 +248,7 @@ function computeQuarterlyFinancialData(data)
     return dataOut;
 }
 
-function makeFinancialTableData(data)
+function makeFinancialsTableData(data)
 {
     var tableHeader = ["(£k)", "Q1", "Q2", "Q3", "Q4", "FY", "Budget", "Variation", "Variation (%)"];
     var tableData = [];
@@ -273,7 +284,7 @@ function makeFinancialTableData(data)
 // tableData is an array, each element of which 
 // is another array containing row data
 // the first row is conisdered as the table head.
-function updateFinancialTable( table, tableData)
+function updateFinancialsTable( table, tableData)
 {
     while ( table.rows.length > 0 )
     {
@@ -323,7 +334,7 @@ function updateFinancialTable( table, tableData)
 
 // All data is assumed positive
 // svg is d3 selected svg
-function plotQuarterlyFinancialData( svg, data)
+function plotQuarterlyFinancialsData( svg, data)
 {
       svg.selectAll("*").remove();
       svg.style("background-color", "white"); 
