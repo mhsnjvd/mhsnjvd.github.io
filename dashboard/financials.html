@@ -158,12 +158,12 @@
              <div class="col-xs-1">
              </div>
 
-             <div class="col-xs-4">
-                 <svg id="SVG01" height="500" width="400" style="background-color: white"></svg>
+             <div class="col-xs-5">
+                 <svg id="SVG01" height="400" width="500" style="background-color: white"></svg>
              </div>
 
-             <div class="col-xs-6">
-                 <svg id="SVG02" height="500" width="600" style="background-color: white"></svg>
+             <div class="col-xs-5">
+                 <svg id="SVG02" height="400" width="500" style="background-color: white"></svg>
              </div>
 
              <div class="col-xs-1">
@@ -351,7 +351,7 @@
                  updateSelector( document.getElementById("financialsLocalitySelector"), ["Select Locality"].concat(dashBoardData.financialsData.localityList) ); 
                  // Update cost centres
                  dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentNationConcat, costCentreProperty);
-                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Locality"].concat(dashBoardData.financialsData.localityList) ); 
+                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select CC"].concat(dashBoardData.financialsData.costCentreList) ); 
 
                  var subLevelProperty = regionProperty;
                  var subLevelList = dashBoardData.financialsData.regionList;
@@ -402,7 +402,7 @@
                  updateSelector( document.getElementById("financialsLocalitySelector"), ["Select Locality"].concat(dashBoardData.financialsData.localityList) ); 
                  // Update cost centres
                  dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentRegionConcat, costCentreProperty);
-                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Locality"].concat(dashBoardData.financialsData.localityList) ); 
+                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select CC"].concat(dashBoardData.financialsData.costCentreList) ); 
 
                  var subLevelProperty = localityProperty;
                  var subLevelList = dashBoardData.financialsData.localityList;
@@ -412,8 +412,6 @@
                  var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentRegionData );
 
                  //plotFinancialsVisualisation(data, subLevelData, subLevelList, nationProperty, nation, subLevelProperty);
-
-                 var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentRegionData );
 
                  svg = d3.select(document.getElementById("SVG01"));
                  
@@ -431,7 +429,7 @@
                  plotPieChart( svg, pieData);
 
                  // Update data table:
-                 var tableData = makeFinancialTableData(data);
+                 var tableData = makeFinancialsTableData(data);
                  updateFinancialsTable( document.getElementById("dataTable"), tableData);
                  return;
             }
@@ -448,16 +446,22 @@
 
                  var currentLocalityConcat = concatObjectArrays(dashBoardData.financialsData.currentLocalityData);
 
-                 // Update Cost Centres
+                 // Update cost centres
                  dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentLocalityConcat, costCentreProperty);
-                 dashBoardData.financialsData.costCentreList.unshift("");
-                 updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
+                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select CC"].concat(dashBoardData.financialsData.costCentreList) ); 
+
+                 var subLevelProperty = costCentreProperty;
+                 var subLevelList = dashBoardData.financialsData.costCentreList;
+
+                 var subLevelData = computeFinancialsSubData(dashBoardData.financialsData.currentRegionData, subLevelList, subLevelProperty);
+
+                 var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentRegionData );
 
                  // First Histogram Plot
                  var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentLocalityData );                 
 
                  var svg = d3.select(document.getElementById("SVG01"));                 
-                 plotQuarterlyFinancialData( svg, data );  
+                 plotQuarterlyFinancialsData( svg, data );  
 
 
                  var svg = d3.select(document.getElementById("SVG02"));                 
@@ -465,8 +469,8 @@
                  plotCostCentres( svg, dashBoardData.financialsData.currentLocalityData[arrayNames[1]]);  
 
                  // Update data table:
-                 var tableData = makeFinancialTableData(data);
-                 updateFinancialTable( document.getElementById("dataTable"), tableData);                                                          
+                 var tableData = makeFinancialsTableData(data);
+                 updateFinancialsTable( document.getElementById("dataTable"), tableData);                                                          
                  return;
             }
 
@@ -479,11 +483,11 @@
                  var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentCostCentreData );                 
 
                  var svg = d3.select(document.getElementById("SVG01"));                 
-                 plotQuarterlyFinancialData( svg, data );  
+                 plotQuarterlyFinancialsData( svg, data );  
 
                  // Update data table:
-                 var tableData = makeFinancialTableData(data);
-                 updateFinancialTable( document.getElementById("dataTable"), tableData);                 
+                 var tableData = makeFinancialsTableData(data);
+                 updateFinancialsTable( document.getElementById("dataTable"), tableData);                 
 
                  return;
             }
