@@ -873,15 +873,24 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
      
     piePath.call(tip);
 
+    piePath.clickedData = {};
+    piePath.clickedData.object = {};
+    piePath.clickedData.data = {};
+
     piePath.on("mouseover", function(d, i)
     {
-        //d3.select(this);
+        var currentPie = d3.select(this);
+
         var total = d3.sum(dataSet);
         d.percent = d/total * 100;                                                              
         if ( pieStyle.tipEnabled )
         {
             tip.show(d, i);
         }
+
+        var currentData = d;
+        piePath.clickedData.object = currentPie;
+        piePath.clickedData.data = currentData;
     })
     .on("mouseout", function(d)
     {
@@ -892,17 +901,6 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
         }
     });
 
-
-    function pieClick(d)
-    {
-        var thisPie = d3.select(this);
-        //var subData = dashBoardData.impactData.currentNationData.filter( function(dataEntry) { return dataEntry[subAreaProperty] === d.label; });
-        //var property = dashBoardData.impactData.impactColorToImpactProperty(bar.style("fill"));
-        //subData = subData.filter(function(dataEntry) { return dataEntry[property] == 1; } );
-        //console.log(subData.length);
-        //openTablePage(subData);
-        //return;
-    }
 
     // Function for adding text:
     function addText(dataSet)

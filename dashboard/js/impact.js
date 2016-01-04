@@ -410,7 +410,8 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
     {
         var label = stack.stackPlot.stackLayer.clickedData.data.label;
         var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
-        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; });    var property = dashBoardData.impactData.impactColorToImpactProperty(color);
+        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
+        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
         subData = subData.filter(function(d) { return d[property] == 1; } );
         console.log(subData.length);
         openTablePage(subData);
@@ -450,12 +451,21 @@ function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
         pie.piePlot.update(data);
         pie.rayPlot.update(data);
     }
-    pie.piePlot.piePath.on("click", function(d)
-            { 
-                var p = d3.select(this);
-                p.style("fill", "blue");
-            });
+    pie.piePlot.piePath.on("click", pieClick);
 
+    function pieClick(d)
+    {
+        /* Do nothing for the time being
+        var label = pie.piePlot.piePath.clickedData.data.label;
+        var color = pie.piePlot.piePath.clickedData.object.style("fill");
+        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
+        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
+        subData = subData.filter(function(d) { return d[property] == 1; } );
+        console.log(subData.length);
+        openTablePage(subData);
+        */
+        return;
+    }
 
     return pie;
 }
