@@ -46,22 +46,16 @@ dashBoardSettings.dataDir = "./data/";
 
 
 // Files needed
+// Name of the file and the property name under which it will be stored
 dashBoardData.financialsData.files = [ 
                     { name: "010_Finance_201415_FY_CC.csv",   propertyName: "FY1415" }, 
                     { name: "011_a_Finance_201516_P3_CC.csv", propertyName: "P31516" },
                     { name: "011_b_Finance_201516_P6_CC.csv", propertyName: "P61516"} 
                     ];
 
-// Names of the properties that must be the header of the columns
-// across all financial files
-dashBoardData.financialsData.regionProperty = "R/N/BL";
-dashBoardData.financialsData.localityProperty = "Locality";
-dashBoardData.financialsData.costCentreProperty = "CC";
-
-
 dashBoardData.peopleBizModelData.files = [
                     { name: "007_CAIU_Internal.csv",   propertyName: "internalData"},
-                    { name: "004_b_Staff_Sep15.csv",   propertyName: "rawData" }
+                    { name: "004_b_Staff_Sep15.csv",   propertyName: "staffData" }
                     ];
 
 
@@ -85,7 +79,8 @@ dashBoardData.nationDefinitions = {
                                    "Business Lines": ["Employment Training & Skills", "Family Placement"],
                                    "Celtic Nations": ["Cymru", "Northern Ireland", "Scotland"],
                                    "England": ["East", "London", "Midlands & South West", "South East & Anglia", "West"],
-                                   "Pan Regional": ["Pan Regional"]
+                                   "Pan Regional": ["Pan Regional"],
+                                   "Other": ["#NA", "", "N/A", undefined]
                                   };
 
 // A list of all the nations

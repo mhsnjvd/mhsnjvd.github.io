@@ -2,7 +2,7 @@
 // Initialisations for People and Business Model
 // **************************************************
 //
-// Read all the files needed for financials:
+// Read all the files needed:
 
 // Read file 0:
 (function() 
@@ -26,6 +26,17 @@
 // *******************************************************
 //    People and Business Model Utility functions
 // *****************************************************//
+function computePeopleBizModelSubData(data, subLevelList, subLevelProperty)
+{
+   var subLevelData = [];
+   for ( var i = 0; i < subLevelList.length; i++ )
+   {
+       var thisData = data.filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
+       subLevelData[i] =  computeQuarterlyPeopleBizModelData(thisData);
+   }
+   return subLevelData;
+}
+
 function computeQuarterlyPeopleBizModelData(peopleBizModelDataArray)
 {
     /*****************************************
