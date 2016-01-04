@@ -9,12 +9,12 @@
   <meta name="author" content="">
   <link rel="icon" href="favicon.jpg">
 
-  <title>Aleron | Business Development Data Drilling</title>
+  <title>Aleron | Business Development Analysis</title>
 
   <!-- Bootstrap core CSS -->
   <link href="./css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Custom styles for this template -->
+ <!-- Custom styles for this template, needed for the right spacging on top etc.-->                                                                    
   <link href="./css/dashboard.css" rel="stylesheet">
 
   <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
@@ -28,6 +28,7 @@
       <![endif]-->
   <script src="./js/d3.min.js"></script>
   <script src="./js/d3.tip.v0.6.3.js"></script>
+  <link href="./css/d3-tip.css" rel="stylesheet">
 
   <style>
       .axis path,
@@ -37,82 +38,6 @@
               stroke-width: 2;
               shape-rendering: crispEdges; }
 
-       .legend {  
-           font-size: 12px; 
-       }
-       rect {  
-           stroke-width: 2; 
-       }
-
-      #chart {                                                          
-        height: 360px;                                                  
-        position: relative;                                             
-        width: 360px;                                                   
-      }                                                                 
-      .tooltip {                                                        
-        background: #eee;                                               
-        box-shadow: 0 0 5px #999999;                                    
-        color: #333;                                                    
-        display: none;                                                  
-        font-size: 12px;                                                
-        left: 130px;                                                    
-        padding: 10px;                                                  
-        position: absolute;                                             
-        text-align: center;                                             
-        top: 95px;                                                      
-        width: 80px;                                                    
-        z-index: 10;                                                    
-      } 
-
-      .d3-tip {
-        line-height: 1;
-        font-weight: bold;
-        padding: 12px;
-        background: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        border-radius: 2px;
-      }
-
-      /* Creates a small triangle extender for the tooltip */
-      .d3-tip:after {
-        box-sizing: border-box;
-        display: inline;
-        font-size: 10px;
-        width: 100%;
-        line-height: 1;
-        color: rgba(0, 0, 0, 0.8);
-        content: "\25BC";
-        position: absolute;
-        text-align: center;
-      }
-
-      /* Style northward tooltips differently */
-      .d3-tip.n:after {
-        margin: -1px 0 0 0;
-        top: 100%;
-        left: 0;
-      }
-
- 
-      #chart {                                                          
-        height: 360px;                                                  
-        position: relative;                                             
-        width: 360px;                                                   
-      }                                                                 
-      .tooltip {                                                        
-        background: #eee;                                               
-        box-shadow: 0 0 5px #999999;                                    
-        color: #333;                                                    
-        display: none;                                                  
-        font-size: 12px;                                                
-        left: 130px;                                                    
-        padding: 10px;                                                  
-        position: absolute;                                             
-        text-align: center;                                             
-        top: 95px;                                                      
-        width: 80px;                                                    
-        z-index: 10;                                                    
-      }                                                                 
       .legend {
         font-size: 12px;
       }
@@ -120,14 +45,26 @@
         stroke-width: 2;
       }
 
-  #xaxis .domain {
-    fill:none;
-    stroke:#000;
-  }
-  #xaxis text, #yaxis text {
-    font-size: 12px;
-  }
     </style>
+
+<style>
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis--x path {
+  display: none;
+}
+
+</style>
 
   </head>
 
@@ -154,7 +91,7 @@
 	                  <ul class="dropdown-menu">
 	            		<li><a href="./dashboard.html">Dashboard</a></li>
 	            		<li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
-	            		<li><a href="http://www.aleron.org/contact-us/">Help</a></li>
+                        <li><a href="http://www.aleron.org/contact-us/">Help</a></li>
 	                  </ul>
                 </li>         
           </ul>
@@ -168,65 +105,46 @@
     </nav>
 
     <div class="container-fluid">
+
         <!-- Row starts here *********************** -->
         <div class="row">
-            <!-- Columsn starts here *********************** -->
 
-            <!-- First column starts here *********************** -->
-            <div class="col-xs-1">
-            </div>
-
-            <!-- Second column starts here *********************** -->
-            <div class="col-sm-10">
+            <div class="col-sm-12">
               <h1 class="page-header">Business Development Data Analysis</h1> 
               <h4 class="page-header">Quarterly Business Development Data</h4> 
-
-              <!-- Start a row -->
-              <div class="row">
-
-                  <div  class="col-xs-4">
-                     Select Region
-                 </div>
-        
-                  <div  class="col-xs-4">
-                     Select Locality
-                 </div>
-
-                  <div  class="col-xs-4">
-                     Select Cost Centre
-                 </div>
-
-              </div>
-              <!-- End a row -->
-
-               <!-- strat  row -->
-                <div class="row">
-             
-                   <div class="col-xs-4">
-                         <select style="width: 250px" id="bizDevRegionSelector" onchange="bizDevRegionSelectFunction()">
-                         </select>
-                   </div>
-
-                   <div class="col-xs-4">
-                     <select style="width: 250px" id="bizDevLocalitySelector" onchange="bizDevLocalitySelectFunction()">
-                     </select>
-                   </div>
-
-                   <div class="col-xs-4">
-                     <select style="width: 250px" id="bizDevCostCentreSelector" onchange="bizDevCostCentreSelectFunction()">
-                     </select>
-                   </div>
-
-               </div>
-                <!-- finish internal row -->
-
             </div>
-           
-            <div class="col-xs-1">
-            </div>
-           
+
         </div>
-        <!-- End a row -->
+        <!-- Row ends here *********************** -->
+
+           <!-- strat  row -->
+            <div class="row">
+
+               <div class="col-xs-4">
+                 <select style="width: 250px" id="bizDevNationSelector" onchange="bizDevNationSelectFunction()">
+                 </select>
+               </div>
+
+               <div class="col-xs-4">
+                     <select style="width: 250px" id="bizDevRegionSelector" onchange="bizDevRegionSelectFunction()">
+                     </select>
+               </div>
+
+               <div class="col-xs-4">
+                 <select style="width: 250px" id="bizDevLocalitySelector" onchange="bizDevLocalitySelectFunction()">
+                 </select>
+               </div>
+
+               <!--
+               <div class="col-xs-3">
+                 <select style="width: 250px" id="bizDevContractNameSelector" onchange="bizDevContractNameSelectFunction()">
+                 </select>
+               </div>
+                 -->
+
+               
+           </div>
+            <!-- finish row -->
 
     </div>
     <!-- Container fluid div ends here *********************** -->
@@ -239,61 +157,103 @@
 
         <!-- Row starts here *********************** -->
         <div class="row">
-            
-             <!-- column just for padding -->
-             <div  class="col-xs-1">
-             </div>
 
-             <!-- Second column starts here *********************** -->
-             <div  class="col-xs-5">               
-             </div>
-        
-             <!-- Third column starts here *********************** -->
-             <div  class="col-xs-5">                   
-             </div>
-
-             <!-- column just for padding -->
-             <div  class="col-xs-1">
-             </div>
-
-        </div>
-        <!-- Row ends here *********************** -->
-
-
-        <!-- Row starts here *********************** -->
-        <div class="row">
             
              <div class="col-xs-1">
              </div>
 
-             <div class="col-xs-5">
-                 <svg id="quarterlySVG" height="350" width="500" style="background-color: whitesmoke"></svg>
+             <div class="col-xs-4">
+                 <svg id="SVG01" height="500" width="400" style="background-color: white"></svg>
              </div>
 
-             <div class="col-xs-5">
-                 <svg id="quarterlyPieSVG" height="350" width="500" style="background-color: whitesmoke"></svg>
+             <div class="col-xs-6">
+                 <svg id="SVG02" height="500" width="600" style="background-color: white"></svg>
              </div>
 
              <div class="col-xs-1">
              </div>
 
         </div>
+        <!-- Row ends here **************500******              -->
+
+        <!-- Row starts here ************500******              -->
+        <div class="row">
+
+            <div class ="col-xs-1">
+            </div>
+
+             <div class="col-xs-4">
+                 <svg id="SVG04" height="500" width="400" style="background-color: white"></svg>
+             </div>
+
+             <div class="col-xs-6">
+                 <svg id="SVG05" height="500" width="600" style="background-color: white"></svg>
+             </div>
+
+            <div class ="col-xs-1">
+            </div>
+
+        </div>
         <!-- Row ends here *********************** -->
-        
+
         <!-- Row starts here *********************** -->
         <div class="row">
+
+            <div class ="col-xs-1">
+            </div>
+
+             <div class="col-xs-4">
+                 <svg id="SVG07" height="500" width="400" style="background-color: white"></svg>
+             </div>
+
+             <div class="col-xs-6">
+                 <svg id="SVG08" height="500" width="600" style="background-color: white"></svg>
+             </div>
+
+            <div class ="col-xs-1">
+            </div>
+
+        </div>
+        <!-- Row ends here **************500******   500             -->
+        
+        <!-- Row starts here ************500******** 500               -->
+        <div class="row">
+
+            <div class ="col-xs-1">
+            </div>
+
+             <div class="col-xs-4">
+                 <svg id="SVG10" height="500" width="400" style="background-color: white"></svg>
+             </div>
+
+             <div class="col-xs-6">
+                 <svg id="SVG11" height="500" width="600" style="background-color: white"></svg>
+             </div>
+
+            <div class ="col-xs-1">
+            </div>
+
+        </div>
+        <!-- Row ends here *********************** -->
+
+
+
+        <!-- Row starts here *********************** -->
+        <div class="row">
+            <div class="col-xs-12">
+            </div>
 
             <div class="col-xs-1">
             </div>
-            
+
             <div class="col-xs-10">
               <h3 id="dataSummaryHeading" class="sub-header">Data Summary</h3>
-                <div class="table-responsive">
-                    <table id="dataTable" class="table table-striped">
-                    </table>
-                </div>
+              <div class="table-responsive">
+                <table id="dataTable" class="table table-striped">
+                </table>
               </div>
-
+            </div>
+            
             <div class="col-xs-1">
             </div>
 
@@ -307,51 +267,77 @@
         <script type="text/javascript" src="./js/utils.js"></script>
         <script type="text/javascript" src="./js/plots.js"></script>
         <script type="text/javascript" src="./js/bd.js"></script>
-        <script type="text/javascript"> 
 
+        <script type="text/javascript"> 
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
+            function bizDevNationSelectFunction() 
+            {
+                 var nation = document.getElementById("bizDevNationSelector").value;
+                 var nationProperty = dashBoardData.bizDevData.nationProperty;
+                 var regionProperty = dashBoardData.bizDevData.regionProperty;
+                 var localityProperty = dashBoardData.bizDevData.localityProperty; 
+                 var contractNameProperty = dashBoardData.bizDevData.contractNameProperty; 
+
+                 // Initialize region data and locality list:
+                 dashBoardData.bizDevData.currentNationData = dashBoardData.bizDevData.rawData.filter( function(d) { return d[nationProperty] == nation; } );
+                 dashBoardData.bizDevData.currentNationContractsData = dashBoardData.bizDevData.contractsData.filter( function(d) { return d[nationProperty] == nation; } ); 
+
+                 // Update Regions
+                 dashBoardData.bizDevData.regionList = getUniqueSortedList(dashBoardData.bizDevData.currentNationData, regionProperty);
+                 updateSelector( document.getElementById("bizDevRegionSelector"), ["Select Region"].concat(dashBoardData.bizDevData.regionList) );
+
+                 // Update localities
+                 dashBoardData.bizDevData.localityList = getUniqueSortedList(dashBoardData.bizDevData.currentNationData, localityProperty);
+                 updateSelector( document.getElementById("bizDevLocalitySelector"), ["Select Locality"].concat(dashBoardData.bizDevData.localityList) );
+
+                 var subLevelProperty = regionProperty;
+                 var subLevelList = dashBoardData.bizDevData.regionList;
+
+                 if ( nation == dashBoardData.allUKString )
+                 {
+                     dashBoardData.bizDevData.currentNationData = dashBoardData.bizDevData.rawData;
+                     dashBoardData.bizDevData.currentNationExternalInspectionsData = dashBoardData.bizDevData.externalInspectionsData;
+                     subLevelProperty = nationProperty;
+                     subLevelList = getUniqueSortedList(dashBoardData.bizDevData.currentNationData, subLevelProperty);
+                     // Remove All UK string from the item:
+                     var allUKIndex = subLevelList.indexOf(dashBoardData.allUKString);
+                     if ( allUKIndex > -1 )
+                     {
+                         subLevelList.splice(allUKIndex, 1);
+                     }
+                 }
+
+                 var subLevelData = computeBizDevSubData(dashBoardData.bizDevData.currentNationData,
+                         dashBoardData.bizDevData.currentNationContractsData, subLevelList, subLevelProperty);
+
+                 var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentNationData, dashBoardData.bizDevData.currentNationContractsData);
+
+                 //plotBizDevVisualisation(data, subLevelData, subLevelList, nationProperty, nation, subLevelProperty);
+            }
+
             function bizDevRegionSelectFunction() 
             {
                  var region = document.getElementById("bizDevRegionSelector").value;
                  var regionProperty = dashBoardData.bizDevData.regionProperty;                                                                          
                  var localityProperty = dashBoardData.bizDevData.localityProperty; 
-                           
+
                  // Initialize region data and locality list:
-                 dashBoardData.bizDevData.currentRegionData = dashBoardData.bizDevData.rawData.filter( function(d) { return d[regionProperty] === region; } );
-                 dashBoardData.bizDevData.currentRegionContractsData = dashBoardData.bizDevData.contractsData.filter( function(d) { return d[regionProperty] === region; } );
+                 dashBoardData.bizDevData.currentRegionData = dashBoardData.bizDevData.rawData.filter( function(d) { return d[regionProperty] == region; } );
+                 dashBoardData.bizDevData.currentRegionContractsData = dashBoardData.bizDevData.contractsData.filter( function(d) { return d[regionProperty] == region; } );
 
                  // Update localities
                  dashBoardData.bizDevData.localityList = getUniqueSortedList(dashBoardData.bizDevData.currentRegionData, localityProperty);
-                 updateSelector( document.getElementById("bizDevLocalitySelector"), dashBoardData.bizDevData.localityList );
+                 updateSelector( document.getElementById("bizDevLocalitySelector"), ["Select Locality"].concat(dashBoardData.bizDevData.localityList) );
 
-                 // Update Cost Centres
-                 dashBoardData.bizDevData.costCentreList = getUniqueSortedList(dashBoardData.bizDevData.currentRegionData,"Cost Centres");
-                 updateSelector( document.getElementById("bizDevCostCentreSelector"), dashBoardData.bizDevData.costCentreList);
+                 var subLevelProperty = localityProperty;
+                 var subLevelList = dashBoardData.bizDevData.localityList;
+                 var subLevelData = computeBizDevSubData(dashBoardData.bizDevData.currentRegionData, dashBoardData.bizDevData.currentRegionContractsData, subLevelList, subLevelProperty);
+                 var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentRegionData, dashBoardData.bizDevData.currentRegionContractsData); 
+                 //plotBizDevVisualisation(data, subLevelData, subLevelList, regionProperty, region, subLevelProperty);
 
-                 var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentRegionData, dashBoardData.bizDevData.currentRegionContractsData);
 
-                 svg = d3.select(document.getElementById("quarterlySVG"));
-                 plotQuarterlyBizDevData(svg, data);
-                 
-                 //plotQuarterlyBizDevData( svg, data);
-
-                 var count = getIdentifierCount( dashBoardData.bizDevData.currentRegionData, dashBoardData.bizDevData.localityList, "Locality");
-                 var pieData = [];
-                 for ( var i = 0; i < dashBoardData.bizDevData.localityList.length; i++ )
-                 {
-                     pieData.push( {label: dashBoardData.bizDevData.localityList[i], count: count[i]});
-                 }
-                 
-                 svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                 svg.selectAll("*").remove();
-                 plotPieChart( svg, pieData);
-
-                 // Update data table:
-                 var tableData = makeBizDevTableData(data);
-                 updateBizDevTable( document.getElementById("dataTable"), tableData);
-                 return;
             }
             
             function bizDevLocalitySelectFunction() 
@@ -359,26 +345,15 @@
                  var locality = document.getElementById("bizDevLocalitySelector").value;
                  var localityProperty = dashBoardData.bizDevData.localityProperty; 
 
-                 dashBoardData.bizDevData.currentLocalityContractsData = dashBoardData.bizDevData.currentRegionContractsData.filter( function(d) { return d[localityProperty] === locality; } );
+                 dashBoardData.bizDevData.currentLocalityData = dashBoardData.bizDevData.rawData.filter( function(d) { return d[localityProperty] == locality; } );
 
-                 // Update localities
-                 dashBoardData.bizDevData.currentLocalityData = dashBoardData.bizDevData.currentRegionData.filter( function(d) { return d[localityProperty] === locality; } );
-                     
-                 // Update Cost Centres
-                 //dashBoardData.bizDevData.costCentreList= getUniqueSortedList(dashBoardData.bizDevData.currentLocalityData,"Cost Centres");
-                 //updateSelector( document.getElementById("bizDevCostCentreSelector"), dashBoardData.bizDevData.costCentreList);
+                 dashBoardData.bizDevData.currentLocalityContractsData = dashBoardData.bizDevData.contractsData.filter( function(d) { return d[localityProperty] == locality; } );
+
 
                  var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentLocalityData, dashBoardData.bizDevData.currentLocalityContractsData );                 
 
-                 var svg = d3.select(document.getElementById("quarterlySVG"));                 
-                 plotQuarterlyBizDevData( svg, data );  
+                 plotBizDevVisualisation(data, [], [], localityProperty, locality, [])
 
-                 svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                 //plotCostCentres(svg, dashBoardData.bizDevData.currentLocalityData)   
-
-                 // Update data table:
-                 var tableData = makeBizDevTableData(data);
-                 updateBizDevTable( document.getElementById("dataTable"), tableData);                                                          
                  return;
             }
 
@@ -402,69 +377,32 @@
                  return;
             }
 
-            function showDataSummary(quarterlyData)
-            {
-                var paraDiv = d3.select(document.getElementById("dataSummaryPara"));
-                paraDiv.selectAll("*").remove();
-                paraDiv.append("p").html( "Data Summary: " + region );
-                paraDiv.selectAll("p")
-                .data(quarterlyData)
-                .enter()
-                .append("p")
-                .text("");
-                return;
-            }
-
-            function propertySelectFunction() 
-            {
-                 var property = document.getElementById("financialsPropertySelector").value;
-                 return;
-            }
-
-            // Make sure the file is read before reading the second file. This is the ( function() {})(); construct:
-            (function() {
-               d3.csv( dashBoardSettings.dataDir +  "009_Pipeline_Contracts.csv", function(d)
-               { 
-                 // Copy the data read into the global variable:
-                 dashBoardData.bizDevData.contractsData = d;
-                 // Copy the data locally as well
-                 var data = d;
-                 console.log("Pipeline Contracts file read successfuly");
-                 dashBoardData.bizDevData.contractsPropertyList = Object.getOwnPropertyNames(data[0]);
-
-               }); // end of d3.csv()                                
-             })();
-
             d3.csv( dashBoardSettings.dataDir +  "008_Pipeline_Opportunities.csv", function(d)
             { 
+
               // Copy the data read into the global variable:
               dashBoardData.bizDevData.rawData = d;
               console.log("Pipeline Opportunities file read successfuly");
-              // Copy the data locally as well:
-              var data = d;
 
-              dashBoardData.bizDevData.propertyList = Object.getOwnPropertyNames(data[0]);
-
-              // Assign variable names for key properties
+              dashBoardData.bizDevData.propertyList = Object.getOwnPropertyNames(d[0]);
+              // The nation property is global:
+              dashBoardData.bizDevData.nationProperty = dashBoardData.nationPropertyName;
               // Region is property 9, Locality is 12
-              dashBoardData.bizDevData.regionProperty = dashBoardData.bizDevData.propertyList[9];
-              dashBoardData.bizDevData.localityProperty = dashBoardData.bizDevData.propertyList[12];; 
+              dashBoardData.bizDevData.regionProperty = dashBoardData.bizDevData.propertyList[9]; 
+              dashBoardData.bizDevData.localityProperty = dashBoardData.bizDevData.propertyList[12]; 
 
-              dashBoardData.bizDevData.regionList = getUniqueSortedList(data, dashBoardData.bizDevData.regionProperty);
-              dashBoardData.bizDevData.localityList = getUniqueSortedList(data, dashBoardData.bizDevData.localityProperty);
-              //dashBoardData.bizDevData.costCentreList = getUniqueSortedList(data, "Name");
+              addNationProperty(dashBoardData.bizDevData.rawData, dashBoardData.bizDevData.regionProperty, dashBoardData.bizDevData.nationProperty);
+              addNationProperty(dashBoardData.bizDevData.contractsData, dashBoardData.bizDevData.regionProperty, dashBoardData.bizDevData.nationProperty); 
+              // Get the lists of regions etc:
+              dashBoardData.bizDevData.nationList = getUniqueSortedList(dashBoardData.bizDevData.rawData, dashBoardData.bizDevData.nationProperty);
+              dashBoardData.bizDevData.regionList = getUniqueSortedList(dashBoardData.bizDevData.rawData, dashBoardData.bizDevData.regionProperty);
+              dashBoardData.bizDevData.localityList = getUniqueSortedList(dashBoardData.bizDevData.rawData, dashBoardData.bizDevData.localityProperty);
 
+              // Update selectors based on the lists above:
+              dashBoardData.bizDevData.nationList.unshift(dashBoardData.allUKString);
+              updateSelector( document.getElementById("bizDevNationSelector"), dashBoardData.bizDevData.nationList );
 
-              // Add Regions to the drop down list:
-              updateSelector( document.getElementById("bizDevRegionSelector"), dashBoardData.bizDevData.regionList );
-
-              // Add Localities to the drop down list:
-              updateSelector( document.getElementById("bizDevLocalitySelector"), dashBoardData.bizDevData.localityList );
-
-              // Add cost centres to the drop down list:
-              //updateSelector( document.getElementById("bizDevCostCentreSelector"), dashBoardData.bizDevData.costCentreList );
-
-              bizDevRegionSelectFunction();
+              bizDevNationSelectFunction();
 
             });
 
@@ -480,7 +418,7 @@
                   <div class="col-xs-10">
                       <footer>
                         <p class="pull-right"><a href="#">Back to top</a></p>
-                        <p>&copy; <span id="idFooter"> 2015, Inc.</span> &middot;
+                        <p>&copy; <span id="idFooter"> 2016, Inc.</span> &middot;
                         <a id="idURL" href="#">Privacy</a> &middot; <a href="idURL">Terms</a></p>
                       </footer>
                   </div>
@@ -494,7 +432,7 @@
           <script src="./js/defs.js"></script>
           <script type="text/javascript">
                document.getElementById("idFooter").innerHTML =
-               companyName + " 2015";
+               companyName + " 2016";
                document.getElementById("idURL").href =
                companyURL;
           </script>
