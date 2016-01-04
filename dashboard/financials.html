@@ -310,7 +310,7 @@
                  var subLevelData = computeFinancialsSubData(dashBoardData.financialsData.currentNationData, subLevelList, subLevelProperty);
 
                  var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentNationData );
-                 plotFinanciaslVisualisation (data, subLevelData, subLevelList, nationProperty, nation, subLevelProperty);
+                 plotFinancialsVisualisation(data, subLevelData, subLevelList, subLevelProperty, nationProperty, nation );
 
                  return;
             }
@@ -348,7 +348,7 @@
 
                  var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentRegionData );
 
-                 plotFinancialsVisualisation(data, subLevelData, subLevelList, regionProperty, region, subLevelProperty);
+                 plotFinancialsVisualisation(data, subLevelData, subLevelList, subLevelProperty, regionProperty, region);
                  return;
             }
             
@@ -375,7 +375,7 @@
 
                  var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentLocalityData );
 
-                 plotFinancialsVisualisation(data, subLevelData, subLevelList, localityProperty, locality, subLevelProperty);
+                 plotFinancialsVisualisation(data, subLevelData, subLevelList, subLevelProperty, localityProperty, locality );
 
                  return;
             }
@@ -393,7 +393,7 @@
 
                  var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentCostCentreData );                 
 
-                 plotFinancialsVisualisation(data, [], [], costCentreProperty, costCentre, []);
+                 plotFinancialsVisualisation(data, [], [], "", costCentreProperty, costCentre);
                  return;
             }
 

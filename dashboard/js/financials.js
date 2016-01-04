@@ -338,104 +338,136 @@ function updateFinancialsTable( table, tableData)
     return table;    
 }
 
-function plotFinanciaslVisualisation(data, subLevelData, subLevelList, areaProperty, area, subAreaProperty)
+function plotFinancialsVisualisation(data, subLevelData, subLevelList, subLevelProperty, areaProperty, area)
 {
     // Update data table:
     var tableData = makeFinancialsTableData(data);
     updateFinancialsTable( document.getElementById("dataTable"), tableData);
 
-    svg = d3.select(document.getElementById("SVG01"));
+    var svg = d3.select(document.getElementById("SVG01"));
     
-    plotQuarterlyFinancialsData( svg, data);
+    plotQuarterlyFinancialsData(svg, data);
 
-    var count = getIdentifierCount( currentRegionConcat, subLevelList, subAreaProperty);
+    // Get the latest financials file:
+
+    var latestQuarter = dashBoardData.financialsData.files[2].propertyName;
+    var latestQuarterData = dashBoardData.financialsData[latestQuarter];
+    var count = getIdentifierCount( latestQuarterData, subLevelList, subLevelProperty);
     var pieData = [];
-    for ( var i = 0; i < dashBoardData.financialsData.localityList.length; i++ )
+    for ( var i = 0; i < subLevelList.length; i++ )
     {
-        pieData.push( {label: dashBoardData.financialsData.localityList[i], count: count[i]});
+        pieData.push( {label: subLevelList[i], count: count[i]});
     }
     
     svg = d3.select(document.getElementById("SVG02"));
     svg.selectAll("*").remove();
-    plotPieChart( svg, pieData);
-
-    /*
-    // Plot cost centres
-    if ( areaProperty != undefined )
-    {
-                 // Use quarter 2 data file:
-                 plotCostCentres( svg, dashBoardData.financialsData.currentLocalityData[arrayNames[1]]);  
-    }
-
-    //**************** First plot ********************
-    svg = d3.select(document.getElementById("SVG01"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white"); 
-    var height = svg.attr("height");
     var width = svg.attr("width");
+    var height = svg.attr("height");
 
-    // For second quarter:
-    var currentQuarter = "Q2";
-    var pieData = [];
-    var propertyName = ["Red", "Amber", "Green", "Unscored"];
-    var legendData = propertyName;
-    for ( var i = 0; i < propertyName.length; i++ )
-    {
-        pieData.push( {label: propertyName[i], count: data[propertyName[i]][currentQuarter]});
-    }
 
-    var pieStyle = initPieSettings(width, height);
+    //plotPieChart( svg, pieData);
+
+    var legendData = subLevelList;
+    var pieStyle = initPieSettings(width, height, d3.scale.category20() );
     var rayStyle = initRaySettings(pieStyle);
     var legendStyle = initLegendSettings(pieStyle);
 
-
     var pie1 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
-    var title1 = addTitle(svg, "Overall Contract Perfromance (%)");
+    var title1 = addTitle(svg, "Next Level Breakdown (%)");
 
-    // *********************** Second Plot ****************////
-    /*
-
-    svg = d3.select(document.getElementById("SVG02"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white");
-
-    var stackSettings = {};
-    stackSettings.color = pieStyle.color;
-    plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
-    addTitle(svg, "Breakdown (Total No. of Contracts)"); 
-
-
-    // ******************** Third Plot ******************************///
-    /*
-
-    svg = d3.select(document.getElementById("SVG04"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white");
-
-    currentQuarter = "Q2";
-    pieData = [];
-    propertyName = ["Red (Outcomes)", "Amber (Outcomes)", "Green (Outcomes)"];
-    legendData = ["Red", "Amber", "Green"];
-    for ( var i = 0; i < propertyName.length; i++ )
+    // Plot cost centres
+    if ( subLevelProperty == "CC" )
     {
-        pieData.push( {label: legendData[i], count: data[propertyName[i]][currentQuarter]});
+         // Use the latest quarter data file:
+         plotCostCentres( svg, dashBoardData.financialsData.currentLocalityData[latestQuarter]);  
     }
 
-    var pie4 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
-    var title4 = addTitle(svg, "Outcome/Quality Performance (%)");
-
-    /* ****************** Fourth Plot ***************************************/
-    /*
-    svg = d3.select(document.getElementById("SVG05"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white");
-
-    stackSettings.color = pieStyle.color;
-    plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
-    addTitle(svg, "Next Level Breakdown (%)")
-        */
-
     return;
+}
+
+function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty, area, subAreaProperty)
+{
+    // The mother object:
+    var stack = {};
+
+    var width = +svg.attr("width");
+    var height = +svg.attr("height");
+    var margin = defineMargins(height, width);
+    // More space on the left for long names
+    margin.left = 2*margin.left;
+    stackSettings.margin = stackSettings.margin || margin;
+
+    plotVerticalGrid(svg, margin, 10);
+
+    var layeredData = [];
+
+    for ( var i = 0; i < layerNames.length; i++ )
+    {
+        layeredData[i] = [];
+        for ( var j = 0; j < data.length; j++ )
+        {
+            layeredData[i][j] = {label: nameList[j], y: data[j][layerNames[i]]["Q2"]};
+        }
+    }
+
+    stack.stackPlot = new stackObjectConstructor(svg, layeredData, stackSettings);
+    stack.stackPlot.stackLayer.on("click", stackClick);
+
+    function stackClick(d)
+    {
+        var label = stack.stackPlot.stackLayer.clickedData.data.label;
+        var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
+        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
+        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
+        subData = subData.filter(function(d) { return d[property] == 1; } );
+        console.log(subData.length);
+        openTablePage(subData);
+        return;
+    }
+    
+}
+
+//function pieCreator()
+// svg is d3 selected svg
+// pieData is an array of objects with format: 
+// pieData = [ {label: xxxx, count: xxxx}, {}, {}, ...]
+function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
+{
+    // The mother of all objects:
+    var pie = {};
+
+    var dataSet = pieData.map(function(d){ return d.count; } );
+    var dummyData = dataSet.map(function(d) { return 1.0; } );
+
+    pie.piePlot = new pieObjectConstructor(svg, dummyData, pieStyle);
+    pie.piePlot.update(dataSet);
+
+    pie.rayPlot = new rayObjectConstructor(svg, dataSet, rayStyle);
+    pie.legend = new legendObjectConstructor( svg, legendData, legendStyle )
+
+    // Update everything in the pie:
+    pie.update = function(data)
+    {
+        pie.piePlot.update(data);
+        pie.rayPlot.update(data);
+    }
+    pie.piePlot.piePath.on("click", pieClick);
+
+    function pieClick(d)
+    {
+        /* Do nothing for the time being
+        var label = pie.piePlot.piePath.clickedData.data.label;
+        var color = pie.piePlot.piePath.clickedData.object.style("fill");
+        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
+        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
+        subData = subData.filter(function(d) { return d[property] == 1; } );
+        console.log(subData.length);
+        openTablePage(subData);
+        */
+        return;
+    }
+
+    return pie;
 }
 
 // All data is assumed positive

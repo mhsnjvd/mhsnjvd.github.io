@@ -269,7 +269,7 @@ function plotImpactVisualisation(data, subLevelData, subLevelList, areaProperty,
         pieData.push( {label: propertyName[i], count: data[propertyName[i]][currentQuarter]});
     }
 
-    var pieStyle = initPieSettings(width, height);
+    var pieStyle = initPieSettings(width, height, dashBoardSettings.ragColors);
     var rayStyle = initRaySettings(pieStyle);
     var legendStyle = initLegendSettings(pieStyle);
 

@@ -745,11 +745,11 @@ function plotHorisontalBars(svg, margin, categories, values)
 // *************************************************
 
 
-function initPieSettings(width, height)
+function initPieSettings(width, height, colorFunction)
 {
     var pieStyle = {};
 
-    pieStyle.color = dashBoardSettings.ragColors;
+    pieStyle.color = colorFunction;
     pieStyle.strokeColor = "orange";
     pieStyle.strokeWidth = 1.0;
     pieStyle.cx = width/1.4;
