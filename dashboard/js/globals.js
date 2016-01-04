@@ -84,7 +84,8 @@ dashBoardData.allUKString = "All of UK";
 dashBoardData.nationDefinitions = {
                                    "Business Lines": ["Employment Training & Skills", "Family Placement"],
                                    "Celtic Nations": ["Cymru", "Northern Ireland", "Scotland"],
-                                   "England": ["East", "London", "Midlands & South West", "South East & Anglia", "West"]
+                                   "England": ["East", "London", "Midlands & South West", "South East & Anglia", "West"],
+                                   "Pan Regional": ["Pan Regional"]
                                   };
 
 // A list of all the nations

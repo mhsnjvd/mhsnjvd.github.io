@@ -37,82 +37,6 @@
               stroke-width: 2;
               shape-rendering: crispEdges; }
 
-       .legend {  
-           font-size: 12px; 
-       }
-       rect {  
-           stroke-width: 2; 
-       }
-
-      #chart {                                                          
-        height: 360px;                                                  
-        position: relative;                                             
-        width: 360px;                                                   
-      }                                                                 
-      .tooltip {                                                        
-        background: #eee;                                               
-        box-shadow: 0 0 5px #999999;                                    
-        color: #333;                                                    
-        display: none;                                                  
-        font-size: 12px;                                                
-        left: 130px;                                                    
-        padding: 10px;                                                  
-        position: absolute;                                             
-        text-align: center;                                             
-        top: 95px;                                                      
-        width: 80px;                                                    
-        z-index: 10;                                                    
-      } 
-
-      .d3-tip {
-        line-height: 1;
-        font-weight: bold;
-        padding: 12px;
-        background: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        border-radius: 2px;
-      }
-
-      /* Creates a small triangle extender for the tooltip */
-      .d3-tip:after {
-        box-sizing: border-box;
-        display: inline;
-        font-size: 10px;
-        width: 100%;
-        line-height: 1;
-        color: rgba(0, 0, 0, 0.8);
-        content: "\25BC";
-        position: absolute;
-        text-align: center;
-      }
-
-      /* Style northward tooltips differently */
-      .d3-tip.n:after {
-        margin: -1px 0 0 0;
-        top: 100%;
-        left: 0;
-      }
-
- 
-      #chart {                                                          
-        height: 360px;                                                  
-        position: relative;                                             
-        width: 360px;                                                   
-      }                                                                 
-      .tooltip {                                                        
-        background: #eee;                                               
-        box-shadow: 0 0 5px #999999;                                    
-        color: #333;                                                    
-        display: none;                                                  
-        font-size: 12px;                                                
-        left: 130px;                                                    
-        padding: 10px;                                                  
-        position: absolute;                                             
-        text-align: center;                                             
-        top: 95px;                                                      
-        width: 80px;                                                    
-        z-index: 10;                                                    
-      }                                                                 
       .legend {
         font-size: 12px;
       }
@@ -120,14 +44,26 @@
         stroke-width: 2;
       }
 
-  #xaxis .domain {
-    fill:none;
-    stroke:#000;
-  }
-  #xaxis text, #yaxis text {
-    font-size: 12px;
-  }
     </style>
+
+<style>
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis--x path {
+  display: none;
+}
+
+</style>
 
   </head>
 
@@ -146,19 +82,15 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-              <li class="active"><a href="http://www.aleron.org">Home</a></li>
+              <li class="active"><a href="./dashboard.html">Home</a></li>
                 <li><a href="./dashboard.html">Dashboard</a></li>
-	            <li><a href="#">Settings</a></li>
-	            <li><a href="#">Profile</a></li>
 	            <li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
-	            <li><a href="#">Help</a></li>
+	            <li><a href="http://www.aleron.org/contact-us/">Help</a></li>
                 <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<span class="caret"></span></a>
 	                  <ul class="dropdown-menu">
 	            		<li><a href="./dashboard.html">Dashboard</a></li>
-	            		<li><a href="#">Settings</a></li>
-	            		<li><a href="#">Profile</a></li>
 	            		<li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
-	            		<li><a href="#">Help</a></li>
+                        <li><a href="http://www.aleron.org/contact-us/">Help</a></li>
 	                  </ul>
                 </li>         
           </ul>
@@ -172,76 +104,77 @@
     </nav>
 
     <div class="container-fluid">
+
         <!-- Row starts here *********************** -->
         <div class="row">
-            <!-- Columsn starts here *********************** -->
-
-            <!-- First column starts here *********************** -->
-            <div class="col-xs-1">
-            </div>
-
-            <!-- Second column starts here *********************** -->
-            <div class="col-sm-10">
-              <h1 class="page-header">Children Services Data Analysis</h1> 
+            <div class="col-sm-12">
+              <h1 class="page-header">Children Services Financial Data Analysis</h1> 
               <h4 class="page-header">Quarterly Financial Data</h4> 
-
-              <!-- Start a row -->
-              <div class="row">
-
-                  <div  class="col-xs-4">
-                     Select Region
-                 </div>
-        
-                  <div  class="col-xs-4">
-                     Select Locality
-                 </div>
-
-                  <div  class="col-xs-4">
-                     Select Cost Centre
-                 </div>
-                  
-
-
-              </div>
-              <!-- End a row -->
-
-              <!-- Start a row -->
-              <div class="row">
-
-
-                 <div  class="col-xs-4">
-                       <select style="width: 250px" id="financialsRegionSelector" onchange="financialsRegionSelectFunction()">
-                       </select>
-                 </div>
-        
-                 <div  class="col-xs-4">
-                   <select style="width: 250px" id="financialsLocalitySelector" onchange="financialsLocalitySelectFunction()">
-                   </select>
-                 </div>
-
-                 <div  class="col-xs-4">
-                   <select style="width: 250px" id="financialsCostCentreSelector" onchange="financialsCostCentreSelectFunction()">
-                   </select>
-                 </div>
-                  
-              </div>
-              <!-- End a row -->
-              
             </div>
-            
-
-            <!-- Third column starts here *********************** -->
-            <div class="col-xs-1">
-            </div>
-            <!-- Columns finish here *********************** -->
 
         </div>
         <!-- Row ends here *********************** -->
 
-                
+           <!-- strat  row -->
+            <div class="row">
+
+               <div class="col-xs-3">
+                 <select style="width: 250px" id="financialsNationSelector" onchange="financialsNationSelectFunction()">
+                 </select>
+               </div>
+
+               <div class="col-xs-3">
+                     <select style="width: 250px" id="financialsRegionSelector" onchange="financialsRegionSelectFunction()">
+                     </select>
+               </div>
+
+               <div class="col-xs-3">
+                 <select style="width: 250px" id="financialsLocalitySelector" onchange="financialsLocalitySelectFunction()">
+                 </select>
+               </div>
+
+               <div class="col-xs-3">
+                 <select style="width: 250px" id="financialsCostCentreSelector" onchange="financialsCostCentreSelectFunction()">
+                 </select>
+               </div>
+
+               
+           </div>
+            <!-- finish row -->
 
     </div>
     <!-- Container fluid div ends here *********************** -->
+
+    <!-- Start another containter fulid *********************** -->
+    <div class="container-fluid">
+        <!-- Add some padding -->
+        <br>
+        <br>
+
+        <!-- Row starts here *********************** -->
+        <div class="row">
+
+            
+             <div class="col-xs-1">
+             </div>
+
+             <div class="col-xs-5">
+                 <svg id="SVG01" height="400" width="500" style="background-color: white"></svg>
+             </div>
+
+             <div class="col-xs-5">
+                 <svg id="SVG02" height="400" width="500" style="background-color: white"></svg>
+             </div>
+
+             <div class="col-xs-1">
+             </div>
+
+        </div>
+        <!-- Row ends here **************500******              -->
+
+      </div>
+      <!-- Container fluid ends here -->
+
 
     <!-- Start another containter fulid *********************** -->
     <div class="container-fluid">
@@ -285,28 +218,6 @@
         </div>
         <!-- Row ends here *********************** -->         
 
-
-        <!-- Row starts here *********************** -->
-        <div class="row">
-            
-             <div class="col-xs-1">
-             </div>
-
-             <div class="col-xs-5">
-                 <svg id="SVG1" height="350" width="500" style="background-color: white"></svg>
-             </div>
-
-             <div class="col-xs-5">
-                 <svg id="SVG2" height="350" width="500" style="background-color: white"></svg>
-             </div>
-
-
-             <div class="col-xs-1">
-             </div>
-
-        </div>
-        <!-- Row ends here *********************** -->
-
         
         <!-- Row starts here *********************** -->
         <div class="row">
@@ -330,15 +241,81 @@
       </div>
       <!-- Container fluid ends here -->
 
+
         <script type="text/javascript" src="./js/globals.js"></script>
         <script type="text/javascript" src="./js/utils.js"></script>
         <script type="text/javascript" src="./js/plots.js"></script>
         <script type="text/javascript" src="./js/financials.js"></script>
+
         <script type="text/javascript"> 
 
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
+            function financialsNationSelectFunction() 
+            {
+                 var nation = document.getElementById("financialsNationSelector").value;
+                 var nationProperty = dashBoardData.financialsData.nationProperty;
+                 var regionProperty = dashBoardData.financialsData.regionProperty;
+                 var localityProperty = dashBoardData.financialsData.localityProperty; 
+                 var costCentreProperty = dashBoardData.financialsData.costCentreProperty; 
+
+                 // Get the propertyNames under which files are stored:
+                 var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
+
+
+                 dashBoardData.financialsData.currentNationData = {};
+
+                 if( nation == dashBoardData.allUKString )
+                 {
+                     for ( var i = 0; i < arrayNames.length; i++ )
+                     {
+                         dashBoardData.financialsData.currentNationData[arrayNames[i]] = dashBoardData.financialsData[arrayNames[i]];
+                     }
+                 }
+                 else
+                 {
+                    // Search for entries matching this region in all files:
+                    dashBoardData.financialsData.currentNationData = searchPropertyInArrays( dashBoardData.financialsData, arrayNames, nationProperty, nation );
+                 }
+
+                 // Join the data from all files into a single array:
+                 var currentNationConcat = concatObjectArrays(dashBoardData.financialsData.currentNationData);
+
+                 // Update Regions
+                 dashBoardData.financialsData.regionList = getUniqueSortedList(currentNationConcat, regionProperty);
+                 updateSelector( document.getElementById("financialsRegionSelector"), ["Select Region"].concat(dashBoardData.financialsData.regionList) ); 
+                 // Update localities
+                 dashBoardData.financialsData.localityList = getUniqueSortedList(currentNationConcat, localityProperty);
+                 updateSelector( document.getElementById("financialsLocalitySelector"), ["Select Locality"].concat(dashBoardData.financialsData.localityList) ); 
+                 // Update cost centres
+                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentNationConcat, costCentreProperty);
+                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Cost Centre"].concat(dashBoardData.financialsData.costCentreList) ); 
+
+                 var subLevelProperty = regionProperty;
+                 var subLevelList = dashBoardData.financialsData.regionList;
+
+                 if ( nation == dashBoardData.allUKString )
+                 {
+                     subLevelProperty = nationProperty;
+                     subLevelList = getUniqueSortedList(currentNationConcat, subLevelProperty);
+                     // Remove All UK string from the item:
+                     var allUKIndex = subLevelList.indexOf(dashBoardData.allUKString);
+                     if ( allUKIndex > -1 )
+                     {
+                         subLevelList.splice(allUKIndex, 1);
+                     }
+                 }
+
+                 var subLevelData = computeFinancialsSubData(dashBoardData.financialsData.currentNationData, subLevelList, subLevelProperty);
+
+                 var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentNationData );
+                 plotFinanciaslVisualisation (data, subLevelData, subLevelList, nationProperty, nation, subLevelProperty);
+
+                 return;
+            }
+
+
             function financialsRegionSelectFunction() 
             {
                  var region = document.getElementById("financialsRegionSelector").value;
@@ -346,57 +323,32 @@
                  var localityProperty = dashBoardData.financialsData.localityProperty;
                  var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
 
-                 // Initialize region data and locality list:
-                 //dashBoardData.financialsData.currentRegionData = dashBoardData.financialsData.rawData.filter( function(d) { return d[regionProperty] === region; } );
-
                  // Get the propertyNames under which files are stored:
                  var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
+
+
+                 dashBoardData.financialsData.currentRegionData = {};
+
                  // Search for entries matching this region in all files:
-                 dashBoardData.financialsData.currentRegionData = searchPropertyInArrays( dashBoardData.financialsData, arrayNames, regionProperty, region );
-
-
-                 if ( region == dashBoardData.allUKString )
-                 {
-                    for ( var i = 0; i < arrayNames.length; i++ )
-                    {
-                        dashBoardData.financialsData.currentRegionData[arrayNames[i]] = dashBoardData.financialsData[arrayNames[i]];
-                    }
-                 }
-
+                 dashBoardData.financialsData.currentRegionData = searchPropertyInArrays( dashBoardData.financialsData.currentNationData, arrayNames, regionProperty, region ); 
                  // Join the data from all files into a single array:
                  var currentRegionConcat = concatObjectArrays(dashBoardData.financialsData.currentRegionData);
 
                  // Update localities
                  dashBoardData.financialsData.localityList = getUniqueSortedList(currentRegionConcat, localityProperty);
-                 dashBoardData.financialsData.localityList.unshift("");
-                 updateSelector( document.getElementById("financialsLocalitySelector"), dashBoardData.financialsData.localityList );
-
-                 // Update Cost Centres
+                 updateSelector( document.getElementById("financialsLocalitySelector"), ["Select Locality"].concat(dashBoardData.financialsData.localityList) ); 
+                 // Update cost centres
                  dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentRegionConcat, costCentreProperty);
-                 dashBoardData.financialsData.costCentreList.unshift("");
-                 updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
+                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Cost Centre"].concat(dashBoardData.financialsData.costCentreList) ); 
 
+                 var subLevelProperty = localityProperty;
+                 var subLevelList = dashBoardData.financialsData.localityList;
 
-                 var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentRegionData );
+                 var subLevelData = computeFinancialsSubData(dashBoardData.financialsData.currentRegionData, subLevelList, subLevelProperty);
 
-                 svg = d3.select(document.getElementById("SVG1"));
-                 
-                 plotQuarterlyFinancialData( svg, data);
+                 var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentRegionData );
 
-                 var count = getIdentifierCount( currentRegionConcat, dashBoardData.financialsData.localityList, localityProperty);
-                 var pieData = [];
-                 for ( var i = 0; i < dashBoardData.financialsData.localityList.length; i++ )
-                 {
-                     pieData.push( {label: dashBoardData.financialsData.localityList[i], count: count[i]});
-                 }
-                 
-                 svg = d3.select(document.getElementById("SVG2"));
-                 svg.selectAll("*").remove();
-                 plotPieChart( svg, pieData);
-
-                 // Update data table:
-                 var tableData = makeFinancialTableData(data);
-                 updateFinancialTable( document.getElementById("dataTable"), tableData);
+                 plotFinancialsVisualisation(data, subLevelData, subLevelList, regionProperty, region, subLevelProperty);
                  return;
             }
             
@@ -412,25 +364,19 @@
 
                  var currentLocalityConcat = concatObjectArrays(dashBoardData.financialsData.currentLocalityData);
 
-                 // Update Cost Centres
+                 // Update cost centres
                  dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentLocalityConcat, costCentreProperty);
-                 dashBoardData.financialsData.costCentreList.unshift("");
-                 updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList);
+                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Cost Centre"].concat(dashBoardData.financialsData.costCentreList) ); 
 
-                 // First Histogram Plot
-                 var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentLocalityData );                 
+                 var subLevelProperty = costCentreProperty;
+                 var subLevelList = dashBoardData.financialsData.costCentreList;
 
-                 var svg = d3.select(document.getElementById("SVG1"));                 
-                 plotQuarterlyFinancialData( svg, data );  
+                 var subLevelData = computeFinancialsSubData(dashBoardData.financialsData.currentLocalityData, subLevelList, subLevelProperty);
 
+                 var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentLocalityData );
 
-                 var svg = d3.select(document.getElementById("SVG2"));                 
-                 // Use quarter 2 data file:
-                 plotCostCentres( svg, dashBoardData.financialsData.currentLocalityData[arrayNames[1]]);  
+                 plotFinancialsVisualisation(data, subLevelData, subLevelList, localityProperty, locality, subLevelProperty);
 
-                 // Update data table:
-                 var tableData = makeFinancialTableData(data);
-                 updateFinancialTable( document.getElementById("dataTable"), tableData);                                                          
                  return;
             }
 
@@ -438,17 +384,16 @@
             {
                  var costCentre = document.getElementById("financialsCostCentreSelector").value;
                  var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
-                 dashBoardData.financialsData.currentCostCentreData = dashBoardData.financialsData.currentLocalityData.filter( function(d) { return d[costCentreProperty] === costCentre; } );
-                     
-                 var data = computeQuarterlyFinancialData( dashBoardData.financialsData.currentCostCentreData );                 
 
-                 var svg = d3.select(document.getElementById("SVG1"));                 
-                 plotQuarterlyFinancialData( svg, data );  
+                 var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
 
-                 // Update data table:
-                 var tableData = makeFinancialTableData(data);
-                 updateFinancialTable( document.getElementById("dataTable"), tableData);                 
+                 dashBoardData.financialsData.currentCostCentreData = searchPropertyInArrays( dashBoardData.financialsData.currentLocalityData, arrayNames, costCentreProperty, costCentre ); 
 
+                 //var currentCostCentreConcat = concatObjectArrays(dashBoardData.financialsData.currentCostCentreData);
+
+                 var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentCostCentreData );                 
+
+                 plotFinancialsVisualisation(data, [], [], costCentreProperty, costCentre, []);
                  return;
             }
 
@@ -459,30 +404,38 @@
               // Copy the data read into the global variable:
               dashBoardData.financialsData.rawData = d;
 
+              console.log("Done reading financials files");
+
               // copy locally as well:
               var data = d;
 
-              var propertyList = Object.getOwnPropertyNames(data[0]);
-              dashBoardData.financialsData.propertyList = propertyList;
+              dashBoardData.financialsData.propertyList = Object.getOwnPropertyNames(d[0]);
 
-              dashBoardData.financialsData.regionList = getUniqueSortedList(data, dashBoardData.financialsData.regionProperty );
-              dashBoardData.financialsData.localityList = getUniqueSortedList(data,dashBoardData.financialsData.localityProperty ); 
-              dashBoardData.financialsData.costCentreList = getUniqueSortedList(data,  dashBoardData.financialsData.costCentreProperty ); 
+              // The nation property is global:
+              dashBoardData.financialsData.nationProperty = dashBoardData.nationPropertyName;
+              dashBoardData.financialsData.regionProperty = dashBoardData.financialsData.propertyList[0]; 
+              dashBoardData.financialsData.localityProperty = dashBoardData.financialsData.propertyList[1]; 
+              dashBoardData.financialsData.costCentreProperty = dashBoardData.financialsData.propertyList[3]; 
 
-              // Add Regions to the drop down list:
-              dashBoardData.financialsData.regionList.unshift(dashBoardData.allUKString);
-              updateSelector( document.getElementById("financialsRegionSelector"), dashBoardData.financialsData.regionList);
-              
+              // Get the propertyNames under which files are stored:
+              var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
+              for ( var i = 0; i < arrayNames.length; i++ )
+              {
+                 addNationProperty(dashBoardData.financialsData[arrayNames[i]], dashBoardData.financialsData.regionProperty, dashBoardData.financialsData.nationProperty);
+              }
 
-              // Add Localities to the drop down list:
-              updateSelector( document.getElementById("financialsLocalitySelector"), dashBoardData.financialsData.localityList );
+              // Get the lists of regions etc from any file, all files should have same lists!!!
+              dashBoardData.financialsData.nationList = getUniqueSortedList(dashBoardData.financialsData[arrayNames[0]], dashBoardData.financialsData.nationProperty);
+              dashBoardData.financialsData.regionList = getUniqueSortedList(dashBoardData.financialsData[arrayNames[0]], dashBoardData.financialsData.regionProperty);
+              dashBoardData.financialsData.localityList = getUniqueSortedList(dashBoardData.financialsData[arrayNames[0]], dashBoardData.financialsData.localityProperty);
+              dashBoardData.financialsData.costCentreList = getUniqueSortedList(dashBoardData.financialsData[arrayNames[0]], dashBoardData.financialsData.costCentreProperty);
 
-              // Add cost centres to the drop down list:
-              updateSelector( document.getElementById("financialsCostCentreSelector"), dashBoardData.financialsData.costCentreList );
+              // Update selectors based on the lists above:
+              dashBoardData.financialsData.nationList.unshift(dashBoardData.allUKString);
+              updateSelector( document.getElementById("financialsNationSelector"), dashBoardData.financialsData.nationList );
 
-              financialsRegionSelectFunction();
+              financialsNationSelectFunction();
             });                                 
-
          </script>
          
           <!-- FOOTER -->
@@ -495,7 +448,7 @@
                   <div class="col-xs-10">
                       <footer>
                         <p class="pull-right"><a href="#">Back to top</a></p>
-                        <p>&copy; <span id="idFooter"> 2015, Inc.</span> &middot;
+                        <p>&copy; <span id="idFooter"> 2016, Inc.</span> &middot;
                         <a id="idURL" href="#">Privacy</a> &middot; <a href="idURL">Terms</a></p>
                       </footer>
                   </div>
@@ -509,7 +462,7 @@
           <script src="./js/defs.js"></script>
           <script type="text/javascript">
                document.getElementById("idFooter").innerHTML =
-               companyName + " 2015";
+               companyName + " 2016";
                document.getElementById("idURL").href =
                companyURL;
           </script>
