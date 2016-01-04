@@ -1,6 +1,37 @@
+//**********************************
+// Reading the files
+//*********************************/
+// Make sure the file is read before reading the second file. This is the ( function() {})(); construct:
+(function() {
+   d3.csv( dashBoardSettings.dataDir +  "009_Pipeline_Contracts.csv", function(d)
+   { 
+     // Copy the data read into the global variable:
+     dashBoardData.bizDevData.contractsData = d;
+     // Copy the data locally as well
+     var data = d;
+     console.log("Pipeline Contracts file read successfuly");
+     dashBoardData.bizDevData.contractsPropertyList = Object.getOwnPropertyNames(data[0]);
+
+   }); // end of d3.csv()                                
+})();
 // *******************************************************
 //    Business Development Utility functions
 // *****************************************************//
+//
+function computeBizDevSubData(data1, data2, subLevelList, subLevelProperty)
+{
+   var subLevelData1 = [];
+   var subLevelData2 = [];
+   var subLevelData = [];
+   for ( var i = 0; i < subLevelList.length; i++ )
+   {
+       subLevelData1[i] = data1.filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
+       subLevelData2[i] = data2.filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
+       subLevelData[i] = computeQuarterlyBizDevData(subLevelData1[i], subLevelData2[i]);
+   }
+   return subLevelData;
+}
+
 function computeQuarterlyBizDevData(pipeLineDataArray, contractDataArray)
 {
     /*****************************************
@@ -154,6 +185,29 @@ function updateBizDevTable( table, tableData)
     }
     return table;    
 }
+function plotBizDevVisualisation()
+{
+    svg = d3.select(document.getElementById("quarterlySVG"));
+    plotQuarterlyBizDevData(svg, data);
+    
+    //plotQuarterlyBizDevData( svg, data);
+
+    var count = getIdentifierCount( dashBoardData.bizDevData.currentRegionData, dashBoardData.bizDevData.localityList, "Locality");
+    var pieData = [];
+    for ( var i = 0; i < dashBoardData.bizDevData.localityList.length; i++ )
+    {
+        pieData.push( {label: dashBoardData.bizDevData.localityList[i], count: count[i]});
+    }
+    
+    svg = d3.select(document.getElementById("quarterlyPieSVG"));
+    svg.selectAll("*").remove();
+    plotPieChart( svg, pieData);
+
+    // Update data table:
+    var tableData = makeBizDevTableData(data);
+    updateBizDevTable( document.getElementById("dataTable"), tableData);
+    return;
+}
 
 function plotQuarterlyBizDevData( svg, data)
 {
@@ -249,5 +303,3 @@ function plotQuarterlyBizDevData( svg, data)
 
         //legend.on("mouseover", function(d) { bars.update( [0, 0, 0, 0] ); return ; } );
 }
-
-
