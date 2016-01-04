@@ -357,26 +357,6 @@
                  return;
             }
 
-            function bizDevCostCentreSelectFunction() 
-            {
-                 var costCentre = document.getElementById("bizDevCostCentreSelector").value;
-                 dashBoardData.bizDevData.currentCostCentreData = dashBoardData.bizDevData.currentLocalityData.filter( function(d) { return d["Cost Centres"] === costCentre; } );
-                     
-                 var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentCostCentreData );                 
-
-                 var svg = d3.select(document.getElementById("quarterlySVG"));                 
-                 //plotQuarterlyBizDevData( svg, data );  
-
-                 svg = d3.select(document.getElementById("quarterlyPieSVG"));
-                 //plotCostCentres(svg, dashBoardData.bizDevData.currentLocalityData);
-
-                 // Update data table:
-                 var tableData = makeBizDevTableData(data);
-                 updateBizDevTable( document.getElementById("dataTable"), tableData);                 
-
-                 return;
-            }
-
             d3.csv( dashBoardSettings.dataDir +  "008_Pipeline_Opportunities.csv", function(d)
             { 
 
