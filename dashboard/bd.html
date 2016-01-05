@@ -163,11 +163,11 @@
              </div>
 
              <div class="col-xs-4">
-                 <svg id="SVG01" height="500" width="400" style="background-color: white"></svg>
+                 <svg id="SVG01" height="400" width="500" style="background-color: white"></svg>
              </div>
 
              <div class="col-xs-6">
-                 <svg id="SVG02" height="500" width="600" style="background-color: white"></svg>
+                 <svg id="SVG02" height="400" width="500" style="background-color: white"></svg>
              </div>
 
              <div class="col-xs-1">
@@ -176,65 +176,6 @@
         </div>
         <!-- Row ends here **************500******              -->
 
-        <!-- Row starts here ************500******              -->
-        <div class="row">
-
-            <div class ="col-xs-1">
-            </div>
-
-             <div class="col-xs-4">
-                 <svg id="SVG04" height="500" width="400" style="background-color: white"></svg>
-             </div>
-
-             <div class="col-xs-6">
-                 <svg id="SVG05" height="500" width="600" style="background-color: white"></svg>
-             </div>
-
-            <div class ="col-xs-1">
-            </div>
-
-        </div>
-        <!-- Row ends here *********************** -->
-
-        <!-- Row starts here *********************** -->
-        <div class="row">
-
-            <div class ="col-xs-1">
-            </div>
-
-             <div class="col-xs-4">
-                 <svg id="SVG07" height="500" width="400" style="background-color: white"></svg>
-             </div>
-
-             <div class="col-xs-6">
-                 <svg id="SVG08" height="500" width="600" style="background-color: white"></svg>
-             </div>
-
-            <div class ="col-xs-1">
-            </div>
-
-        </div>
-        <!-- Row ends here **************500******   500             -->
-        
-        <!-- Row starts here ************500******** 500               -->
-        <div class="row">
-
-            <div class ="col-xs-1">
-            </div>
-
-             <div class="col-xs-4">
-                 <svg id="SVG10" height="500" width="400" style="background-color: white"></svg>
-             </div>
-
-             <div class="col-xs-6">
-                 <svg id="SVG11" height="500" width="600" style="background-color: white"></svg>
-             </div>
-
-            <div class ="col-xs-1">
-            </div>
-
-        </div>
-        <!-- Row ends here *********************** -->
 
 
 
@@ -312,9 +253,8 @@
                  var subLevelData = computeBizDevSubData(dashBoardData.bizDevData.currentNationData,
                          dashBoardData.bizDevData.currentNationContractsData, subLevelList, subLevelProperty);
 
-                 var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentNationData, dashBoardData.bizDevData.currentNationContractsData);
-
-                 //plotBizDevVisualisation(data, subLevelData, subLevelList, nationProperty, nation, subLevelProperty);
+                 var data = computeQuarterlyBizDevData(dashBoardData.bizDevData.currentNationData, dashBoardData.bizDevData.currentNationContractsData); 
+                 plotBizDevVisualisation(data, subLevelData, subLevelList, subLevelProperty, nationProperty, nation );
             }
 
             function bizDevRegionSelectFunction() 
@@ -335,8 +275,7 @@
                  var subLevelList = dashBoardData.bizDevData.localityList;
                  var subLevelData = computeBizDevSubData(dashBoardData.bizDevData.currentRegionData, dashBoardData.bizDevData.currentRegionContractsData, subLevelList, subLevelProperty);
                  var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentRegionData, dashBoardData.bizDevData.currentRegionContractsData); 
-                 //plotBizDevVisualisation(data, subLevelData, subLevelList, regionProperty, region, subLevelProperty);
-
+                 plotBizDevVisualisation(data, subLevelData, subLevelList, subLevelProperty, regionProperty, region);
 
             }
             
@@ -352,7 +291,7 @@
 
                  var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentLocalityData, dashBoardData.bizDevData.currentLocalityContractsData );                 
 
-                 //plotBizDevVisualisation(data, [], [], localityProperty, locality, [])
+                 plotBizDevVisualisation(data, [], [], "", localityProperty, locality);
 
                  return;
             }

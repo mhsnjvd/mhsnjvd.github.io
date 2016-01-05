@@ -120,14 +120,19 @@ function addNationProperty(data, regionProperty, nationProperty)
 dashBoardSettings.ragColors = function (d)
 {
     if ( d == 0 )
+        // Red
        return "rgb(255, 0, 0)";
     if ( d == 1 )
+        // Amber
        return "rgb(255, 153, 0)";
        //return "#FF9900"
     if ( d == 2 )
+        // Green
        return "rgb(0, 128, 0)";
     if ( d ==  3)
-       return "grey";
+        // Grey
+       return "rgb(128, 128, 128)";
+
 }
 
 dashBoardData.impactData.impactColorToImpactProperty = function (d)
@@ -156,3 +161,36 @@ dashBoardData.impactData.impactColorToImpactProperty = function (d)
     }
 }
 
+dashBoardData.bizDevData.bizDevColorToBizDevProperty = function (d)
+{
+    var propertyName = ["", "", "", ""];
+    if ( d == "rgb(255, 0, 0)" )
+    {
+        return "unsuccessful";
+    }
+    else
+    {
+        if ( d == "rgb(255, 153, 0)" )
+        {
+            return "in progress";
+        }
+        else
+        {
+            if ( d == "rgb(0, 128, 0)" )
+            {
+                return "successful";
+            }
+            else
+            {
+                if ( d == "rgb(128, 128, 128)" )
+                {
+                    return "qualified out";
+                }
+                else
+                {
+                    console.log("color: " + d + " not recognized");
+                }
+            }
+        }
+    }
+}

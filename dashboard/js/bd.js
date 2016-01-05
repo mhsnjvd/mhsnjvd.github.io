@@ -185,9 +185,137 @@ function updateBizDevTable( table, tableData)
     }
     return table;    
 }
-function plotBizDevVisualisation()
+
+
+function plotBizDevVisualisation(data, subLevelData, subLevelList, subAreaProperty, areaProperty, area )
 {
-    svg = d3.select(document.getElementById("quarterlySVG"));
+    // **************** First plot ********************
+    var svg = d3.select(document.getElementById("SVG01"));
+    plotQuarterlyBizDevData(svg, data);
+
+
+    // Update data table:
+    var tableData = makeBizDevTableData(data);
+    updateBizDevTable( document.getElementById("dataTable"), tableData);
+
+    // *********************** Second Plot ****************////
+    var height = svg.attr("height");
+    var width = svg.attr("width");
+
+    var propertyName = ["pipeLineUnsuccessful", "pipeLineInProgress", "pipeLineSuccessful", "pipeLineQualifiedOut"];
+
+    svg = d3.select(document.getElementById("SVG02"));
+    svg.selectAll("*").remove();
+    svg.style("background-color", "white");
+
+    var stackSettings = {};
+    stackSettings.color = dashBoardSettings.ragColors;
+    plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
+    addTitle(svg, "Next Level Breakdown"); 
+
+    return;
+}
+
+
+function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty, area, subAreaProperty)
+{
+    // The mother object:
+    var stack = {};
+
+    var width = +svg.attr("width");
+    var height = +svg.attr("height");
+    var margin = defineMargins(height, width);
+    // More space on the left for long names
+    margin.left = 2*margin.left;
+    stackSettings.margin = stackSettings.margin || margin;
+
+    plotVerticalGrid(svg, margin, 10);
+
+    var layeredData = [];
+
+    for ( var i = 0; i < layerNames.length; i++ )
+    {
+        layeredData[i] = [];
+        for ( var j = 0; j < data.length; j++ )
+        {
+            var thisArray = data[j][layerNames[i]];
+            var latestQuarterIndex = 1; // for quarter 2
+            layeredData[i][j] = {label: nameList[j], y:thisArray[latestQuarterIndex] };
+        }
+    }
+
+    stack.stackPlot = new stackObjectConstructor(svg, layeredData, stackSettings);
+    stack.stackPlot.stackLayer.on("click", stackClick);
+
+    function stackClick(d)
+    {
+        var label = stack.stackPlot.stackLayer.clickedData.data.label;
+        var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
+        var subData = dashBoardData.bizDevData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
+        var property = "Status"
+        var propertyValue = dashBoardData.bizDevData.bizDevColorToBizDevProperty( color );
+        subData = subData.filter(function(d) { return d[property] == propertyValue; } );
+        console.log(subData.length);
+        openTablePage(subData);
+        return;
+    }
+    
+}
+
+function openTablePage(tableData)
+{
+    dashBoardData.bizDevData.selectedData = tableData;
+    var tablePageWindow = window.open("./table.html");
+    tablePageWindow.selecteData = tableData;
+}
+
+//function pieCreator()
+// svg is d3 selected svg
+// pieData is an array of objects with format: 
+// pieData = [ {label: xxxx, count: xxxx}, {}, {}, ...]
+function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
+{
+    // The mother of all objects:
+    var pie = {};
+
+    var dataSet = pieData.map(function(d){ return d.count; } );
+    var dummyData = dataSet.map(function(d) { return 1.0; } );
+
+    pie.piePlot = new pieObjectConstructor(svg, dummyData, pieStyle);
+    pie.piePlot.update(dataSet);
+
+    pie.rayPlot = new rayObjectConstructor(svg, dataSet, rayStyle);
+    pie.legend = new legendObjectConstructor( svg, legendData, legendStyle )
+
+    // Update everything in the pie:
+    pie.update = function(data)
+    {
+        pie.piePlot.update(data);
+        pie.rayPlot.update(data);
+    }
+    pie.piePlot.piePath.on("click", pieClick);
+
+    function pieClick(d)
+    {
+        /* Do nothing for the time being
+        var label = pie.piePlot.piePath.clickedData.data.label;
+        var color = pie.piePlot.piePath.clickedData.object.style("fill");
+        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
+        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
+        subData = subData.filter(function(d) { return d[property] == 1; } );
+        console.log(subData.length);
+        openTablePage(subData);
+        */
+        return;
+    }
+
+    return pie;
+}
+
+/*
+function plotBizDevVisualisation(data, subLevelData, subLevelList, subAreaProperty, areaProperty, area )
+{
+    var svg = d3.select(document.getElementById("SVG01"));
     plotQuarterlyBizDevData(svg, data);
     
     //plotQuarterlyBizDevData( svg, data);
@@ -199,7 +327,7 @@ function plotBizDevVisualisation()
         pieData.push( {label: dashBoardData.bizDevData.localityList[i], count: count[i]});
     }
     
-    svg = d3.select(document.getElementById("quarterlyPieSVG"));
+    svg = d3.select(document.getElementById("SVG02"));
     svg.selectAll("*").remove();
     plotPieChart( svg, pieData);
 
@@ -208,13 +336,14 @@ function plotBizDevVisualisation()
     updateBizDevTable( document.getElementById("dataTable"), tableData);
     return;
 }
+*/
 
-function plotQuarterlyBizDevData( svg, data)
+function plotQuarterlyBizDevData(svg, data)
 {
       svg.selectAll("*").remove();
-      svg.style("background-color", "whitesmoke"); 
-      var height = svg.attr("height");
-      var width = svg.attr("width");
+      svg.style("background-color", "white"); 
+      var height = +svg.attr("height");
+      var width = +svg.attr("width");
 
       var margin = defineMargins(height, width);
       
