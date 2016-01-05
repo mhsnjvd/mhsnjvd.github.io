@@ -37,6 +37,9 @@ function computePeopleBizModelSubData(data, subLevelList, subLevelProperty)
    return subLevelData;
 }
 
+// *******************************************************
+//    People and Business Model Utility functions
+// *****************************************************//
 function computeQuarterlyPeopleBizModelData(peopleBizModelDataArray)
 {
     /*****************************************
@@ -58,39 +61,25 @@ function computeQuarterlyPeopleBizModelData(peopleBizModelDataArray)
     // This is the object returned:
     var data = {};
 
-    var headerColumn = ["AD", "CSMs", "Team Managers", "CSM + Team Leaders", "Practitioners", "Administrators", "Others", "TOTAL"];
     //var headerRow = ["Q1", "Q2", "Q3", "Q4"];
-    // Only Q1 at the moment:
+    // Only Q2 at the moment:
     var headerRow = ["Q2"];
-    var quantityForEachSubColumn = ["HC", "FTE"];
 
-    for ( var i = 0; i < headerColumn.length; i++ )
+    var jobPropertyName = "Job Type";
+    var jobTypes = getUniqueSortedList(dashBoardData.peopleBizModelData.rawData, jobPropertyName);
+    //var headerColumn = ["AD", "CSMs", "Team Managers", "CSM + Team Leaders", "Practitioners", "Administrators", "Others", "TOTAL"];
+    var headerColumn = jobTypes;
+
+
+    for ( var i = 0; i < jobTypes.length; i++ )
     {
+        var temp =  peopleBizModelDataArray.filter( function(d) { return d[jobPropertyName] == jobTypes[i]; } );
         data[headerColumn[i]] = {};
         for ( var j = 0; j < headerRow.length; j++ )
         {
             data[headerColumn[i]][headerRow[j]] = {};
-            for ( var k = 0; k < quantityForEachSubColumn.length; k++ )
-            {
-                // var property = dashBoardData.peopleBizModelData.propertyList[2]; 
-                // TODO: How to have a list of functions to compute for each quantity?
-                //var computedQuantity = sumArrayProperty( peopleBizModelDataArray, property);
-                var computedQuantity = 0.0;
-                if ( quantityForEachSubColumn[k] == "HC" )
-                {
-                    // This is just the head count:
-                    var property = dashBoardData.peopleBizModelData.propertyList[11];
-                    computedQuantity = sumArrayProperty(peopleBizModelDataArray, property);
-                }
-
-                if ( quantityForEachSubColumn[k] == "FTE" )
-                {
-                    // Full time Equivalent
-                    var property = dashBoardData.peopleBizModelData.propertyList[12];
-                    computedQuantity = sumArrayProperty( peopleBizModelDataArray, property);
-                }
-                data[headerColumn[i]][headerRow[j]][quantityForEachSubColumn[k]] = computedQuantity;
-            }
+            data[headerColumn[i]][headerRow[j]]["HC"] = temp.length;
+            data[headerColumn[i]][headerRow[j]]["FTE"] = sumArrayProperty(temp, "FTE_Normal hours/37");
         }
     }
     return data;
@@ -151,7 +140,7 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
 {
     // **************** First plot ********************
     var svg = d3.select(document.getElementById("SVG01"));
-    plotQuarterlyBizDevData(svg, data);
+   // plotQuarterlyBizDevData(svg, data);
 
 
     // Update data table:
