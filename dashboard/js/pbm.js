@@ -140,7 +140,25 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
 {
     // **************** First plot ********************
     var svg = d3.select(document.getElementById("SVG01"));
-   // plotQuarterlyBizDevData(svg, data);
+    var height = svg.attr("height");
+    var width = svg.attr("width");
+    var currentQuarter = "Q2";
+    var pieData = [];
+    var propertyName = Object.getOwnPropertyNames(data);
+
+    var legendData = propertyName;
+    for ( var i = 0; i < propertyName.length; i++ )
+    {
+        pieData.push( {label: propertyName[i], value: data[propertyName[i]][currentQuarter]["HC"]});
+    }
+
+    var pieStyle = initPieSettings(width, height, d3.scale.category10());
+    var rayStyle = initRaySettings(pieStyle);
+    var legendStyle = initLegendSettings(pieStyle);
+
+
+    var pie1 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
+    var title1 = addTitle(svg, "Head Count %");
 
 
     // Update data table:
@@ -148,23 +166,40 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     updateTable( document.getElementById("dataTable"), tableData);
 
     // *********************** Second Plot ****************////
-    var height = svg.attr("height");
-    var width = svg.attr("width");
-
-    var propertyName = ["?"];
-
     svg = d3.select(document.getElementById("SVG02"));
-    svg.selectAll("*").remove();
-    svg.style("background-color", "white");
+    height = svg.attr("height");
+    width = svg.attr("width");
+    currentQuarter = "Q2";
+    pieData = [];
+    for ( var i = 0; i < propertyName.length; i++ )
+    {
+        pieData.push( {label: propertyName[i], value: data[propertyName[i]][currentQuarter]["FTE"]});
+    }
 
-    var stackSettings = {};
-    stackSettings.color = dashBoardSettings.ragColors;
-    plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
-    addTitle(svg, "Next Level Breakdown"); 
+    pieStyle = initPieSettings(width, height, d3.scale.category10());
+    rayStyle = initRaySettings(pieStyle);
+    legendStyle = initLegendSettings(pieStyle);
+
+
+    var pie2 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
+    var title2 = addTitle(svg, "Full Time Equivalent %");
+
+    pie2.piePlot.piePath.on("click", pieClick);
+
+    function pieClick(d)
+    {
+        var label = pie2.piePlot.piePath.clickedData.data.label;
+        var color = pie2.piePlot.piePath.clickedData.object.style("fill");
+        var subData = dashBoardData.peopleBizDevData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
+        var property = "Job Type";
+        subData = subData.filter(function(d) { return d[property] == label; } );
+        console.log(subData.length);
+        openTablePage(subData);
+        return;
+    }
 
     return;
 }
-
 
 function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty, area, subAreaProperty)
 {
@@ -200,9 +235,9 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
     {
         var label = stack.stackPlot.stackLayer.clickedData.data.label;
         var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
-        var subData = dashBoardData.bizDevData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
+        var subData = dashBoardData.peopleBizModelData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
         var property = "Status"
-        var propertyValue = dashBoardData.bizDevData.bizDevColorToBizDevProperty( color );
+        var propertyValue = dashBoardData.peopleBizModelData.peopleBizModelColorToBizDevProperty( color );
         subData = subData.filter(function(d) { return d[property] == propertyValue; } );
         console.log(subData.length);
         openTablePage(subData);
@@ -213,7 +248,7 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
 
 function openTablePage(tableData)
 {
-    dashBoardData.bizDevData.selectedData = tableData;
+    dashBoardData.peopleBizModelData.selectedData = tableData;
     var tablePageWindow = window.open("./table.html");
     tablePageWindow.selecteData = tableData;
 }
@@ -221,17 +256,18 @@ function openTablePage(tableData)
 //function pieCreator()
 // svg is d3 selected svg
 // pieData is an array of objects with format: 
-// pieData = [ {label: xxxx, count: xxxx}, {}, {}, ...]
+// pieData = [ {label: xxxx, value: xxxx}, {}, {}, ...]
 function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
 {
     // The mother of all objects:
     var pie = {};
-
-    var dataSet = pieData.map(function(d){ return d.count; } );
-    var dummyData = dataSet.map(function(d) { return 1.0; } );
-
-    pie.piePlot = new pieObjectConstructor(svg, dummyData, pieStyle);
-    pie.piePlot.update(dataSet);
+    var dataSet = pieData.map(function(d) { return d.value; });
+    pieData.forEach(function(d, i){ pieData[i].value = 1.0; } );
+    // Create dummy data initially:
+    pie.piePlot = new pieObjectConstructor(svg, pieData, pieStyle);
+    // Update with actual data:
+    pieData.forEach(function(d, i){ pieData[i].value = dataSet[i]; });
+    pie.piePlot.update(pieData);
 
     pie.rayPlot = new rayObjectConstructor(svg, dataSet, rayStyle);
     pie.legend = new legendObjectConstructor( svg, legendData, legendStyle )
@@ -242,21 +278,5 @@ function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
         pie.piePlot.update(data);
         pie.rayPlot.update(data);
     }
-    pie.piePlot.piePath.on("click", pieClick);
-
-    function pieClick(d)
-    {
-        /* Do nothing for the time being
-        var label = pie.piePlot.piePath.clickedData.data.label;
-        var color = pie.piePlot.piePath.clickedData.object.style("fill");
-        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
-        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
-        subData = subData.filter(function(d) { return d[property] == 1; } );
-        console.log(subData.length);
-        openTablePage(subData);
-        */
-        return;
-    }
-
     return pie;
 }

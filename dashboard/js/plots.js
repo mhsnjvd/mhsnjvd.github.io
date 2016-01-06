@@ -805,8 +805,16 @@ function initLegendSettings(pieStyle)
     return legendStyle;
 }
 
+// dataSet is an array of objects, where each object
+// has two fields:
+// {label: "xxxx", value: 42.134123}
 function pieObjectConstructor(svg, dataSet, pieStyle)
 {
+    // Store the data:
+    this.data = {};
+    this.data.label = dataSet.map(function(d){ return d.label; } );
+    this.data.value = dataSet.map(function(d){ return d.value; } );
+
     // Check if outer radius is given explicitly
     this.outerRadius = pieStyle.outerRadius || pieStyle.radius;
 
@@ -850,7 +858,7 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
                   .attr("transform", "translate(" + pieStyle.cx + "," + pieStyle.cy + ")");
 
     var piePath = pieSVG.selectAll("path")
-         .data(pieLayOut(dataSet))
+         .data(pieLayOut(dataSet.map(function(d) { return d.value; })))
          .enter()
          .append("path")
          .attr("d", arc)
@@ -881,16 +889,14 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
     {
         var currentPie = d3.select(this);
 
-        var total = d3.sum(dataSet);
+        var total = d3.sum(dataSet.map(function(d){ return d.value; }));
         d.percent = d/total * 100;                                                              
         if ( pieStyle.tipEnabled )
         {
             tip.show(d, i);
         }
-
-        var currentData = d;
         piePath.clickedData.object = currentPie;
-        piePath.clickedData.data = currentData;
+        piePath.clickedData.data = dataSet[i];
     })
     .on("mouseout", function(d)
     {
@@ -903,12 +909,12 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
 
 
     // Function for adding text:
-    function addText(dataSet)
+    function addText(numData)
     {
         if ( pieStyle.textEnabled )
         {
-            var s = d3.sum(dataSet);
-            var percentData = dataSet.map(function(d) { return dashBoardSettings.pieNumberFormat((d*100)/s); } );
+            var s = d3.sum(numData);
+            var percentData = numData.map(function(d) { return dashBoardSettings.pieNumberFormat((d*100)/s); } );
             var textData = percentData.map(function(d) {
                 var tol = 1e-10;
                 return ( d > tol ) ?  d + pieStyle.textSuffix : "";
@@ -933,13 +939,13 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
 
        // Animate the new data
        pieSVG.selectAll("path")
-       .data(pieLayOut(newData))
+       .data(pieLayOut(newData.map(function(d){ return d.value; })))
        .transition()
        .duration(pieStyle.transitionDuration)
        .attrTween("d", arcTween);
 
        // Add new text labels
-       addText(newData);
+       addText(newData.map(function(d){ return d.value;}));
     }   
 
     // Interpolation function

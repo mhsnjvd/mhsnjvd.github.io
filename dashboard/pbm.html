@@ -162,12 +162,12 @@
              <div class="col-xs-1">
              </div>
 
-             <div class="col-xs-4">
-                 <svg id="SVG01" height="500" width="400" style="background-color: white"></svg>
+             <div class="col-xs-5">
+                 <svg id="SVG01" height="500" width="500" style="background-color: white"></svg>
              </div>
 
-             <div class="col-xs-6">
-                 <svg id="SVG02" height="500" width="600" style="background-color: white"></svg>
+             <div class="col-xs-5">
+                 <svg id="SVG02" height="500" width="500" style="background-color: white"></svg>
              </div>
 
              <div class="col-xs-1">
@@ -175,68 +175,6 @@
 
         </div>
         <!-- Row ends here **************500******              -->
-
-        <!-- Row starts here ************500******              -->
-        <div class="row">
-
-            <div class ="col-xs-1">
-            </div>
-
-             <div class="col-xs-4">
-                 <svg id="SVG04" height="500" width="400" style="background-color: white"></svg>
-             </div>
-
-             <div class="col-xs-6">
-                 <svg id="SVG05" height="500" width="600" style="background-color: white"></svg>
-             </div>
-
-            <div class ="col-xs-1">
-            </div>
-
-        </div>
-        <!-- Row ends here *********************** -->
-
-        <!-- Row starts here *********************** -->
-        <div class="row">
-
-            <div class ="col-xs-1">
-            </div>
-
-             <div class="col-xs-4">
-                 <svg id="SVG07" height="500" width="400" style="background-color: white"></svg>
-             </div>
-
-             <div class="col-xs-6">
-                 <svg id="SVG08" height="500" width="600" style="background-color: white"></svg>
-             </div>
-
-            <div class ="col-xs-1">
-            </div>
-
-        </div>
-        <!-- Row ends here **************500******   500             -->
-        
-        <!-- Row starts here ************500******** 500               -->
-        <div class="row">
-
-            <div class ="col-xs-1">
-            </div>
-
-             <div class="col-xs-4">
-                 <svg id="SVG10" height="500" width="400" style="background-color: white"></svg>
-             </div>
-
-             <div class="col-xs-6">
-                 <svg id="SVG11" height="500" width="600" style="background-color: white"></svg>
-             </div>
-
-            <div class ="col-xs-1">
-            </div>
-
-        </div>
-        <!-- Row ends here *********************** -->
-
-
 
         <!-- Row starts here *********************** -->
         <div class="row">
@@ -332,8 +270,7 @@
                  var subLevelData =  computePeopleBizModelSubData(dashBoardData.peopleBizModelData.currentRegionData, subLevelList, subLevelProperty);
 
                  var data = computeQuarterlyPeopleBizModelData( dashBoardData.peopleBizModelData.currentRegionData );
-
-                 //plotImpactVisualisation(data, subLevelData, subLevelList, regionProperty, region, subLevelProperty);
+                 plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subLevelProperty, regionProperty, region );
 
                  return;
             }
@@ -347,9 +284,8 @@
                  // Initialize region data and locality list:
                  dashBoardData.peopleBizModelData.currentLocalityData = dashBoardData.peopleBizModelData.rawData.filter( function(d) { return d.Locality == locality; } ); 
 
-                 var data = computeQuarterlyBizDevData( dashBoardData.peopleBizModelData.currentLocalityData );                 
-
-                 //plotImpactVisualisation(data, [], [], localityProperty, locality, [])
+                 var data = computeQuarterlyPeopleBizModelData( dashBoardData.peopleBizModelData.currentLocalityData );
+                 plotPeopleBizModelVisualisation(data, [], [], "", localityProperty, locality );
 
                  return;
             }
