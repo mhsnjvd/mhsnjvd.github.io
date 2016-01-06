@@ -26,26 +26,15 @@
 // *******************************************************
 //    Impact Measurement Utility Functions
 // *****************************************************//
-function computeImpactSubData(data1, data2, subLevelList, subLevelProperty)
-{
-   var subLevelData1 = [];
-   var subLevelData2 = [];
-   var subLevelData = [];
-   for ( var i = 0; i < subLevelList.length; i++ )
-   {
-       subLevelData1[i] = data1.filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
-       subLevelData2[i] = data2.filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
-       subLevelData[i] = computeQuarterlyImpactData(subLevelData1[i], subLevelData2[i]);
-   }
-   return subLevelData;
-}
-
-function computeQuarterlyImpactData(impactDataArray, externalInspectionsDataArray)
+function computeQuarterlyImpactData(impactData)
 {
     /*****************************************
      * This function is accessing global data:
      * ****************************************/
     // Generic routine to compute quarterly data.     
+    propertyNames = dashBoardData.impactData.files.map(function(d) { return d.propertyName; } );
+    var externalInspectionsDataArray =  impactData[propertyNames[0]];
+    var impactDataArray = impactData[propertyNames[1]];
 
     // This is the object returned:
     var data = {};
@@ -246,7 +235,7 @@ function updateImpactTable( table, tableData)
 }
 
 
-function plotImpactVisualisation(data, subLevelData, subLevelList, areaProperty, area, subAreaProperty)
+function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelList, areaProperty, area)
 {
     // Update data table:
     var tableData = makeImpactTableData(data);
@@ -266,7 +255,7 @@ function plotImpactVisualisation(data, subLevelData, subLevelList, areaProperty,
     var legendData = propertyName;
     for ( var i = 0; i < propertyName.length; i++ )
     {
-        pieData.push( {label: propertyName[i], count: data[propertyName[i]][currentQuarter]});
+        pieData.push( {label: propertyName[i], value: data[propertyName[i]][currentQuarter]});
     }
 
     var pieStyle = initPieSettings(width, height, dashBoardSettings.ragColors);
@@ -301,7 +290,7 @@ function plotImpactVisualisation(data, subLevelData, subLevelList, areaProperty,
     legendData = ["Red", "Amber", "Green"];
     for ( var i = 0; i < propertyName.length; i++ )
     {
-        pieData.push( {label: legendData[i], count: data[propertyName[i]][currentQuarter]});
+        pieData.push( {label: legendData[i], value: data[propertyName[i]][currentQuarter]});
     }
 
     var pie4 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
@@ -327,7 +316,7 @@ function plotImpactVisualisation(data, subLevelData, subLevelList, areaProperty,
     legendData = ["-ve Feedback", "No Feedback", "+ve Feedback"];
     for ( var i = 0; i < propertyName.length; i++ )
     {
-        pieData.push( {label: legendData[i], count: data[propertyName[i]][currentQuarter]});
+        pieData.push( {label: legendData[i], value: data[propertyName[i]][currentQuarter]});
     }
 
     var pie7 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
@@ -357,7 +346,7 @@ function plotImpactVisualisation(data, subLevelData, subLevelList, areaProperty,
     rayStyle.color = pieStyle.color;
     for ( var i = 0; i < propertyName.length; i++ )
     {
-        pieData.push( {label: legendData[i], count: data[propertyName[i]][currentQuarter]});
+        pieData.push( {label: legendData[i], value: data[propertyName[i]][currentQuarter]});
     }
 
     var pie10 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
@@ -420,52 +409,3 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
     
 }
 
-function openTablePage(tableData)
-{
-    dashBoardData.impactData.selectedData = tableData;
-    var tablePageWindow = window.open("./table.html");
-    tablePageWindow.selecteData = tableData;
-}
-
-//function pieCreator()
-// svg is d3 selected svg
-// pieData is an array of objects with format: 
-// pieData = [ {label: xxxx, count: xxxx}, {}, {}, ...]
-function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
-{
-    // The mother of all objects:
-    var pie = {};
-
-    var dataSet = pieData.map(function(d){ return d.count; } );
-    var dummyData = dataSet.map(function(d) { return 1.0; } );
-
-    pie.piePlot = new pieObjectConstructor(svg, dummyData, pieStyle);
-    pie.piePlot.update(dataSet);
-
-    pie.rayPlot = new rayObjectConstructor(svg, dataSet, rayStyle);
-    pie.legend = new legendObjectConstructor( svg, legendData, legendStyle )
-
-    // Update everything in the pie:
-    pie.update = function(data)
-    {
-        pie.piePlot.update(data);
-        pie.rayPlot.update(data);
-    }
-    pie.piePlot.piePath.on("click", pieClick);
-
-    function pieClick(d)
-    {
-        /* Do nothing for the time being
-        var label = pie.piePlot.piePath.clickedData.data.label;
-        var color = pie.piePlot.piePath.clickedData.object.style("fill");
-        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
-        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
-        subData = subData.filter(function(d) { return d[property] == 1; } );
-        console.log(subData.length);
-        openTablePage(subData);
-        */
-        return;
-    }
-
-    return pie;
-}

@@ -8,6 +8,7 @@ dashBoardData.financialsData = {};
 dashBoardData.bizDevData = {};
 dashBoardData.peopleBizModelData = {};
 dashBoardData.impactData.clickedData = {};
+dashBoardData.impactData.currentData = {};
 
 // These can be created on the runtime but
 // given here just to give a template idea:
@@ -58,11 +59,14 @@ dashBoardData.peopleBizModelData.files = [
                     { name: "004_b_Staff_Sep15.csv",   propertyName: "staffData" }
                     ];
 
-
 dashBoardData.impactData.files = [
-                    { name: "003_CAIU_External.csv",   propertyName: "externalInspectionsData" }
+                    { name: "003_CAIU_External.csv",   propertyName: "externalInspectionsData" },
+                    { name: "001_Contract_DB_Q2.csv",  propertyName: "contractsData" }
                     ];
 
+dashBoardData.bizDevData.files = [
+{ name: "                ", propertyName: ""}
+];
 
 
 

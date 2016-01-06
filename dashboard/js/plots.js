@@ -962,6 +962,33 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
     this.piePath = piePath;
 }
 
+// svg is d3 selected svg
+// pieData is an array of objects with format: 
+// pieData = [ {label: xxxx, value: xxxx}, {}, {}, ...]
+function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
+{
+    // The mother of all objects:
+    var pie = {};
+    var dataSet = pieData.map(function(d) { return d.value; });
+    pieData.forEach(function(d, i){ pieData[i].value = 1.0; } );
+    // Create dummy data initially:
+    pie.piePlot = new pieObjectConstructor(svg, pieData, pieStyle);
+    // Update with actual data:
+    pieData.forEach(function(d, i){ pieData[i].value = dataSet[i]; });
+    pie.piePlot.update(pieData);
+
+    pie.rayPlot = new rayObjectConstructor(svg, dataSet, rayStyle);
+    pie.legend = new legendObjectConstructor( svg, legendData, legendStyle )
+
+    // Update everything in the pie:
+    pie.update = function(data)
+    {
+        pie.piePlot.update(data);
+        pie.rayPlot.update(data);
+    }
+    return pie;
+}
+
 function rayObjectConstructor(svg, dataSet, rayStyle)
 {
     // Check if outer radius is given explicitly

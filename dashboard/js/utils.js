@@ -223,3 +223,30 @@ function cumsumArray(data)
     }
     return cumulativeData;
 }
+
+
+
+function openTablePage(tableData)
+{
+    var tablePageWindow = window.open("./table.html");
+    tablePageWindow.selecteData = tableData;
+}
+
+
+// data is an object, some of whose properties are arrays and contain data from individual files.
+// The names of these properties are in the variable propertyNames
+// the quarterly data is computed by the function computeQuarterlyFun
+function computeSubData(data, subLevelProperty, subLevelList, propertyNames, computeQuarterlyFun)
+{
+    var subLevelData = [];
+    for ( var i = 0; i < subLevelList.length; i++ )
+    {
+        var tempData = {};
+        for ( var j = 0; j < propertyNames.length; j++ )
+        {
+            tempData[propertyNames[j]] = data[propertyNames[j]].filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
+        }
+        subLevelData[i] = computeQuarterlyFun(tempData);
+   }
+   return subLevelData;
+}
