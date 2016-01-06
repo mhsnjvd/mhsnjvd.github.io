@@ -281,20 +281,18 @@
                  var localityProperty = data.localityProperty; 
                  //var contractNameProperty = data.contractNameProperty; 
 
-                 // Initialize region data and locality list:
-                 var propertyNames = data.files.map(function(d) { return d.propertyName; } );
-                 var nFiles = propertyNames.length;
-                 for ( var i = 0; i < nFiles; i++ )
-                 {
-                     data.currentData[propertyNames[i]] = data[propertyNames[i]].filter( function(d) { return d[nationProperty] == nation; } );
-                 }
+                 //filter the data:
+                 var fileNames = data.files.map(function(d) { return d.propertyName; } );
+                 data.currentData = filterData(data, fileNames, nationProperty, nation);
 
+                 // Initialize region data and locality list:
+                 var nFiles = fileNames.length;
                  // Update Regions
-                 data.regionList = getUniqueSortedList(data.currentData[propertyNames[nFiles-1]], regionProperty);
+                 data.regionList = getUniqueSortedList(data.currentData[fileNames[nFiles-1]], regionProperty);
                  updateSelector( document.getElementById("impactRegionSelector"), ["Select Region"].concat(data.regionList) );
 
                  // Update localities
-                 data.localityList = getUniqueSortedList(data.currentData[propertyNames[nFiles-1]], localityProperty);
+                 data.localityList = getUniqueSortedList(data.currentData[fileNames[nFiles-1]], localityProperty);
                  updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(data.localityList) );
 
                  // Update Contracts
@@ -309,10 +307,10 @@
                  {
                      for ( var i = 0; i < nFiles; i++ )
                      {
-                         data.currentData[propertyNames[i]] = data[propertyNames[i]];
+                         data.currentData[fileNames[i]] = data[fileNames[i]];
                      }
                      subLevelProperty = nationProperty;
-                     subLevelList = getUniqueSortedList(data.currentData[propertyNames[nFiles-1]], subLevelProperty);
+                     subLevelList = getUniqueSortedList(data.currentData[fileNames[nFiles-1]], subLevelProperty);
                      // Remove All UK string from the item:
                      var allUKIndex = subLevelList.indexOf(dashBoardData.allUKString);
                      if ( allUKIndex > -1 )
@@ -321,7 +319,7 @@
                      }
                  }
 
-                 var subLevelData = computeSubData(data.currentData, subLevelProperty, subLevelList, propertyNames, computeQuarterlyImpactData);
+                 var subLevelData = computeSubData(data.currentData, subLevelProperty, subLevelList, fileNames, computeQuarterlyImpactData);
                  var quarterlyData = computeQuarterlyImpactData(data.currentData);
                  plotImpactVisualisation(quarterlyData, subLevelData, subLevelProperty, subLevelList, nationProperty, nation);
             }

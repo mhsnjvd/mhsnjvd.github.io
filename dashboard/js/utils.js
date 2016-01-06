@@ -250,3 +250,57 @@ function computeSubData(data, subLevelProperty, subLevelList, propertyNames, com
    }
    return subLevelData;
 }
+
+// Main function to filter data from files
+// data: is an object where the fields specified by the variable fieldNames
+// are arrays of data from different files
+// propertyNames and propertyValues are arrays specifying what to search 
+// in each file. 
+// Example: suppose data is of the form, data =  { file1: [{}, {}, ...],
+//                                       file2: [{}, {}, ...],
+//                                       file3: [{}, {}, ...]}
+// Suppose we want to search prop1 == val1 in file1, prop2 == val2 in file2
+// and so on ...
+// if propertyNames is just one entry, then each array will 
+// be filtered for the same property
+function filterData(data, fileNames, propertyNames, propertyValues)
+{
+    // Make everything an array, this handles the case
+    // when a single argument is passed
+    if ( !Array.isArray(propertyNames) )
+    {
+        propertyNames = [propertyNames];
+    }
+    if ( !Array.isArray(propertyValues) )
+    {
+        propertyValues = [propertyValues];
+    }
+    if ( !Array.isArray(fileNames) )
+    {
+        fileNames = [fileNames];
+    }
+
+    if ( propertyNames.length != propertyValues.length )
+    {
+        console.log( "propertyNames and propertyValues should have same length");
+    }
+
+    // If propertyName is of length 1, search the same property in entire data
+    if ( propertyNames.length === 1 )
+    {
+        propertyNames = fileNames.map(function(d) { return propertyNames; } );
+        propertyValues = fileNames.map(function(d) { return propertyValues; } );
+    }
+
+    if ( propertyNames.length != fileNames.length )
+    {
+        console.log( "propertyNames and fileNames should have same length");
+    }
+
+    var filteredData = {};
+    for ( var i = 0; i < fileNames.length; i++ )
+    {
+        filteredData[fileNames[i]] = data[fileNames[i]].filter(function(d) { return d[propertyNames[i]] == propertyValues[i]; } );
+    }
+    return filteredData;
+}
