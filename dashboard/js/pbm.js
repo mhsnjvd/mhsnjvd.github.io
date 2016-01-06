@@ -190,7 +190,11 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     {
         var label = pie2.piePlot.piePath.clickedData.data.label;
         var color = pie2.piePlot.piePath.clickedData.object.style("fill");
-        var subData = dashBoardData.peopleBizDevData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
+        var subData = dashBoardData.peopleBizModelData.rawData;
+        if ( area != dashBoardData.allUKString )
+        {
+            subData = subData.filter( function(d) { return d[areaProperty] == area; }); 
+        }
         var property = "Job Type";
         subData = subData.filter(function(d) { return d[property] == label; } );
         console.log(subData.length);
