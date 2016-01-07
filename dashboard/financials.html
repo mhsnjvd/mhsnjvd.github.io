@@ -103,6 +103,11 @@
       </div>
     </nav>
 
+   <script type="text/javascript" src="./js/globals.js"></script>
+   <script type="text/javascript" src="./js/utils.js"></script>
+   <script type="text/javascript" src="./js/plots.js"></script>
+   <script type="text/javascript" src="./js/financials.js"></script>
+
     <div class="container-fluid">
 
         <!-- Row starts here *********************** -->
@@ -119,22 +124,22 @@
             <div class="row">
 
                <div class="col-xs-3">
-                 <select style="width: 250px" id="financialsNationSelector" onchange="financialsNationSelectFunction()">
+                 <select style="width: 250px" id="financialsNationSelector" onchange="financialsSelectFunction(dashBoardData.financialsData.nationProperty, this.value)">
                  </select>
                </div>
 
                <div class="col-xs-3">
-                     <select style="width: 250px" id="financialsRegionSelector" onchange="financialsRegionSelectFunction()">
+                     <select style="width: 250px" id="financialsRegionSelector" onchange="financialsSelectFunction(dashBoardData.financialsData.regionProperty, this.value)">
                      </select>
                </div>
 
                <div class="col-xs-3">
-                 <select style="width: 250px" id="financialsLocalitySelector" onchange="financialsLocalitySelectFunction()">
+                 <select style="width: 250px" id="financialsLocalitySelector" onchange="financialsSelectFunction(dashBoardData.financialsData.localityProperty, this.value)">
                  </select>
                </div>
 
                <div class="col-xs-3">
-                 <select style="width: 250px" id="financialsCostCentreSelector" onchange="financialsCostCentreSelectFunction()">
+                 <select style="width: 250px" id="financialsCostCentreSelector" onchange="financialsSelectFunction(dashBoardData.financialsData.costCentreData, this.value)">
                  </select>
                </div>
 
@@ -252,190 +257,63 @@
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
-            function financialsNationSelectFunction() 
+            function updateFinancialsSelectors(data)
             {
-                 var nation = document.getElementById("financialsNationSelector").value;
-                 var nationProperty = dashBoardData.financialsData.nationProperty;
+                 var fileNames = dashBoardData.financialsData.files.map(function(d) { return d.propertyName; } );
                  var regionProperty = dashBoardData.financialsData.regionProperty;
-                 var localityProperty = dashBoardData.financialsData.localityProperty; 
-                 var costCentreProperty = dashBoardData.financialsData.costCentreProperty; 
-
-                 // Get the propertyNames under which files are stored:
-                 var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
-
-
-                 dashBoardData.financialsData.currentNationData = {};
-
-                 if( nation == dashBoardData.allUKString )
-                 {
-                     for ( var i = 0; i < arrayNames.length; i++ )
-                     {
-                         dashBoardData.financialsData.currentNationData[arrayNames[i]] = dashBoardData.financialsData[arrayNames[i]];
-                     }
-                 }
-                 else
-                 {
-                    // Search for entries matching this region in all files:
-                    dashBoardData.financialsData.currentNationData = searchPropertyInArrays( dashBoardData.financialsData, arrayNames, nationProperty, nation );
-                 }
-
-                 // Join the data from all files into a single array:
-                 var currentNationConcat = concatObjectArrays(dashBoardData.financialsData.currentNationData);
-
+                 var localityProperty = dashBoardData.financialsData.localityProperty;
+                 var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
+    
+                 var nFiles = fileNames.length;
                  // Update Regions
-                 dashBoardData.financialsData.regionList = getUniqueSortedList(currentNationConcat, regionProperty);
-                 updateSelector( document.getElementById("financialsRegionSelector"), ["Select Region"].concat(dashBoardData.financialsData.regionList) ); 
+                 var regionList = getUniqueSortedList(data[fileNames[nFiles-1]], regionProperty);
+                 updateSelector( document.getElementById("financialsRegionSelector"), ["Select Region"].concat(regionList) );
+    
                  // Update localities
-                 dashBoardData.financialsData.localityList = getUniqueSortedList(currentNationConcat, localityProperty);
-                 updateSelector( document.getElementById("financialsLocalitySelector"), ["Select Locality"].concat(dashBoardData.financialsData.localityList) ); 
-                 // Update cost centres
-                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentNationConcat, costCentreProperty);
-                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Cost Centre"].concat(dashBoardData.financialsData.costCentreList) ); 
-
-                 var subLevelProperty = regionProperty;
-                 var subLevelList = dashBoardData.financialsData.regionList;
-
-                 if ( nation == dashBoardData.allUKString )
-                 {
-                     subLevelProperty = nationProperty;
-                     subLevelList = getUniqueSortedList(currentNationConcat, subLevelProperty);
-                     // Remove All UK string from the item:
-                     var allUKIndex = subLevelList.indexOf(dashBoardData.allUKString);
-                     if ( allUKIndex > -1 )
-                     {
-                         subLevelList.splice(allUKIndex, 1);
-                     }
-                 }
-
-                 var subLevelData = computeFinancialsSubData(dashBoardData.financialsData.currentNationData, subLevelList, subLevelProperty);
-
-                 var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentNationData );
-                 plotFinancialsVisualisation(data, subLevelData, subLevelList, subLevelProperty, nationProperty, nation );
-
-                 return;
+                 var localityList = getUniqueSortedList(data[fileNames[nFiles-1]], localityProperty);
+                 updateSelector( document.getElementById("financialsLocalitySelector"), ["Select Locality"].concat(localityList) );
+    
+                 // Update Cost Centres
+                 var costCentreList = getUniqueSortedList(data[fileNames[nFiles-1]], costCentreProperty);
+                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Cost Centre"].concat(costCentreList) );
             }
 
-
-            function financialsRegionSelectFunction() 
+            function financialsSelectFunction(selectedProperty, selectedValue) 
             {
-                 var region = document.getElementById("financialsRegionSelector").value;
-                 var regionProperty = dashBoardData.financialsData.regionProperty;
-                 var localityProperty = dashBoardData.financialsData.localityProperty;
-                 var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
+                 var data = dashBoardData.financialsData;
+                 var selectedData = dataSelectFunction(data, selectedProperty, selectedValue, computeQuarterlyFinancialsData);
+                 updateFinancialsSelectors(selectedData.filteredData)
 
-                 // Get the propertyNames under which files are stored:
-                 var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
-
-
-                 dashBoardData.financialsData.currentRegionData = {};
-
-                 // Search for entries matching this region in all files:
-                 dashBoardData.financialsData.currentRegionData = searchPropertyInArrays( dashBoardData.financialsData.currentNationData, arrayNames, regionProperty, region ); 
-                 // Join the data from all files into a single array:
-                 var currentRegionConcat = concatObjectArrays(dashBoardData.financialsData.currentRegionData);
-
-                 // Update localities
-                 dashBoardData.financialsData.localityList = getUniqueSortedList(currentRegionConcat, localityProperty);
-                 updateSelector( document.getElementById("financialsLocalitySelector"), ["Select Locality"].concat(dashBoardData.financialsData.localityList) ); 
-                 // Update cost centres
-                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentRegionConcat, costCentreProperty);
-                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Cost Centre"].concat(dashBoardData.financialsData.costCentreList) ); 
-
-                 var subLevelProperty = localityProperty;
-                 var subLevelList = dashBoardData.financialsData.localityList;
-
-                 var subLevelData = computeFinancialsSubData(dashBoardData.financialsData.currentRegionData, subLevelList, subLevelProperty);
-
-                 var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentRegionData );
-
-                 plotFinancialsVisualisation(data, subLevelData, subLevelList, subLevelProperty, regionProperty, region);
-                 return;
-            }
-            
-            function financialsLocalitySelectFunction() 
-            {
-                 var locality = document.getElementById("financialsLocalitySelector").value;
-                 var localityProperty = dashBoardData.financialsData.localityProperty;
-                 var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
-
-                 var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
-
-                dashBoardData.financialsData.currentLocalityData = searchPropertyInArrays( dashBoardData.financialsData.currentRegionData, arrayNames, localityProperty, locality );
-
-                 var currentLocalityConcat = concatObjectArrays(dashBoardData.financialsData.currentLocalityData);
-
-                 // Update cost centres
-                 dashBoardData.financialsData.costCentreList = getUniqueSortedList(currentLocalityConcat, costCentreProperty);
-                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Cost Centre"].concat(dashBoardData.financialsData.costCentreList) ); 
-
-                 var subLevelProperty = costCentreProperty;
-                 var subLevelList = dashBoardData.financialsData.costCentreList;
-
-                 var subLevelData = computeFinancialsSubData(dashBoardData.financialsData.currentLocalityData, subLevelList, subLevelProperty);
-
-                 var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentLocalityData );
-
-                 plotFinancialsVisualisation(data, subLevelData, subLevelList, subLevelProperty, localityProperty, locality );
-
-                 return;
-            }
-
-            function financialsCostCentreSelectFunction() 
-            {
-                 var costCentre = document.getElementById("financialsCostCentreSelector").value;
-                 var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
-
-                 var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
-
-                 dashBoardData.financialsData.currentCostCentreData = searchPropertyInArrays( dashBoardData.financialsData.currentLocalityData, arrayNames, costCentreProperty, costCentre ); 
-
-                 //var currentCostCentreConcat = concatObjectArrays(dashBoardData.financialsData.currentCostCentreData);
-
-                 var data = computeQuarterlyFinancialsData( dashBoardData.financialsData.currentCostCentreData );                 
-
-                 plotFinancialsVisualisation(data, [], [], "", costCentreProperty, costCentre);
+                 var subLevelData = selectedData.subLevelData;
+                 var quarterlyData = selectedData.quarterlyData;
+                 var subLevelProperty = selectedData.subLevelProperty;
+                 var subLevelList = selectedData.subLevelList;
+                 plotFinancialsVisualisation(quarterlyData, subLevelData, subLevelProperty, subLevelList, selectedProperty, selectedValue);
                  return;
             }
 
             // Upload the data file and process it:
-            
-            d3.csv( dashBoardSettings.dataDir + "011_b_Finance_201516_P6_CC.csv", function(d)
+            d3.csv( dashBoardSettings.dataDir + dashBoardData.financialsData.files[dashBoardData.financialsData.files.length - 1].name, function(d)
             { 
               // Copy the data read into the global variable:
-              dashBoardData.financialsData.rawData = d;
+              var nFiles = dashBoardData.financialsData.files.length;
+              var fileNames = dashBoardData.financialsData.files.map(function(d) { return d.propertyName; });
+              dashBoardData.financialsData[fileNames[nFiles-1]] = d;
+              console.log("Done reading " + dashBoardData.financialsData.files[nFiles-1].name);
 
-              console.log("Done reading financials files");
-
-              // copy locally as well:
-              var data = d;
-
-              dashBoardData.financialsData.propertyList = Object.getOwnPropertyNames(d[0]);
-
-              // The nation property is global:
-              dashBoardData.financialsData.nationProperty = dashBoardData.nationPropertyName;
-              dashBoardData.financialsData.regionProperty = dashBoardData.financialsData.propertyList[0]; 
-              dashBoardData.financialsData.localityProperty = dashBoardData.financialsData.propertyList[1]; 
-              dashBoardData.financialsData.costCentreProperty = dashBoardData.financialsData.propertyList[3]; 
-
-              // Get the propertyNames under which files are stored:
-              var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
-              for ( var i = 0; i < arrayNames.length; i++ )
+              var data = dashBoardData.financialsData;
+              // Add nation property
+              for ( var i = 0; i < nFiles; i++ )
               {
-                 addNationProperty(dashBoardData.financialsData[arrayNames[i]], dashBoardData.financialsData.regionProperty, dashBoardData.financialsData.nationProperty);
+                  addNationProperty(data[fileNames[i]], data.regionProperty, data.nationProperty);
               }
 
-              // Get the lists of regions etc from any file, all files should have same lists!!!
-              dashBoardData.financialsData.nationList = getUniqueSortedList(dashBoardData.financialsData[arrayNames[0]], dashBoardData.financialsData.nationProperty);
-              dashBoardData.financialsData.regionList = getUniqueSortedList(dashBoardData.financialsData[arrayNames[0]], dashBoardData.financialsData.regionProperty);
-              dashBoardData.financialsData.localityList = getUniqueSortedList(dashBoardData.financialsData[arrayNames[0]], dashBoardData.financialsData.localityProperty);
-              dashBoardData.financialsData.costCentreList = getUniqueSortedList(dashBoardData.financialsData[arrayNames[0]], dashBoardData.financialsData.costCentreProperty);
-
-              // Update selectors based on the lists above:
-              dashBoardData.financialsData.nationList.unshift(dashBoardData.allUKString);
-              updateSelector( document.getElementById("financialsNationSelector"), dashBoardData.financialsData.nationList );
-
-              financialsNationSelectFunction();
+              var nationList = data.nationList;
+              nationList.unshift(dashBoardData.allUKString);
+              updateSelector( document.getElementById("financialsNationSelector"), nationList );
+              financialsSelectFunction(dashBoardData.financialsData.nationProperty, dashBoardData.allUKString);
             });                                 
+
          </script>
          
           <!-- FOOTER -->

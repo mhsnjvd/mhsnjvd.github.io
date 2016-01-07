@@ -85,27 +85,8 @@
 // ****************************************
 //  Financials Utilities
 //  *************************************//
-function computeFinancialsSubData(data, subLevelList, subLevelProperty)
-{
-    // Get the propertyNames under which files are stored:
-    var arrayNames = dashBoardData.financialsData.files.map( function(d) { return d.propertyName; } );
-
-    var subLevelData = {};
-    for ( var i = 0; i < subLevelList.length; i++ )
-    {
-        var filteredData = {};
-        for ( var j = 0; j < arrayNames.length; j++ )
-        {
-           filteredData[arrayNames[j]] = data[arrayNames[j]].filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
-        }
-        subLevelData[i] = computeQuarterlyFinancialsData(filteredData);
-    }
-    return subLevelData;
-}
-
 // Returns an object with four fields, each is an array of length 4
 // one entry for each quarter.
-
 function addFinancialDataFields(data)
 {
     data.quarterly = [0, 0, 0, 0];
@@ -338,7 +319,7 @@ function updateFinancialsTable( table, tableData)
     return table;    
 }
 
-function plotFinancialsVisualisation(data, subLevelData, subLevelList, subLevelProperty, areaProperty, area)
+function plotFinancialsVisualisation(data, subLevelData, subLevelProperty, subLevelList,  areaProperty, area)
 {
     // Update data table:
     var tableData = makeFinancialsTableData(data);
@@ -352,11 +333,11 @@ function plotFinancialsVisualisation(data, subLevelData, subLevelList, subLevelP
 
     var latestQuarter = dashBoardData.financialsData.files[2].propertyName;
     var latestQuarterData = dashBoardData.financialsData[latestQuarter];
-    var count = getIdentifierCount( latestQuarterData, subLevelList, subLevelProperty);
+    var value = getIdentifierCount( latestQuarterData, subLevelList, subLevelProperty);
     var pieData = [];
     for ( var i = 0; i < subLevelList.length; i++ )
     {
-        pieData.push( {label: subLevelList[i], count: count[i]});
+        pieData.push( {label: subLevelList[i], value: value[i]});
     }
     
     svg = d3.select(document.getElementById("SVG02"));
@@ -430,13 +411,13 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
 //function pieCreator()
 // svg is d3 selected svg
 // pieData is an array of objects with format: 
-// pieData = [ {label: xxxx, count: xxxx}, {}, {}, ...]
+// pieData = [ {label: xxxx, value: xxxx}, {}, {}, ...]
 function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
 {
     // The mother of all objects:
     var pie = {};
 
-    var dataSet = pieData.map(function(d){ return d.count; } );
+    var dataSet = pieData.map(function(d){ return d.value; } );
     var dummyData = dataSet.map(function(d) { return 1.0; } );
 
     pie.piePlot = new pieObjectConstructor(svg, dummyData, pieStyle);
