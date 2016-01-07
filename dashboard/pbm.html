@@ -104,14 +104,19 @@
       </div>
     </nav>
 
+    <script type="text/javascript" src="./js/globals.js"></script>
+    <script type="text/javascript" src="./js/utils.js"></script>
+    <script type="text/javascript" src="./js/plots.js"></script>
+    <script type="text/javascript" src="./js/pbm.js"></script>
+
     <div class="container-fluid">
 
         <!-- Row starts here *********************** -->
         <div class="row">
 
             <div class="col-sm-12">
-              <h1 class="page-header">Impact Data Analysis</h1> 
-              <h4 class="page-header">Quarterly Impact Data</h4> 
+              <h1 class="page-header">People and Business Model Data Analysis</h1> 
+              <h4 class="page-header">Quarterly People and Business Model Data</h4> 
             </div>
 
         </div>
@@ -120,27 +125,25 @@
            <!-- strat  row -->
             <div class="row">
 
-               <div class="col-xs-4">
-                 <select style="width: 250px" id="peopleBizModelNationSelector" onchange="peopleBizModelNationSelectFunction()">
-                 </select>
-               </div>
-
-               <div class="col-xs-4">
-                     <select style="width: 250px" id="peopleBizModelRegionSelector" onchange="peopleBizModelRegionSelectFunction()">
+               <div class="col-xs-3">
+                     <select style="width: 250px" id="peopleBizModelNationSelector" onchange="peopleBizModelSelectFunction(dashBoardData.peopleBizModelData.nationProperty, this.value)">
                      </select>
                </div>
 
-               <div class="col-xs-4">
-                 <select style="width: 250px" id="peopleBizModelLocalitySelector" onchange="peopleBizModelLocalitySelectFunction()">
+               <div class="col-xs-3">
+                     <select style="width: 250px" id="peopleBizModelRegionSelector" onchange="peopleBizModelSelectFunction(dashBoardData.peopleBizModelData.regionProperty, this.value)">
+                     </select>
+               </div>
+
+               <div class="col-xs-3">
+                     <select style="width: 250px" id="peopleBizModelLocalitySelector" onchange="peopleBizModelSelectFunction(dashBoardData.peopleBizModelData.localityProperty, this.value)">
                  </select>
                </div>
 
-               <!--
                <div class="col-xs-3">
-                 <select style="width: 250px" id="peopleBizModelContractNameSelector" onchange="peopleBizModelContractNameSelectFunction()">
+                     <select style="width: 250px" id="peopleBizModelCostCentreSelector" onchange="peopleBizModelSelectFunction(dashBoardData.peopleBizModelData.costCentreProperty, this.value)">
                  </select>
                </div>
-                 -->
 
                
            </div>
@@ -201,134 +204,66 @@
       </div>
       <!-- Container fluid ends here -->
 
-        <script type="text/javascript" src="./js/globals.js"></script>
-        <script type="text/javascript" src="./js/utils.js"></script>
-        <script type="text/javascript" src="./js/plots.js"></script>
-        <script type="text/javascript" src="./js/pbm.js"></script>
 
         <script type="text/javascript"> 
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
-            function peopleBizModelNationSelectFunction() 
+            function updatePeopleBizModelSelectors(data)
             {
-                 var nation = document.getElementById("peopleBizModelNationSelector").value;
-                 var nationProperty = dashBoardData.peopleBizModelData.nationProperty;
+                 var fileNames = dashBoardData.peopleBizModelData.files.map(function(d) { return d.propertyName; } );
                  var regionProperty = dashBoardData.peopleBizModelData.regionProperty;
-                 var localityProperty = dashBoardData.peopleBizModelData.localityProperty; 
-
-                 // Initialize region data and locality list:
-                 dashBoardData.peopleBizModelData.currentNationData = dashBoardData.peopleBizModelData.rawData.filter( function(d) { return d[nationProperty] == nation; } );
-
+                 var localityProperty = dashBoardData.peopleBizModelData.localityProperty;
+                 var costCentreProperty = dashBoardData.peopleBizModelData.costCentreProperty;
+    
+                 var nFiles = fileNames.length;
                  // Update Regions
-                 dashBoardData.peopleBizModelData.regionList = getUniqueSortedList(dashBoardData.peopleBizModelData.currentNationData, regionProperty);
-                 updateSelector( document.getElementById("peopleBizModelRegionSelector"), ["Select Region"].concat(dashBoardData.peopleBizModelData.regionList) );
-
+                 var regionList = getUniqueSortedList(data[fileNames[nFiles-1]], regionProperty);
+                 updateSelector( document.getElementById("peopleBizModelRegionSelector"), ["Select Region"].concat(regionList) );
+    
                  // Update localities
-                 dashBoardData.peopleBizModelData.localityList = getUniqueSortedList(dashBoardData.peopleBizModelData.currentNationData, localityProperty);
-                 updateSelector( document.getElementById("peopleBizModelLocalitySelector"), ["Select Locality"].concat(dashBoardData.peopleBizModelData.localityList) );
+                 var localityList = getUniqueSortedList(data[fileNames[nFiles-1]], localityProperty);
+                 updateSelector( document.getElementById("peopleBizModelLocalitySelector"), ["Select Locality"].concat(localityList) );
 
-                 var subLevelProperty = regionProperty;
-                 var subLevelList = dashBoardData.peopleBizModelData.regionList;
-
-                 if ( nation == dashBoardData.allUKString )
-                 {
-                     dashBoardData.peopleBizModelData.currentNationData = dashBoardData.peopleBizModelData.rawData;
-                     subLevelProperty = nationProperty;
-                     subLevelList = getUniqueSortedList(dashBoardData.peopleBizModelData.currentNationData, subLevelProperty);
-                     // Remove All UK string from the item:
-                     var allUKIndex = subLevelList.indexOf(dashBoardData.allUKString);
-                     if ( allUKIndex > -1 )
-                     {
-                         subLevelList.splice(allUKIndex, 1);
-                     }
-                 }
-
-                 var subLevelData =  computePeopleBizModelSubData(dashBoardData.peopleBizModelData.currentNationData, subLevelList, subLevelProperty);
-
-                 var data = computeQuarterlyPeopleBizModelData( dashBoardData.peopleBizModelData.currentNationData );
-
-                 plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subLevelProperty, nationProperty, nation );
+                 // Update cost centres
+                 var costCentreList = getUniqueSortedList(data[fileNames[nFiles-1]], costCentreProperty);
+                 updateSelector( document.getElementById("peopleBizModelCostCentreSelector"), ["Select Cost Centre"].concat(costCentreList) );
             }
 
-            function peopleBizModelRegionSelectFunction() 
+            function peopleBizModelSelectFunction(selectedProperty, selectedValue) 
             {
-                 var region = document.getElementById("peopleBizModelRegionSelector").value;
-                 var regionProperty = dashBoardData.peopleBizModelData.regionProperty;
-                 var localityProperty = dashBoardData.peopleBizModelData.localityProperty; 
-
-                 // Initialize region data and locality list:
-                 dashBoardData.peopleBizModelData.currentRegionData = dashBoardData.peopleBizModelData.rawData.filter( function(d) { return d[regionProperty] == region; } );
-
-                 // Update localities
-                 dashBoardData.peopleBizModelData.localityList = getUniqueSortedList(dashBoardData.peopleBizModelData.currentRegionData, localityProperty);
-                 updateSelector( document.getElementById("peopleBizModelLocalitySelector"), ["Select Locality"].concat(dashBoardData.peopleBizModelData.localityList) );
-
-                 var subLevelProperty = localityProperty;
-                 var subLevelList = dashBoardData.peopleBizModelData.localityList;
-
-                 var subLevelData =  computePeopleBizModelSubData(dashBoardData.peopleBizModelData.currentRegionData, subLevelList, subLevelProperty);
-
-                 var data = computeQuarterlyPeopleBizModelData( dashBoardData.peopleBizModelData.currentRegionData );
-                 plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subLevelProperty, regionProperty, region );
-
-                 return;
-            }
-            
-            function peopleBizModelLocalitySelectFunction() 
-            {
-                 var locality = document.getElementById("peopleBizModelLocalitySelector").value;
-
-                 var localityProperty = dashBoardData.impactData.localityProperty; 
-
-                 // Initialize region data and locality list:
-                 dashBoardData.peopleBizModelData.currentLocalityData = dashBoardData.peopleBizModelData.rawData.filter( function(d) { return d.Locality == locality; } ); 
-
-                 var data = computeQuarterlyPeopleBizModelData( dashBoardData.peopleBizModelData.currentLocalityData );
-                 plotPeopleBizModelVisualisation(data, [], [], "", localityProperty, locality );
-
-                 return;
+                var funObj = {};
+                var data = dashBoardData.peopleBizModelData;
+                funObj.computeQuarterlyFun = computeQuarterlyPeopleBizModelData;
+                funObj.updateSelectorsFun = updatePeopleBizModelSelectors;
+                funObj.visualisationFun = plotPeopleBizModelVisualisation;
+                generalSelectFunction(data, selectedProperty, selectedValue, funObj);
+                return;
             }
 
-            // Read the main file, refer to globals.js for details
-            d3.csv( dashBoardSettings.dataDir +   dashBoardData.peopleBizModelData.files[1].name, function(d)
+
+            // Upload the data file and process it:
+            d3.csv( dashBoardSettings.dataDir + dashBoardData.peopleBizModelData.files[dashBoardData.peopleBizModelData.files.length - 1].name, function(d)
             { 
-
               // Copy the data read into the global variable:
-              var propertyName = dashBoardData.peopleBizModelData.files[1].propertyName;
+              var nFiles = dashBoardData.peopleBizModelData.files.length;
+              var fileNames = dashBoardData.peopleBizModelData.files.map(function(d) { return d.propertyName; });
+              dashBoardData.peopleBizModelData[fileNames[nFiles-1]] = d;
+              console.log("Done reading " + dashBoardData.peopleBizModelData.files[nFiles-1].name);
 
-              dashBoardData.peopleBizModelData[propertyName] = d;
-              dashBoardData.peopleBizModelData.rawData = d;
-
-              console.log("Done reading " +  dashBoardData.peopleBizModelData.files[1].name );
-
-              dashBoardData.peopleBizModelData.propertyList = Object.getOwnPropertyNames(d[0]);
-
-              // The nation property is global:
-              dashBoardData.peopleBizModelData.nationProperty = dashBoardData.nationPropertyName;
-              dashBoardData.peopleBizModelData.regionProperty = dashBoardData.peopleBizModelData.propertyList[15]; 
-              dashBoardData.peopleBizModelData.localityProperty = dashBoardData.peopleBizModelData.propertyList[14]; 
-
-              // Get the propertyNames under which files are stored:
-              var arrayNames = dashBoardData.peopleBizModelData.files.map( function(d) { return d.propertyName; } );
-              for ( var i = 0; i < arrayNames.length; i++ )
+              var data = dashBoardData.peopleBizModelData;
+              // Add nation property
+              for ( var i = 0; i < nFiles; i++ )
               {
-                 addNationProperty(dashBoardData.peopleBizModelData[arrayNames[i]], dashBoardData.peopleBizModelData.regionProperty, dashBoardData.peopleBizModelData.nationProperty);
+                  addNationProperty(data[fileNames[i]], data.regionProperty, data.nationProperty);
               }
 
-              // Get the lists of regions etc:
-              var data = dashBoardData.peopleBizModelData[propertyName];
-              dashBoardData.peopleBizModelData.nationList = getUniqueSortedList(data, dashBoardData.peopleBizModelData.nationProperty);
-              dashBoardData.peopleBizModelData.regionList = getUniqueSortedList(data, dashBoardData.peopleBizModelData.regionProperty);
-              dashBoardData.peopleBizModelData.localityList = getUniqueSortedList(data, dashBoardData.peopleBizModelData.localityProperty);
-
-              // Update selectors based on the lists above:
-              dashBoardData.peopleBizModelData.nationList.unshift(dashBoardData.allUKString);
-              updateSelector( document.getElementById("peopleBizModelNationSelector"), dashBoardData.peopleBizModelData.nationList );
-
-              peopleBizModelNationSelectFunction();
-
+              var nationList = data.nationList;
+              nationList.unshift(dashBoardData.allUKString);
+              updateSelector( document.getElementById("peopleBizModelNationSelector"), nationList );
+              peopleBizModelSelectFunction(dashBoardData.peopleBizModelData.nationProperty, dashBoardData.allUKString);
             });                                 
+
 
          </script>
          

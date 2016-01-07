@@ -7,21 +7,10 @@ dashBoardData.impactData = {};
 dashBoardData.financialsData = {};
 dashBoardData.bizDevData = {};
 dashBoardData.peopleBizModelData = {};
+
+
 dashBoardData.impactData.clickedData = {};
 dashBoardData.impactData.currentData = {};
-
-// These can be created on the runtime but
-// given here just to give a template idea:
-dashBoardData.financialsData.rawData = [];
-dashBoardData.financialsData.funderList = [];
-dashBoardData.financialsData.regionList = [];
-dashBoardData.financialsData.localityList = [];
-dashBoardData.financialsData.costCentreList = [];
-dashBoardData.financialsData.propertyList = [];
-dashBoardData.financialsData.currentRegionData = [];
-dashBoardData.financialsData.currentFunderData = [];
-dashBoardData.financialsData.currentLocalityData = [];
-dashBoardData.financialsData.currentCostCentreData = [];
 
 var dashBoardSettings = {};
 dashBoardSettings.color = {};
@@ -132,7 +121,6 @@ dashBoardData.regionList.forEach( function(region)
                 }
             }
         });
-
 
 function addNationProperty(data, regionProperty, nationProperty)
 {

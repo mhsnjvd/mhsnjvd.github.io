@@ -26,21 +26,7 @@
 // *******************************************************
 //    People and Business Model Utility functions
 // *****************************************************//
-function computePeopleBizModelSubData(data, subLevelList, subLevelProperty)
-{
-   var subLevelData = [];
-   for ( var i = 0; i < subLevelList.length; i++ )
-   {
-       var thisData = data.filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
-       subLevelData[i] =  computeQuarterlyPeopleBizModelData(thisData);
-   }
-   return subLevelData;
-}
-
-// *******************************************************
-//    People and Business Model Utility functions
-// *****************************************************//
-function computeQuarterlyPeopleBizModelData(peopleBizModelDataArray)
+function computeQuarterlyPeopleBizModelData(peopleBizModelData)
 {
     /*****************************************
      * This function is accessing global data:
@@ -58,6 +44,8 @@ function computeQuarterlyPeopleBizModelData(peopleBizModelDataArray)
     //       .
     //       .
     
+    var fileNames = dashBoardData.peopleBizModelData.files.map(function(d) { return d.propertyName; });
+    var staffData = peopleBizModelData[fileNames[fileNames.length - 1]];
     // This is the object returned:
     var data = {};
 
@@ -66,14 +54,14 @@ function computeQuarterlyPeopleBizModelData(peopleBizModelDataArray)
     var headerRow = ["Q2"];
 
     var jobPropertyName = "Job Type";
-    var jobTypes = getUniqueSortedList(dashBoardData.peopleBizModelData.rawData, jobPropertyName);
+    var jobTypes = getUniqueSortedList(dashBoardData.peopleBizModelData[fileNames[fileNames.length - 1]], jobPropertyName);
     //var headerColumn = ["AD", "CSMs", "Team Managers", "CSM + Team Leaders", "Practitioners", "Administrators", "Others", "TOTAL"];
     var headerColumn = jobTypes;
 
 
     for ( var i = 0; i < jobTypes.length; i++ )
     {
-        var temp =  peopleBizModelDataArray.filter( function(d) { return d[jobPropertyName] == jobTypes[i]; } );
+        var temp =  staffData.filter( function(d) { return d[jobPropertyName] == jobTypes[i]; } );
         data[headerColumn[i]] = {};
         for ( var j = 0; j < headerRow.length; j++ )
         {
