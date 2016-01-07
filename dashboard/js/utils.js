@@ -304,3 +304,92 @@ function filterData(data, fileNames, propertyNames, propertyValues)
     }
     return filteredData;
 }
+
+
+// Looks at the array propertyList, finds property
+// and tries to return the next subLevel property
+function getSubLevelProperty(propertyList, property)
+{
+    var index = propertyList.indexOf(property);
+    var subLevelProperty = {};
+    // If it's the last property, there is no sub level
+    if ( index === propertyList.length - 1 )
+    {
+        subLevelProperty = "";
+    }
+    // If it doesn't exist, the sub level is undefined
+    else if ( index === -1 )
+    {
+        subLevelProperty = undefined;
+    }
+    // otherwise, return the sub level
+    else
+    { 
+        subLevelProperty = propertyList[index+1];
+    }
+    return subLevelProperty;
+}
+
+
+// data is an object whose fields are arrays with actual data
+// selectedProperty is/are the properties we want to search in data
+// selectedValue is/are the values of the properties we want to search in data
+// computeQuarterlyFun is the function we use for computing quarterly data
+// visualiseFun is the function to be used for visualisation
+function dataSelectFunction(data, selectedProperty, selectedValue, computeQuarterlyFun)
+{
+      var selectedData = {};
+      //filter the data:
+      var fileNames = data.files.map(function(d) { return d.propertyName; } );
+      var nFiles = fileNames.length;
+      var filteredData = filterData(data, fileNames, selectedProperty, selectedValue);
+
+      var subLevelProperty = getSubLevelProperty(data.hierarchicalProperties, selectedProperty);
+      var subLevelData = {};
+      var subLevelList = {};
+      if ( subLevelProperty == undefined )
+      {
+          subLevelData = {};
+          subLevelList = [];
+          console.log("dataSelectFunction: can not find a subLevel property for " + selectedProperty);
+      }
+      else if ( subLevelProperty === "" )
+      {
+          subLevelData = {};
+          subLevelList = [];
+      }
+      else
+      {
+          // [TODO]: This should be done better
+          // For the time being, the last File must have all the region/locality information
+          subLevelList = getUniqueSortedList(filteredData[fileNames[nFiles-1]], subLevelProperty);
+
+          // Handle the all UK case separately
+          if ( selectedValue == dashBoardData.allUKString )
+          {
+              for ( var i = 0; i < nFiles; i++ )
+              {
+                  filteredData[fileNames[i]] = data[fileNames[i]];
+              }
+              // Select the top level:
+              subLevelProperty = data.hierarchicalProperties[0];
+              subLevelList = getUniqueSortedList(filteredData[fileNames[nFiles-1]], subLevelProperty);
+              // Just in case: Remove All UK string from the item:
+              var allUKIndex = subLevelList.indexOf(dashBoardData.allUKString);
+              if ( allUKIndex > -1 )
+              {
+                  subLevelList.splice(allUKIndex, 1);
+              }
+          }
+          subLevelData = computeSubData(filteredData, subLevelProperty, subLevelList, fileNames, computeQuarterlyFun);
+      }
+      var quarterlyData = computeQuarterlyFun(filteredData);
+
+      // Return computed data:
+      selectedData.filteredData = filteredData;
+      selectedData.subLevelData = subLevelData;
+      selectedData.subLevelList = subLevelList;
+      selectedData.subLevelProperty = subLevelProperty;
+      selectedData.quarterlyData = quarterlyData;
+      return selectedData;
+}

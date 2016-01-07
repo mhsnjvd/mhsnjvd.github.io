@@ -272,57 +272,29 @@
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
+
             function impactNationSelectFunction() 
             {
-                 var nation = document.getElementById("impactNationSelector").value;
                  var data = dashBoardData.impactData;
-                 var nationProperty = data.nationProperty;
-                 var regionProperty = data.regionProperty;
-                 var localityProperty = data.localityProperty; 
-                 //var contractNameProperty = data.contractNameProperty; 
+                 var selectedProperty = data.nationProperty;
+                 var selectedValue = document.getElementById("impactNationSelector").value;
 
-                 var selectedProperty = nationProperty;
-                 var selectedValue = nation;
-                 //filter the data:
+                 var selectedData = dataSelectFunction(dashBoardData.impactData, selectedProperty, selectedValue, computeQuarterlyImpactData);
+
                  var fileNames = data.files.map(function(d) { return d.propertyName; } );
-                 data.currentData = filterData(data, fileNames, selectedProperty, selectedValue);
-
-                 // Initialize region data and locality list:
                  var nFiles = fileNames.length;
                  // Update Regions
-                 data.regionList = getUniqueSortedList(data.currentData[fileNames[nFiles-1]], regionProperty);
-                 updateSelector( document.getElementById("impactRegionSelector"), ["Select Region"].concat(data.regionList) );
+                 var regionList = getUniqueSortedList(selectedData.filteredData[fileNames[nFiles-1]], data.regionProperty);
+                 updateSelector( document.getElementById("impactRegionSelector"), ["Select Region"].concat(regionList) );
 
                  // Update localities
-                 data.localityList = getUniqueSortedList(data.currentData[fileNames[nFiles-1]], localityProperty);
-                 updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(data.localityList) );
+                 var localityList = getUniqueSortedList(selectedData.filteredData[fileNames[nFiles-1]], data.localityProperty);
+                 updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(localityList) );
 
-                 // Update Contracts
-                 /*
-                 data.contractNameList = getUniqueSortedList(data.currentNationData, contractNameProperty);
-                 updateSelector( document.getElementById("impactContractNameSelector"), ["Select Contract"].concat(data.contractNameList));
-                 */
-                 var subLevelProperty = regionProperty;
-                 var subLevelList = data.regionList;
-
-                 if ( nation == dashBoardData.allUKString )
-                 {
-                     for ( var i = 0; i < nFiles; i++ )
-                     {
-                         data.currentData[fileNames[i]] = data[fileNames[i]];
-                     }
-                     subLevelProperty = nationProperty;
-                     subLevelList = getUniqueSortedList(data.currentData[fileNames[nFiles-1]], subLevelProperty);
-                     // Remove All UK string from the item:
-                     var allUKIndex = subLevelList.indexOf(dashBoardData.allUKString);
-                     if ( allUKIndex > -1 )
-                     {
-                         subLevelList.splice(allUKIndex, 1);
-                     }
-                 }
-
-                 var subLevelData = computeSubData(data.currentData, subLevelProperty, subLevelList, fileNames, computeQuarterlyImpactData);
-                 var quarterlyData = computeQuarterlyImpactData(data.currentData);
+                 var subLevelData = selectedData.subLevelData;
+                 var quarterlyData = selectedData.quarterlyData;
+                 var subLevelProperty = selectedData.subLevelProperty;
+                 var subLevelList = selectedData.subLevelList;
                  plotImpactVisualisation(quarterlyData, subLevelData, subLevelProperty, subLevelList, selectedProperty, selectedValue);
                  return;
             }
@@ -373,47 +345,25 @@
                  return;
             }
 
-
             d3.csv( dashBoardSettings.dataDir + dashBoardData.impactData.files[dashBoardData.impactData.files.length - 1].name, function(d)
             { 
               // Copy the data read into the global variable:
               var nFiles = dashBoardData.impactData.files.length;
-              var propertyNames = dashBoardData.impactData.files.map(function(d) { return d.propertyName; });
-              dashBoardData.impactData[propertyNames[nFiles-1]] = d;
-
-
+              var fileNames = dashBoardData.impactData.files.map(function(d) { return d.propertyName; });
+              dashBoardData.impactData[fileNames[nFiles-1]] = d;
               console.log("Done reading " + dashBoardData.impactData.files[nFiles-1].name);
 
-              dashBoardData.impactData.propertyList = Object.getOwnPropertyNames(d[0]);
-              // The nation property is global:
-              dashBoardData.impactData.nationProperty = dashBoardData.nationPropertyName;
-              dashBoardData.impactData.regionProperty = dashBoardData.impactData.propertyList[0]; 
-              dashBoardData.impactData.localityProperty = dashBoardData.impactData.propertyList[1]; 
-              dashBoardData.impactData.contractNameProperty = dashBoardData.impactData.propertyList[3]; 
-
-              var nationProperty = dashBoardData.impactData.nationProperty;
-              var regionProperty = dashBoardData.impactData.regionProperty;
-              var localityProperty = dashBoardData.impactData.localityProperty;
-
+              var data = dashBoardData.impactData;
+              // Add nation property
               for ( var i = 0; i < nFiles; i++ )
               {
-                 addNationProperty(dashBoardData.impactData[propertyNames[i]], regionProperty, nationProperty);
+                  addNationProperty(data[fileNames[i]], data.regionProperty, data.nationProperty);
               }
 
-              var data = dashBoardData.impactData[propertyNames[nFiles-1]];
-              // Get the lists of regions etc:
-              dashBoardData.impactData.nationList = getUniqueSortedList(data, nationProperty);
-              dashBoardData.impactData.regionList = getUniqueSortedList(data, regionProperty);
-              dashBoardData.impactData.localityList = getUniqueSortedList(data, localityProperty);
-              
-              //dashBoardData.impactData.contractNameList = getUniqueSortedList(data, dashBoardData.impactData.contractNameProperty);
-
-              // Update selectors based on the lists above:
-              dashBoardData.impactData.nationList.unshift(dashBoardData.allUKString);
-              updateSelector( document.getElementById("impactNationSelector"), dashBoardData.impactData.nationList );
-
+              var nationList = data.nationList;
+              nationList.unshift(dashBoardData.allUKString);
+              updateSelector( document.getElementById("impactNationSelector"), nationList );
               impactNationSelectFunction();
-
             });                                 
 
          </script>
