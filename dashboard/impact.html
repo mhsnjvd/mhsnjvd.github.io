@@ -301,47 +301,40 @@
 
             function impactRegionSelectFunction() 
             {
-                 var region = document.getElementById("impactRegionSelector").value;
                  var data = dashBoardData.impactData;
-                 var regionProperty = data.regionProperty;
-                 var localityProperty = data.localityProperty; 
+                 var selectedProperty = data.regionProperty;
+                 var selectedValue = document.getElementById("impactRegionSelector").value;
 
-                 var selectedProperty = regionProperty;
-                 var selectedValue = region;
+                 var selectedData = dataSelectFunction(dashBoardData.impactData, selectedProperty, selectedValue, computeQuarterlyImpactData);
 
-                 //filter the data:
                  var fileNames = data.files.map(function(d) { return d.propertyName; } );
-                 data.currentData = filterData(data, fileNames, selectedProperty, selectedValue);
+                 var nFiles = fileNames.length;
 
                  // Update localities
-                 var nFiles = fileNames.length;
-                 dashBoardData.impactData.localityList = getUniqueSortedList(data.currentData[fileNames[nFiles-1]], localityProperty);
-                 updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(data.localityList) );
+                 var localityList = getUniqueSortedList(selectedData.filteredData[fileNames[nFiles-1]], data.localityProperty);
+                 updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(localityList) );
 
-                 var subLevelProperty = localityProperty;
-                 var subLevelList = data.localityList;
-
-                 var subLevelData = computeSubData(data.currentData, subLevelProperty, subLevelList, fileNames, computeQuarterlyImpactData);
-                 var quarterlyData = computeQuarterlyImpactData(data.currentData);
+                 var subLevelData = selectedData.subLevelData;
+                 var quarterlyData = selectedData.quarterlyData;
+                 var subLevelProperty = selectedData.subLevelProperty;
+                 var subLevelList = selectedData.subLevelList;
                  plotImpactVisualisation(quarterlyData, subLevelData, subLevelProperty, subLevelList, selectedProperty, selectedValue);
                  return;
             }
             
             function impactLocalitySelectFunction() 
             {
-                 var locality = document.getElementById("impactLocalitySelector").value;
                  var data = dashBoardData.impactData;
-                 var localityProperty = dashBoardData.impactData.localityProperty; 
+                 var selectedProperty = data.localityProperty;
+                 var selectedValue = document.getElementById("impactLocalitySelector").value;
 
-                 var selectedProperty = localityProperty;
-                 var selectedValue = locality;
+                 var selectedData = dataSelectFunction(dashBoardData.impactData, selectedProperty, selectedValue, computeQuarterlyImpactData);
 
-                 //filter the data:
-                 var fileNames = data.files.map(function(d) { return d.propertyName; } );
-                 data.currentData = filterData(data, fileNames, selectedProperty, selectedValue);
-
-                 var quarterlyData = computeQuarterlyImpactData(data.currentData);
-                 plotImpactVisualisation(quarterlyData, [], [], [], selectedProperty, selectedValue);
+                 var subLevelData = selectedData.subLevelData;
+                 var quarterlyData = selectedData.quarterlyData;
+                 var subLevelProperty = selectedData.subLevelProperty;
+                 var subLevelList = selectedData.subLevelList;
+                 plotImpactVisualisation(quarterlyData, subLevelData, subLevelProperty, subLevelList, selectedProperty, selectedValue);
                  return;
             }
 
