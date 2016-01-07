@@ -281,9 +281,11 @@
                  var localityProperty = data.localityProperty; 
                  //var contractNameProperty = data.contractNameProperty; 
 
+                 var selectedProperty = nationProperty;
+                 var selectedValue = nation;
                  //filter the data:
                  var fileNames = data.files.map(function(d) { return d.propertyName; } );
-                 data.currentData = filterData(data, fileNames, nationProperty, nation);
+                 data.currentData = filterData(data, fileNames, selectedProperty, selectedValue);
 
                  // Initialize region data and locality list:
                  var nFiles = fileNames.length;
@@ -321,47 +323,53 @@
 
                  var subLevelData = computeSubData(data.currentData, subLevelProperty, subLevelList, fileNames, computeQuarterlyImpactData);
                  var quarterlyData = computeQuarterlyImpactData(data.currentData);
-                 plotImpactVisualisation(quarterlyData, subLevelData, subLevelProperty, subLevelList, nationProperty, nation);
+                 plotImpactVisualisation(quarterlyData, subLevelData, subLevelProperty, subLevelList, selectedProperty, selectedValue);
+                 return;
             }
-
 
             function impactRegionSelectFunction() 
             {
                  var region = document.getElementById("impactRegionSelector").value;
-                 var regionProperty = dashBoardData.impactData.regionProperty;
-                 var localityProperty = dashBoardData.impactData.localityProperty; 
+                 var data = dashBoardData.impactData;
+                 var regionProperty = data.regionProperty;
+                 var localityProperty = data.localityProperty; 
 
-                 // Initialize region data and locality list:
-                 dashBoardData.impactData.currentRegionData = dashBoardData.impactData.rawData.filter( function(d) { return d[regionProperty] == region; } );
-                 dashBoardData.impactData.currentRegionExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter( function(d) { return d[regionProperty] === region; } );
+                 var selectedProperty = regionProperty;
+                 var selectedValue = region;
+
+                 //filter the data:
+                 var fileNames = data.files.map(function(d) { return d.propertyName; } );
+                 data.currentData = filterData(data, fileNames, selectedProperty, selectedValue);
 
                  // Update localities
-                 dashBoardData.impactData.localityList = getUniqueSortedList(dashBoardData.impactData.currentRegionData, localityProperty);
-                 updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(dashBoardData.impactData.localityList) );
+                 var nFiles = fileNames.length;
+                 dashBoardData.impactData.localityList = getUniqueSortedList(data.currentData[fileNames[nFiles-1]], localityProperty);
+                 updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(data.localityList) );
 
                  var subLevelProperty = localityProperty;
-                 var subLevelList = dashBoardData.impactData.localityList;
-                 var subLevelData = computeImpactSubData(dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentNationExternalInspectionsData, subLevelList, subLevelProperty);
-                 var data = computeQuarterlyImpactData( dashBoardData.impactData.currentRegionData, dashBoardData.impactData.currentRegionExternalInspectionsData );
+                 var subLevelList = data.localityList;
 
-                 plotImpactVisualisation(data, subLevelData, subLevelList, regionProperty, region, subLevelProperty);
-
+                 var subLevelData = computeSubData(data.currentData, subLevelProperty, subLevelList, fileNames, computeQuarterlyImpactData);
+                 var quarterlyData = computeQuarterlyImpactData(data.currentData);
+                 plotImpactVisualisation(quarterlyData, subLevelData, subLevelProperty, subLevelList, selectedProperty, selectedValue);
                  return;
-                    
             }
             
             function impactLocalitySelectFunction() 
             {
                  var locality = document.getElementById("impactLocalitySelector").value;
+                 var data = dashBoardData.impactData;
                  var localityProperty = dashBoardData.impactData.localityProperty; 
 
-                 // Initialize region data and locality list:
-                 dashBoardData.impactData.currentLocalityData = dashBoardData.impactData.rawData.filter( function(d) { return d[localityProperty] === locality; } );
-                 dashBoardData.impactData.currentLocalityExternalInspectionsData = dashBoardData.impactData.externalInspectionsData.filter( function(d) { return d[localityProperty] === locality; } ); 
+                 var selectedProperty = localityProperty;
+                 var selectedValue = locality;
 
-                 var data = computeQuarterlyImpactData( dashBoardData.impactData.currentLocalityData, dashBoardData.impactData.currentLocalityExternalInspectionsData );
+                 //filter the data:
+                 var fileNames = data.files.map(function(d) { return d.propertyName; } );
+                 data.currentData = filterData(data, fileNames, selectedProperty, selectedValue);
 
-                 plotImpactVisualisation(data, [], [], localityProperty, locality, [])
+                 var quarterlyData = computeQuarterlyImpactData(data.currentData);
+                 plotImpactVisualisation(quarterlyData, [], [], [], selectedProperty, selectedValue);
                  return;
             }
 
@@ -373,7 +381,8 @@
               var propertyNames = dashBoardData.impactData.files.map(function(d) { return d.propertyName; });
               dashBoardData.impactData[propertyNames[nFiles-1]] = d;
 
-              console.log("Done reading contracts files");
+
+              console.log("Done reading " + dashBoardData.impactData.files[nFiles-1].name);
 
               dashBoardData.impactData.propertyList = Object.getOwnPropertyNames(d[0]);
               // The nation property is global:
@@ -382,16 +391,22 @@
               dashBoardData.impactData.localityProperty = dashBoardData.impactData.propertyList[1]; 
               dashBoardData.impactData.contractNameProperty = dashBoardData.impactData.propertyList[3]; 
 
+              var nationProperty = dashBoardData.impactData.nationProperty;
+              var regionProperty = dashBoardData.impactData.regionProperty;
+              var localityProperty = dashBoardData.impactData.localityProperty;
+
               for ( var i = 0; i < nFiles; i++ )
               {
-                 addNationProperty(dashBoardData.impactData[propertyNames[i]], dashBoardData.impactData.regionProperty, dashBoardData.impactData.nationProperty);
+                 addNationProperty(dashBoardData.impactData[propertyNames[i]], regionProperty, nationProperty);
               }
+
               var data = dashBoardData.impactData[propertyNames[nFiles-1]];
               // Get the lists of regions etc:
-              dashBoardData.impactData.nationList = getUniqueSortedList(data, dashBoardData.impactData.nationProperty);
-              dashBoardData.impactData.regionList = getUniqueSortedList(data, dashBoardData.impactData.regionProperty);
-              dashBoardData.impactData.localityList = getUniqueSortedList(data, dashBoardData.impactData.localityProperty);
-              dashBoardData.impactData.contractNameList = getUniqueSortedList(data, dashBoardData.impactData.contractNameProperty);
+              dashBoardData.impactData.nationList = getUniqueSortedList(data, nationProperty);
+              dashBoardData.impactData.regionList = getUniqueSortedList(data, regionProperty);
+              dashBoardData.impactData.localityList = getUniqueSortedList(data, localityProperty);
+              
+              //dashBoardData.impactData.contractNameList = getUniqueSortedList(data, dashBoardData.impactData.contractNameProperty);
 
               // Update selectors based on the lists above:
               dashBoardData.impactData.nationList.unshift(dashBoardData.allUKString);
