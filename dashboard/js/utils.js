@@ -393,3 +393,16 @@ function dataSelectFunction(data, selectedProperty, selectedValue, computeQuarte
       selectedData.quarterlyData = quarterlyData;
       return selectedData;
 }
+
+function generalSelectFunction(data, selectedProperty, selectedValue, funObject) 
+{
+     var selectedData = dataSelectFunction(data, selectedProperty, selectedValue, funObject.computeQuarterlyFun);
+     funObject.updateSelectorsFun(selectedData.filteredData)
+
+     var subLevelData = selectedData.subLevelData;
+     var quarterlyData = selectedData.quarterlyData;
+     var subLevelProperty = selectedData.subLevelProperty;
+     var subLevelList = selectedData.subLevelList;
+     funObject.visualisationFun(quarterlyData, subLevelData, subLevelProperty, subLevelList, selectedProperty, selectedValue);
+     return;
+}

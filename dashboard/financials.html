@@ -247,13 +247,7 @@
       <!-- Container fluid ends here -->
 
 
-        <script type="text/javascript" src="./js/globals.js"></script>
-        <script type="text/javascript" src="./js/utils.js"></script>
-        <script type="text/javascript" src="./js/plots.js"></script>
-        <script type="text/javascript" src="./js/financials.js"></script>
-
-        <script type="text/javascript"> 
-
+            <script type="text/javascript"> 
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
@@ -280,20 +274,17 @@
 
             function financialsSelectFunction(selectedProperty, selectedValue) 
             {
-                 var data = dashBoardData.financialsData;
-                 var selectedData = dataSelectFunction(data, selectedProperty, selectedValue, computeQuarterlyFinancialsData);
-                 updateFinancialsSelectors(selectedData.filteredData)
-
-                 var subLevelData = selectedData.subLevelData;
-                 var quarterlyData = selectedData.quarterlyData;
-                 var subLevelProperty = selectedData.subLevelProperty;
-                 var subLevelList = selectedData.subLevelList;
-                 plotFinancialsVisualisation(quarterlyData, subLevelData, subLevelProperty, subLevelList, selectedProperty, selectedValue);
-                 return;
+                var funObj = {};
+                var data = dashBoardData.financialsData;
+                funObj.computeQuarterlyFun = computeQuarterlyFinancialsData;
+                funObj.updateSelectorsFun = updateFinancialsSelectors;
+                funObj.visualisationFun = plotFinancialsVisualisation;
+                generalSelectFunction(data, selectedProperty, selectedValue, funObj);
+                return;
             }
 
             // Upload the data file and process it:
-            d3.csv( dashBoardSettings.dataDir + dashBoardData.financialsData.files[dashBoardData.financialsData.files.length - 1].name, function(d)
+            d3.csv(dashBoardSettings.dataDir + dashBoardData.financialsData.files[dashBoardData.financialsData.files.length - 1].name, function(d)
             { 
               // Copy the data read into the global variable:
               var nFiles = dashBoardData.financialsData.files.length;

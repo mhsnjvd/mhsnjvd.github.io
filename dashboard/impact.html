@@ -104,6 +104,11 @@
       </div>
     </nav>
 
+    <script type="text/javascript" src="./js/globals.js"></script>
+    <script type="text/javascript" src="./js/utils.js"></script>
+    <script type="text/javascript" src="./js/plots.js"></script>
+    <script type="text/javascript" src="./js/impact.js"></script>
+
     <div class="container-fluid">
 
         <!-- Row starts here *********************** -->
@@ -121,17 +126,17 @@
             <div class="row">
 
                <div class="col-xs-4">
-                 <select style="width: 250px" id="impactNationSelector" onchange="impactNationSelectFunction()">
-                 </select>
-               </div>
-
-               <div class="col-xs-4">
-                     <select style="width: 250px" id="impactRegionSelector" onchange="impactRegionSelectFunction()">
+                     <select style="width: 250px" id="impactNationSelector" onchange="impactSelectFunction(dashBoardData.impactData.nationProperty, this.value)">
                      </select>
                </div>
 
                <div class="col-xs-4">
-                 <select style="width: 250px" id="impactLocalitySelector" onchange="impactLocalitySelectFunction()">
+                     <select style="width: 250px" id="impactRegionSelector" onchange="impactSelectFunction(dashBoardData.impactData.regionProperty, this.value)">
+                     </select>
+               </div>
+
+               <div class="col-xs-4">
+                     <select style="width: 250px" id="impactLocalitySelector" onchange="impactSelectFunction(dashBoardData.impactData.localityProperty, this.value)">
                  </select>
                </div>
 
@@ -263,81 +268,41 @@
       </div>
       <!-- Container fluid ends here -->
 
-        <script type="text/javascript" src="./js/globals.js"></script>
-        <script type="text/javascript" src="./js/utils.js"></script>
-        <script type="text/javascript" src="./js/plots.js"></script>
-        <script type="text/javascript" src="./js/impact.js"></script>
 
         <script type="text/javascript"> 
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
 
-            function impactNationSelectFunction() 
+            function updateImpactSelectors(data)
             {
-                 var data = dashBoardData.impactData;
-                 var selectedProperty = data.nationProperty;
-                 var selectedValue = document.getElementById("impactNationSelector").value;
-
-                 var selectedData = dataSelectFunction(dashBoardData.impactData, selectedProperty, selectedValue, computeQuarterlyImpactData);
-
-                 var fileNames = data.files.map(function(d) { return d.propertyName; } );
+                 var fileNames = dashBoardData.impactData.files.map(function(d) { return d.propertyName; } );
+                 var regionProperty = dashBoardData.impactData.regionProperty;
+                 var localityProperty = dashBoardData.impactData.localityProperty;
+    
                  var nFiles = fileNames.length;
                  // Update Regions
-                 var regionList = getUniqueSortedList(selectedData.filteredData[fileNames[nFiles-1]], data.regionProperty);
+                 var regionList = getUniqueSortedList(data[fileNames[nFiles-1]], regionProperty);
                  updateSelector( document.getElementById("impactRegionSelector"), ["Select Region"].concat(regionList) );
-
+    
                  // Update localities
-                 var localityList = getUniqueSortedList(selectedData.filteredData[fileNames[nFiles-1]], data.localityProperty);
+                 var localityList = getUniqueSortedList(data[fileNames[nFiles-1]], localityProperty);
                  updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(localityList) );
-
-                 var subLevelData = selectedData.subLevelData;
-                 var quarterlyData = selectedData.quarterlyData;
-                 var subLevelProperty = selectedData.subLevelProperty;
-                 var subLevelList = selectedData.subLevelList;
-                 plotImpactVisualisation(quarterlyData, subLevelData, subLevelProperty, subLevelList, selectedProperty, selectedValue);
-                 return;
             }
 
-            function impactRegionSelectFunction() 
+            function impactSelectFunction(selectedProperty, selectedValue) 
             {
-                 var data = dashBoardData.impactData;
-                 var selectedProperty = data.regionProperty;
-                 var selectedValue = document.getElementById("impactRegionSelector").value;
-
-                 var selectedData = dataSelectFunction(dashBoardData.impactData, selectedProperty, selectedValue, computeQuarterlyImpactData);
-
-                 var fileNames = data.files.map(function(d) { return d.propertyName; } );
-                 var nFiles = fileNames.length;
-
-                 // Update localities
-                 var localityList = getUniqueSortedList(selectedData.filteredData[fileNames[nFiles-1]], data.localityProperty);
-                 updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(localityList) );
-
-                 var subLevelData = selectedData.subLevelData;
-                 var quarterlyData = selectedData.quarterlyData;
-                 var subLevelProperty = selectedData.subLevelProperty;
-                 var subLevelList = selectedData.subLevelList;
-                 plotImpactVisualisation(quarterlyData, subLevelData, subLevelProperty, subLevelList, selectedProperty, selectedValue);
-                 return;
-            }
-            
-            function impactLocalitySelectFunction() 
-            {
-                 var data = dashBoardData.impactData;
-                 var selectedProperty = data.localityProperty;
-                 var selectedValue = document.getElementById("impactLocalitySelector").value;
-
-                 var selectedData = dataSelectFunction(dashBoardData.impactData, selectedProperty, selectedValue, computeQuarterlyImpactData);
-
-                 var subLevelData = selectedData.subLevelData;
-                 var quarterlyData = selectedData.quarterlyData;
-                 var subLevelProperty = selectedData.subLevelProperty;
-                 var subLevelList = selectedData.subLevelList;
-                 plotImpactVisualisation(quarterlyData, subLevelData, subLevelProperty, subLevelList, selectedProperty, selectedValue);
-                 return;
+                var funObj = {};
+                var data = dashBoardData.impactData;
+                funObj.computeQuarterlyFun = computeQuarterlyImpactData;
+                funObj.updateSelectorsFun = updateImpactSelectors;
+                funObj.visualisationFun = plotImpactVisualisation;
+                generalSelectFunction(data, selectedProperty, selectedValue, funObj);
+                return;
             }
 
+
+            // Upload the data file and process it:
             d3.csv( dashBoardSettings.dataDir + dashBoardData.impactData.files[dashBoardData.impactData.files.length - 1].name, function(d)
             { 
               // Copy the data read into the global variable:
@@ -356,9 +321,8 @@
               var nationList = data.nationList;
               nationList.unshift(dashBoardData.allUKString);
               updateSelector( document.getElementById("impactNationSelector"), nationList );
-              impactNationSelectFunction();
+              impactSelectFunction(dashBoardData.impactData.nationProperty, dashBoardData.allUKString);
             });                                 
-
          </script>
          
           <!-- FOOTER -->
