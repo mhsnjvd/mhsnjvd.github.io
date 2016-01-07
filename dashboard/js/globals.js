@@ -54,6 +54,7 @@ dashBoardData.impactData.files = [
                     ];
 
 dashBoardData.bizDevData.files = [
+                    { name: "009_Pipeline_Contracts.csv",     propertyName: "contractsData"},
                     { name: "008_Pipeline_Opportunities.csv", propertyName: "pipeLineOpportunities"}
 ];
 

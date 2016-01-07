@@ -3,41 +3,27 @@
 //*********************************/
 // Make sure the file is read before reading the second file. This is the ( function() {})(); construct:
 (function() {
-   d3.csv( dashBoardSettings.dataDir +  "009_Pipeline_Contracts.csv", function(d)
+   d3.csv( dashBoardSettings.dataDir +  dashBoardData.bizDevData.files[0].name, function(d)
    { 
      // Copy the data read into the global variable:
-     dashBoardData.bizDevData.contractsData = d;
+     dashBoardData.bizDevData[dashBoardData.bizDevData.files[0].propertyName]= d;
      // Copy the data locally as well
      var data = d;
-     console.log("Pipeline Contracts file read successfuly");
-     dashBoardData.bizDevData.contractsPropertyList = Object.getOwnPropertyNames(data[0]);
-
+     console.log(dashBoardSettings.dataDir +  dashBoardData.bizDevData.files[0].name + " read successfuly");
    }); // end of d3.csv()                                
 })();
 // *******************************************************
 //    Business Development Utility functions
 // *****************************************************//
-//
-function computeBizDevSubData(data1, data2, subLevelList, subLevelProperty)
-{
-   var subLevelData1 = [];
-   var subLevelData2 = [];
-   var subLevelData = [];
-   for ( var i = 0; i < subLevelList.length; i++ )
-   {
-       subLevelData1[i] = data1.filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
-       subLevelData2[i] = data2.filter( function(d) { return d[subLevelProperty] === subLevelList[i];} );
-       subLevelData[i] = computeQuarterlyBizDevData(subLevelData1[i], subLevelData2[i]);
-   }
-   return subLevelData;
-}
-
-function computeQuarterlyBizDevData(pipeLineDataArray, contractDataArray)
+function computeQuarterlyBizDevData(bizDevData)
 {
     /*****************************************
      * This function is accessing global data:
      * ****************************************/
 
+    var fileNames = dashBoardData.bizDevData.files.map(function(d) { return d.propertyName; } );
+    var contractDataArray = bizDevData[fileNames[0]];
+    var pipeLineDataArray = bizDevData[fileNames[1]];
     // This is the object returned:
     var data = {};
 
@@ -65,14 +51,14 @@ function computeQuarterlyBizDevData(pipeLineDataArray, contractDataArray)
     for ( var i = 0; i < numOfQuarters; i++ )
     {
         // Divide the data based on their statuses:
-        var statusProperty = dashBoardData.bizDevData.propertyList[14]; 
+        var statusProperty = "Status"; 
         var successfulData = pipeLineDataArray.filter( function(d) { return d[statusProperty] == data.statusStrings.successful; } );
         var unsuccessfulData = pipeLineDataArray.filter( function(d) { return d[statusProperty] == data.statusStrings.unsuccessful; } );
         var inProgressData = pipeLineDataArray.filter( function(d) { return d[statusProperty] == data.statusStrings.inProgress; } );
         var qualifiedOutData = pipeLineDataArray.filter( function(d) { return d[statusProperty] == data.statusStrings.qualifiedOut; } );
 
         // Record each status and Convert to £k
-        var valueProperty = dashBoardData.bizDevData.propertyList[3];
+        var valueProperty = "Value (annualised)";
         data.pipeLineQualifiedOut[i] = (sumArrayProperty( qualifiedOutData, valueProperty) / 1000.0) || 0.0;
         // TODO: How is this different from the above?
         data.pipeLineQualified[i] = (sumArrayProperty( qualifiedOutData, valueProperty)/1000.0) || 0.0;
@@ -81,7 +67,7 @@ function computeQuarterlyBizDevData(pipeLineDataArray, contractDataArray)
         data.pipeLineInProgress[i] = (sumArrayProperty( inProgressData, valueProperty)/1000.0) || 0.0;
 
         /**********************************************/
-        var valueTotalProperty = dashBoardData.bizDevData.contractsPropertyList[2];
+        var valueTotalProperty = "Value (total)";
         data.contractAwardPerQuarter[i] = sumArrayProperty( contractDataArray, valueTotalProperty)/1000.0 || 0.0;
 
     }

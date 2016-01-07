@@ -104,6 +104,12 @@
       </div>
     </nav>
 
+    <script type="text/javascript" src="./js/globals.js"></script>
+    <script type="text/javascript" src="./js/utils.js"></script>
+    <script type="text/javascript" src="./js/plots.js"></script>
+    <script type="text/javascript" src="./js/bd.js"></script>
+
+
     <div class="container-fluid">
 
         <!-- Row starts here *********************** -->
@@ -121,26 +127,19 @@
             <div class="row">
 
                <div class="col-xs-4">
-                 <select style="width: 250px" id="bizDevNationSelector" onchange="bizDevNationSelectFunction()">
-                 </select>
-               </div>
-
-               <div class="col-xs-4">
-                     <select style="width: 250px" id="bizDevRegionSelector" onchange="bizDevRegionSelectFunction()">
+                     <select style="width: 250px" id="bizDevNationSelector" onchange="bizDevSelectFunction(dashBoardData.bizDevData.nationProperty, this.value)">
                      </select>
                </div>
 
                <div class="col-xs-4">
-                 <select style="width: 250px" id="bizDevLocalitySelector" onchange="bizDevLocalitySelectFunction()">
-                 </select>
+                     <select style="width: 250px" id="bizDevRegionSelector" onchange="bizDevSelectFunction(dashBoardData.bizDevData.regionProperty, this.value)">
+                     </select>
                </div>
 
-               <!--
-               <div class="col-xs-3">
-                 <select style="width: 250px" id="bizDevContractNameSelector" onchange="bizDevContractNameSelectFunction()">
+               <div class="col-xs-4">
+                     <select style="width: 250px" id="bizDevLocalitySelector" onchange="bizDevSelectFunction(dashBoardData.bizDevData.localityProperty, this.value)">
                  </select>
                </div>
-                 -->
 
                
            </div>
@@ -204,126 +203,59 @@
       </div>
       <!-- Container fluid ends here -->
 
-        <script type="text/javascript" src="./js/globals.js"></script>
-        <script type="text/javascript" src="./js/utils.js"></script>
-        <script type="text/javascript" src="./js/plots.js"></script>
-        <script type="text/javascript" src="./js/bd.js"></script>
-
         <script type="text/javascript"> 
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
-            function bizDevNationSelectFunction() 
+            function updateBizDevSelectors(data)
             {
-                 var nation = document.getElementById("bizDevNationSelector").value;
-                 var nationProperty = dashBoardData.bizDevData.nationProperty;
+                 var fileNames = dashBoardData.bizDevData.files.map(function(d) { return d.propertyName; } );
                  var regionProperty = dashBoardData.bizDevData.regionProperty;
-                 var localityProperty = dashBoardData.bizDevData.localityProperty; 
-                 var contractNameProperty = dashBoardData.bizDevData.contractNameProperty; 
-
-                 // Initialize region data and locality list:
-                 dashBoardData.bizDevData.currentNationData = dashBoardData.bizDevData.rawData.filter( function(d) { return d[nationProperty] == nation; } );
-                 dashBoardData.bizDevData.currentNationContractsData = dashBoardData.bizDevData.contractsData.filter( function(d) { return d[nationProperty] == nation; } ); 
-
+                 var localityProperty = dashBoardData.bizDevData.localityProperty;
+    
+                 var nFiles = fileNames.length;
                  // Update Regions
-                 dashBoardData.bizDevData.regionList = getUniqueSortedList(dashBoardData.bizDevData.currentNationData, regionProperty);
-                 updateSelector( document.getElementById("bizDevRegionSelector"), ["Select Region"].concat(dashBoardData.bizDevData.regionList) );
-
+                 var regionList = getUniqueSortedList(data[fileNames[nFiles-1]], regionProperty);
+                 updateSelector( document.getElementById("bizDevRegionSelector"), ["Select Region"].concat(regionList) );
+    
                  // Update localities
-                 dashBoardData.bizDevData.localityList = getUniqueSortedList(dashBoardData.bizDevData.currentNationData, localityProperty);
-                 updateSelector( document.getElementById("bizDevLocalitySelector"), ["Select Locality"].concat(dashBoardData.bizDevData.localityList) );
-
-                 var subLevelProperty = regionProperty;
-                 var subLevelList = dashBoardData.bizDevData.regionList;
-
-                 if ( nation == dashBoardData.allUKString )
-                 {
-                     dashBoardData.bizDevData.currentNationData = dashBoardData.bizDevData.rawData;
-                     dashBoardData.bizDevData.currentNationExternalInspectionsData = dashBoardData.bizDevData.externalInspectionsData;
-                     subLevelProperty = nationProperty;
-                     subLevelList = getUniqueSortedList(dashBoardData.bizDevData.currentNationData, subLevelProperty);
-                     // Remove All UK string from the item:
-                     var allUKIndex = subLevelList.indexOf(dashBoardData.allUKString);
-                     if ( allUKIndex > -1 )
-                     {
-                         subLevelList.splice(allUKIndex, 1);
-                     }
-                 }
-
-                 var subLevelData = computeBizDevSubData(dashBoardData.bizDevData.currentNationData,
-                         dashBoardData.bizDevData.currentNationContractsData, subLevelList, subLevelProperty);
-
-                 var data = computeQuarterlyBizDevData(dashBoardData.bizDevData.currentNationData, dashBoardData.bizDevData.currentNationContractsData); 
-                 plotBizDevVisualisation(data, subLevelData, subLevelList, subLevelProperty, nationProperty, nation );
+                 var localityList = getUniqueSortedList(data[fileNames[nFiles-1]], localityProperty);
+                 updateSelector( document.getElementById("bizDevLocalitySelector"), ["Select Locality"].concat(localityList) );
             }
 
-            function bizDevRegionSelectFunction() 
+            function bizDevSelectFunction(selectedProperty, selectedValue) 
             {
-                 var region = document.getElementById("bizDevRegionSelector").value;
-                 var regionProperty = dashBoardData.bizDevData.regionProperty;                                                                          
-                 var localityProperty = dashBoardData.bizDevData.localityProperty; 
-
-                 // Initialize region data and locality list:
-                 dashBoardData.bizDevData.currentRegionData = dashBoardData.bizDevData.rawData.filter( function(d) { return d[regionProperty] == region; } );
-                 dashBoardData.bizDevData.currentRegionContractsData = dashBoardData.bizDevData.contractsData.filter( function(d) { return d[regionProperty] == region; } );
-
-                 // Update localities
-                 dashBoardData.bizDevData.localityList = getUniqueSortedList(dashBoardData.bizDevData.currentRegionData, localityProperty);
-                 updateSelector( document.getElementById("bizDevLocalitySelector"), ["Select Locality"].concat(dashBoardData.bizDevData.localityList) );
-
-                 var subLevelProperty = localityProperty;
-                 var subLevelList = dashBoardData.bizDevData.localityList;
-                 var subLevelData = computeBizDevSubData(dashBoardData.bizDevData.currentRegionData, dashBoardData.bizDevData.currentRegionContractsData, subLevelList, subLevelProperty);
-                 var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentRegionData, dashBoardData.bizDevData.currentRegionContractsData); 
-                 plotBizDevVisualisation(data, subLevelData, subLevelList, subLevelProperty, regionProperty, region);
-
-            }
-            
-            function bizDevLocalitySelectFunction() 
-            {
-                 var locality = document.getElementById("bizDevLocalitySelector").value;
-                 var localityProperty = dashBoardData.bizDevData.localityProperty; 
-
-                 dashBoardData.bizDevData.currentLocalityData = dashBoardData.bizDevData.rawData.filter( function(d) { return d[localityProperty] == locality; } );
-
-                 dashBoardData.bizDevData.currentLocalityContractsData = dashBoardData.bizDevData.contractsData.filter( function(d) { return d[localityProperty] == locality; } );
-
-
-                 var data = computeQuarterlyBizDevData( dashBoardData.bizDevData.currentLocalityData, dashBoardData.bizDevData.currentLocalityContractsData );                 
-
-                 plotBizDevVisualisation(data, [], [], "", localityProperty, locality);
-
-                 return;
+                var funObj = {};
+                var data = dashBoardData.bizDevData;
+                funObj.computeQuarterlyFun = computeQuarterlyBizDevData;
+                funObj.updateSelectorsFun = updateBizDevSelectors;
+                funObj.visualisationFun = plotBizDevVisualisation;
+                generalSelectFunction(data, selectedProperty, selectedValue, funObj);
+                return;
             }
 
-            d3.csv( dashBoardSettings.dataDir +  "008_Pipeline_Opportunities.csv", function(d)
+
+            // Upload the data file and process it:
+            d3.csv( dashBoardSettings.dataDir + dashBoardData.bizDevData.files[dashBoardData.bizDevData.files.length - 1].name, function(d)
             { 
-
               // Copy the data read into the global variable:
-              dashBoardData.bizDevData.rawData = d;
-              console.log("Pipeline Opportunities file read successfuly");
+              var nFiles = dashBoardData.bizDevData.files.length;
+              var fileNames = dashBoardData.bizDevData.files.map(function(d) { return d.propertyName; });
+              dashBoardData.bizDevData[fileNames[nFiles-1]] = d;
+              console.log("Done reading " + dashBoardData.bizDevData.files[nFiles-1].name);
 
-              dashBoardData.bizDevData.propertyList = Object.getOwnPropertyNames(d[0]);
-              // The nation property is global:
-              dashBoardData.bizDevData.nationProperty = dashBoardData.nationPropertyName;
-              // Region is property 9, Locality is 12
-              dashBoardData.bizDevData.regionProperty = dashBoardData.bizDevData.propertyList[9]; 
-              dashBoardData.bizDevData.localityProperty = dashBoardData.bizDevData.propertyList[12]; 
+              var data = dashBoardData.bizDevData;
+              // Add nation property
+              for ( var i = 0; i < nFiles; i++ )
+              {
+                  addNationProperty(data[fileNames[i]], data.regionProperty, data.nationProperty);
+              }
 
-              addNationProperty(dashBoardData.bizDevData.rawData, dashBoardData.bizDevData.regionProperty, dashBoardData.bizDevData.nationProperty);
-              addNationProperty(dashBoardData.bizDevData.contractsData, dashBoardData.bizDevData.regionProperty, dashBoardData.bizDevData.nationProperty); 
-              // Get the lists of regions etc:
-              dashBoardData.bizDevData.nationList = getUniqueSortedList(dashBoardData.bizDevData.rawData, dashBoardData.bizDevData.nationProperty);
-              dashBoardData.bizDevData.regionList = getUniqueSortedList(dashBoardData.bizDevData.rawData, dashBoardData.bizDevData.regionProperty);
-              dashBoardData.bizDevData.localityList = getUniqueSortedList(dashBoardData.bizDevData.rawData, dashBoardData.bizDevData.localityProperty);
-
-              // Update selectors based on the lists above:
-              dashBoardData.bizDevData.nationList.unshift(dashBoardData.allUKString);
-              updateSelector( document.getElementById("bizDevNationSelector"), dashBoardData.bizDevData.nationList );
-
-              bizDevNationSelectFunction();
-
-            });
+              var nationList = data.nationList;
+              nationList.unshift(dashBoardData.allUKString);
+              updateSelector( document.getElementById("bizDevNationSelector"), nationList );
+              bizDevSelectFunction(dashBoardData.bizDevData.nationProperty, dashBoardData.allUKString);
+            });                                 
 
          </script>
          
