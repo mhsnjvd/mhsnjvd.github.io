@@ -18,7 +18,7 @@
             // Copy the data read into the global variable:
             dashBoardData.impactData[propertyName] = d;
             console.log(fileName + " read successfully.");
-            console.log( dashBoardData.impactData[propertyName].length );
+            console.log( dashBoardData.impactData[propertyName].length + " entries read.");
      }); // end of d3.csv()                                
  })();
 
@@ -263,8 +263,13 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     var legendStyle = initLegendSettings(pieStyle);
 
 
+    var pie = {};
     var pie1 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
     var title1 = addTitle(svg, "Overall Contract Perfromance (%)");
+
+    pie = pie1;
+    var fileName = "contractsData";
+    pie1.piePlot.piePath.on("click", pieClick);
 
     // *********************** Second Plot ****************////
 
@@ -363,6 +368,22 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
     addTitle(svg, "Next Level Breakdown (%)")
 
+
+    function pieClick(d)
+    {
+        var label = pie.piePlot.piePath.clickedData.data.label;
+        var color = pie.piePlot.piePath.clickedData.object.style("fill");
+        var subData = dashBoardData.impactData[fileName];
+        if ( area != dashBoardData.allUKString )
+        {
+            subData = subData.filter( function(d) { return d[areaProperty] == area; }); 
+        }
+        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
+        subData = subData.filter(function(d) { return d[property] == 1; } );
+        console.log(subData.length);
+        openTablePage(subData);
+        return;
+    }
     return;
 }
 
@@ -395,11 +416,12 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
     stack.stackPlot = new stackObjectConstructor(svg, layeredData, stackSettings);
     stack.stackPlot.stackLayer.on("click", stackClick);
 
+    var fileName = "contractsData"
     function stackClick(d)
     {
         var label = stack.stackPlot.stackLayer.clickedData.data.label;
         var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
-        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
+        var subData = dashBoardData.impactData[fileName].filter(function(d) { return d[subAreaProperty] == label; } )
         var property = dashBoardData.impactData.impactColorToImpactProperty(color);
         subData = subData.filter(function(d) { return d[property] == 1; } );
         console.log(subData.length);
@@ -408,4 +430,3 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
     }
     
 }
-

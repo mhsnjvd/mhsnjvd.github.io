@@ -869,7 +869,6 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
 
     // Cannot use this.color for nested functions
     // as "this" refers to this only in non-nested functions
-
     var tip = d3.tip()
        .attr('class', 'd3-tip')
        .offset([-10, 0])
