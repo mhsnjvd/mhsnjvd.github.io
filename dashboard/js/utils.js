@@ -107,7 +107,8 @@ function getIdentifierCount( dataArray, identifierList, property )
     {
         var thisEntry = dataArray[i][property];
         var thisIndex = identifierList.indexOf(thisEntry);
-        count[thisIndex] = count[thisIndex] + 1;
+        if ( thisIndex >= 0 )
+            count[thisIndex] = count[thisIndex] + 1;
     }
     return count;
 }

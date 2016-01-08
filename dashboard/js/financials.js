@@ -18,7 +18,7 @@
             // Copy the data read into the global variable:
             dashBoardData.financialsData[propertyName] = d;
             console.log(fileName + " read successfully.");
-            console.log( dashBoardData.financialsData[propertyName].length );
+            console.log( dashBoardData.financialsData[propertyName].length + " entries read." );
      }); // end of d3.csv()                                
  })();
 
@@ -36,7 +36,7 @@
             // Copy the data read into the global variable:
             dashBoardData.financialsData[propertyName] = d;
             console.log(fileName + " read successfully.");
-            console.log( dashBoardData.financialsData[propertyName].length );
+            console.log( dashBoardData.financialsData[propertyName].length +  " entries read." );
      }); // end of d3.csv()                                
  })();
 
@@ -54,7 +54,7 @@
             // Copy the data read into the global variable:
             dashBoardData.financialsData[propertyName] = d;
             console.log(fileName + " read successfully.");
-            console.log( dashBoardData.financialsData[propertyName].length );
+            console.log( dashBoardData.financialsData[propertyName].length + " entries read.");
      }); // end of d3.csv()                                
  })();
 
@@ -331,8 +331,8 @@ function plotFinancialsVisualisation(data, subLevelData, subLevelProperty, subLe
 
     // Get the latest financials file:
 
-    var latestQuarter = dashBoardData.financialsData.files[2].propertyName;
-    var latestQuarterData = dashBoardData.financialsData[latestQuarter];
+    var fileName = dashBoardData.financialsData.files[2].propertyName;
+    var latestQuarterData = dashBoardData.financialsData[fileName];
     var value = getIdentifierCount( latestQuarterData, subLevelList, subLevelProperty);
     var pieData = [];
     for ( var i = 0; i < subLevelList.length; i++ )
@@ -360,7 +360,7 @@ function plotFinancialsVisualisation(data, subLevelData, subLevelProperty, subLe
     if ( subLevelProperty == "CC" )
     {
          // Use the latest quarter data file:
-         plotCostCentres( svg, dashBoardData.financialsData.currentLocalityData[latestQuarter]);  
+         plotCostCentres( svg, dashBoardData.financialsData[fileName]);  
     }
 
     return;
@@ -406,49 +406,6 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
         return;
     }
     
-}
-
-//function pieCreator()
-// svg is d3 selected svg
-// pieData is an array of objects with format: 
-// pieData = [ {label: xxxx, value: xxxx}, {}, {}, ...]
-function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
-{
-    // The mother of all objects:
-    var pie = {};
-
-    var dataSet = pieData.map(function(d){ return d.value; } );
-    var dummyData = dataSet.map(function(d) { return 1.0; } );
-
-    pie.piePlot = new pieObjectConstructor(svg, dummyData, pieStyle);
-    pie.piePlot.update(dataSet);
-
-    pie.rayPlot = new rayObjectConstructor(svg, dataSet, rayStyle);
-    pie.legend = new legendObjectConstructor( svg, legendData, legendStyle )
-
-    // Update everything in the pie:
-    pie.update = function(data)
-    {
-        pie.piePlot.update(data);
-        pie.rayPlot.update(data);
-    }
-    pie.piePlot.piePath.on("click", pieClick);
-
-    function pieClick(d)
-    {
-        /* Do nothing for the time being
-        var label = pie.piePlot.piePath.clickedData.data.label;
-        var color = pie.piePlot.piePath.clickedData.object.style("fill");
-        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
-        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
-        subData = subData.filter(function(d) { return d[property] == 1; } );
-        console.log(subData.length);
-        openTablePage(subData);
-        */
-        return;
-    }
-
-    return pie;
 }
 
 // All data is assumed positive
