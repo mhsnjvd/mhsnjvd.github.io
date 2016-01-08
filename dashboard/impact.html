@@ -116,7 +116,8 @@
 
             <div class="col-sm-12">
               <h1 class="page-header">Impact Data Analysis</h1> 
-              <h4 class="page-header">Quarterly Impact Data</h4> 
+              <h4 class="page-header">Quarterly Impact Data &nbsp  &nbsp 
+                  <button type="button" id="resetButton" onclick="resetImpact()">Reset Data</button></h4>       
             </div>
 
         </div>
@@ -311,18 +312,16 @@
               dashBoardData.impactData[fileNames[nFiles-1]] = d;
               console.log("Done reading " + dashBoardData.impactData.files[nFiles-1].name);
 
-              var data = dashBoardData.impactData;
-              // Add nation property
-              for ( var i = 0; i < nFiles; i++ )
-              {
-                  addNationProperty(data[fileNames[i]], data.regionProperty, data.nationProperty);
-              }
+              resetImpact();
 
-              var nationList = data.nationList;
-              nationList.unshift(dashBoardData.allUKString);
-              updateSelector( document.getElementById("impactNationSelector"), nationList );
-              impactSelectFunction(dashBoardData.impactData.nationProperty, dashBoardData.allUKString);
             });                                 
+
+            function resetImpact()
+            {
+              var data = dashBoardData.impactData;
+              var nationSelector = document.getElementById("impactNationSelector");
+              initVisualisation(data, impactSelectFunction, nationSelector);
+            }
          </script>
          
           <!-- FOOTER -->

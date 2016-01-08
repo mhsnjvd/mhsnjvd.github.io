@@ -407,3 +407,18 @@ function generalSelectFunction(data, selectedProperty, selectedValue, funObject)
      funObject.visualisationFun(quarterlyData, subLevelData, subLevelProperty, subLevelList, selectedProperty, selectedValue);
      return;
 }
+
+function initVisualisation(data, selectFunction, nationSelector)
+{
+    var nFiles = data.files.length;
+    var fileNames = data.files.map(function(d) { return d.propertyName; });
+    // Add nation property
+    for ( var i = 0; i < nFiles; i++ )
+    {
+        addNationProperty(data[fileNames[i]], data.regionProperty, data.nationProperty);
+    }
+    var nationList = data.nationList;
+    nationList.unshift(dashBoardData.allUKString);
+    updateSelector( nationSelector, nationList );
+    selectFunction(data.nationProperty, dashBoardData.allUKString);
+}

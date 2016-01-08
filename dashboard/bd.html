@@ -117,7 +117,8 @@
 
             <div class="col-sm-12">
               <h1 class="page-header">Business Development Data Analysis</h1> 
-              <h4 class="page-header">Quarterly Business Development Data</h4> 
+              <h4 class="page-header">Quarterly Business Development Data &nbsp  &nbsp 
+                  <button type="button" id="resetButton" onclick="resetBizDev()">Reset Data</button></h4>       
             </div>
 
         </div>
@@ -244,19 +245,16 @@
               dashBoardData.bizDevData[fileNames[nFiles-1]] = d;
               console.log("Done reading " + dashBoardData.bizDevData.files[nFiles-1].name);
 
-              var data = dashBoardData.bizDevData;
-              // Add nation property
-              for ( var i = 0; i < nFiles; i++ )
-              {
-                  addNationProperty(data[fileNames[i]], data.regionProperty, data.nationProperty);
-              }
+              resetBizDev();
 
-              var nationList = data.nationList;
-              nationList.unshift(dashBoardData.allUKString);
-              updateSelector( document.getElementById("bizDevNationSelector"), nationList );
-              bizDevSelectFunction(dashBoardData.bizDevData.nationProperty, dashBoardData.allUKString);
             });                                 
 
+            function resetBizDev()
+            {
+              var data = dashBoardData.bizDevData;
+              var nationSelector = document.getElementById("bizDevNationSelector");
+              initVisualisation(data, bizDevSelectFunction, nationSelector);
+            }
          </script>
          
           <!-- FOOTER -->

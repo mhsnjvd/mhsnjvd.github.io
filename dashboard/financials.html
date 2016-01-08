@@ -107,6 +107,9 @@
    <script type="text/javascript" src="./js/utils.js"></script>
    <script type="text/javascript" src="./js/plots.js"></script>
    <script type="text/javascript" src="./js/financials.js"></script>
+   <script type="text/javascript">
+       nationSelector = document.getElementById("financialsNationSelector");
+   </script>
 
     <div class="container-fluid">
 
@@ -114,12 +117,13 @@
         <div class="row">
             <div class="col-sm-12">
               <h1 class="page-header">Children Services Financial Data Analysis</h1> 
-              <h4 class="page-header">Quarterly Financial Data</h4> 
+              <h4 class="page-header">Quarterly Financial Data &nbsp  &nbsp 
+                  <button type="button" id="resetButton" onclick="resetFinancials()">Reset Data</button></h4>       
             </div>
+
 
         </div>
         <!-- Row ends here *********************** -->
-
            <!-- strat  row -->
             <div class="row">
 
@@ -189,43 +193,6 @@
 
         <!-- Row starts here *********************** -->
         <div class="row">
-            
-             <!-- column just for padding -->
-             <div  class="col-xs-1">
-             </div>
-
-             <!-- Second column starts here *********************** -->
-             <div  class="col-xs-5">               
-             </div>
-        
-             <!-- Third column starts here *********************** -->
-             <div  class="col-xs-5">                   
-             </div>
-
-             <!-- column just for padding -->
-             <div  class="col-xs-1">
-             </div>
-
-        </div>
-        <!-- Row ends here *********************** -->
-        
-        <!-- Row starts here *********************** -->
-        <div class="row">
-             <div class="col-xs-1">
-             </div>
-
-             <div class="col-xs-10">                
-             </div>
-
-             <div class="col-xs-1">
-             </div>
-
-        </div>
-        <!-- Row ends here *********************** -->         
-
-        
-        <!-- Row starts here *********************** -->
-        <div class="row">
 
             <div class="col-xs-1">
             </div>
@@ -290,20 +257,17 @@
               var nFiles = dashBoardData.financialsData.files.length;
               var fileNames = dashBoardData.financialsData.files.map(function(d) { return d.propertyName; });
               dashBoardData.financialsData[fileNames[nFiles-1]] = d;
-              console.log("Done reading " + dashBoardData.financialsData.files[nFiles-1].name);
-
-              var data = dashBoardData.financialsData;
-              // Add nation property
-              for ( var i = 0; i < nFiles; i++ )
-              {
-                  addNationProperty(data[fileNames[i]], data.regionProperty, data.nationProperty);
-              }
-
-              var nationList = data.nationList;
-              nationList.unshift(dashBoardData.allUKString);
-              updateSelector( document.getElementById("financialsNationSelector"), nationList );
-              financialsSelectFunction(dashBoardData.financialsData.nationProperty, dashBoardData.allUKString);
+              console.log(dashBoardSettings.dataDir + dashBoardData.financialsData.files[dashBoardData.financialsData.files.length - 1].name + " read" ); 
+              resetFinancials();
             });                                 
+
+            function resetFinancials()
+            {
+              var data = dashBoardData.financialsData;
+              var nationSelector = document.getElementById("financialsNationSelector");
+              initVisualisation(data, financialsSelectFunction, nationSelector);
+            }
+            
 
          </script>
          

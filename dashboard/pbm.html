@@ -116,7 +116,8 @@
 
             <div class="col-sm-12">
               <h1 class="page-header">People and Business Model Data Analysis</h1> 
-              <h4 class="page-header">Quarterly People and Business Model Data</h4> 
+              <h4 class="page-header">Quarterly People and Business Model Data &nbsp  &nbsp 
+                  <button type="button" id="resetButton" onclick="resetPeopleBizModel()">Reset Data</button></h4>       
             </div>
 
         </div>
@@ -251,18 +252,16 @@
               dashBoardData.peopleBizModelData[fileNames[nFiles-1]] = d;
               console.log("Done reading " + dashBoardData.peopleBizModelData.files[nFiles-1].name);
 
-              var data = dashBoardData.peopleBizModelData;
-              // Add nation property
-              for ( var i = 0; i < nFiles; i++ )
-              {
-                  addNationProperty(data[fileNames[i]], data.regionProperty, data.nationProperty);
-              }
+              resetPeopleBizModel();
 
-              var nationList = data.nationList;
-              nationList.unshift(dashBoardData.allUKString);
-              updateSelector( document.getElementById("peopleBizModelNationSelector"), nationList );
-              peopleBizModelSelectFunction(dashBoardData.peopleBizModelData.nationProperty, dashBoardData.allUKString);
             });                                 
+
+            function resetPeopleBizModel()
+            {
+              var data = dashBoardData.peopleBizModelData;
+              var nationSelector = document.getElementById("peopleBizModelNationSelector");
+              initVisualisation(data, peopleBizModelSelectFunction, nationSelector);
+            }
 
 
          </script>
