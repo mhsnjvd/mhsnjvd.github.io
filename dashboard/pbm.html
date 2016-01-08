@@ -210,25 +210,35 @@
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
-            function updatePeopleBizModelSelectors(data)
+            function updatePeopleBizModelSelectors(data, selectedProperty, selectedValue)
             {
                  var fileNames = dashBoardData.peopleBizModelData.files.map(function(d) { return d.propertyName; } );
+                 var nationProperty = dashBoardData.peopleBizModelData.nationProperty;
                  var regionProperty = dashBoardData.peopleBizModelData.regionProperty;
                  var localityProperty = dashBoardData.peopleBizModelData.localityProperty;
                  var costCentreProperty = dashBoardData.peopleBizModelData.costCentreProperty;
     
                  var nFiles = fileNames.length;
                  // Update Regions
-                 var regionList = getUniqueSortedList(data[fileNames[nFiles-1]], regionProperty);
-                 updateSelector( document.getElementById("peopleBizModelRegionSelector"), ["Select Region"].concat(regionList) );
+                 if ( selectedProperty == nationProperty )
+                 {
+                     var regionList = getUniqueSortedList(data[fileNames[nFiles-1]], regionProperty);
+                     updateSelector( document.getElementById("peopleBizModelRegionSelector"), ["Select Region"].concat(regionList) );
+                 }
     
                  // Update localities
-                 var localityList = getUniqueSortedList(data[fileNames[nFiles-1]], localityProperty);
-                 updateSelector( document.getElementById("peopleBizModelLocalitySelector"), ["Select Locality"].concat(localityList) );
+                 if ( selectedProperty == nationProperty || selectedProperty == regionProperty )
+                 {
+                     var localityList = getUniqueSortedList(data[fileNames[nFiles-1]], localityProperty);
+                     updateSelector( document.getElementById("peopleBizModelLocalitySelector"), ["Select Locality"].concat(localityList) );
+                 }
 
                  // Update cost centres
-                 var costCentreList = getUniqueSortedList(data[fileNames[nFiles-1]], costCentreProperty);
-                 updateSelector( document.getElementById("peopleBizModelCostCentreSelector"), ["Select Cost Centre"].concat(costCentreList) );
+                 if ( selectedProperty == nationProperty || selectedProperty == regionProperty || selectedProperty == localityProperty )
+                 {
+                     var costCentreList = getUniqueSortedList(data[fileNames[nFiles-1]], costCentreProperty);
+                     updateSelector( document.getElementById("peopleBizModelCostCentreSelector"), ["Select Cost Centre"].concat(costCentreList) );
+                 }
             }
 
             function peopleBizModelSelectFunction(selectedProperty, selectedValue) 

@@ -398,7 +398,7 @@ function dataSelectFunction(data, selectedProperty, selectedValue, computeQuarte
 function generalSelectFunction(data, selectedProperty, selectedValue, funObject) 
 {
      var selectedData = dataSelectFunction(data, selectedProperty, selectedValue, funObject.computeQuarterlyFun);
-     funObject.updateSelectorsFun(selectedData.filteredData)
+     funObject.updateSelectorsFun(selectedData.filteredData, selectedProperty, selectedValue)
 
      var subLevelData = selectedData.subLevelData;
      var quarterlyData = selectedData.quarterlyData;
@@ -419,6 +419,6 @@ function initVisualisation(data, selectFunction, nationSelector)
     }
     var nationList = data.nationList;
     nationList.unshift(dashBoardData.allUKString);
-    updateSelector( nationSelector, nationList );
+    updateSelector(nationSelector, nationList);
     selectFunction(data.nationProperty, dashBoardData.allUKString);
 }
