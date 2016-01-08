@@ -279,7 +279,9 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
 
     var stackSettings = {};
     stackSettings.color = pieStyle.color;
-    plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
+    var stack = plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
+    var fileName = "contractsData";
+    stack.stackPlot.stackLayer.on("click", stackClick);
     addTitle(svg, "Breakdown (Total No. of Contracts)"); 
 
 
@@ -365,7 +367,9 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     // Add fields to subLevelData 
     stackSettings = {};
     stackSettings.color = pieStyle.color;
-    plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
+    stack = plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
+    fileName = "externalInspectionsData";
+    stack.stackPlot.stackLayer.on("click", stackClick);
     addTitle(svg, "Next Level Breakdown (%)")
 
 
@@ -378,6 +382,19 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
         {
             subData = subData.filter( function(d) { return d[areaProperty] == area; }); 
         }
+        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
+        subData = subData.filter(function(d) { return d[property] == 1; } );
+        console.log(subData.length);
+        openTablePage(subData);
+        return;
+    }
+
+
+    function stackClick(d)
+    {
+        var label = stack.stackPlot.stackLayer.clickedData.data.label;
+        var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
+        var subData = dashBoardData.impactData[fileName].filter(function(d) { return d[subAreaProperty] == label; } )
         var property = dashBoardData.impactData.impactColorToImpactProperty(color);
         subData = subData.filter(function(d) { return d[property] == 1; } );
         console.log(subData.length);
@@ -414,19 +431,6 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
     }
 
     stack.stackPlot = new stackObjectConstructor(svg, layeredData, stackSettings);
-    stack.stackPlot.stackLayer.on("click", stackClick);
-
-    var fileName = "contractsData"
-    function stackClick(d)
-    {
-        var label = stack.stackPlot.stackLayer.clickedData.data.label;
-        var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
-        var subData = dashBoardData.impactData[fileName].filter(function(d) { return d[subAreaProperty] == label; } )
-        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
-        subData = subData.filter(function(d) { return d[property] == 1; } );
-        console.log(subData.length);
-        openTablePage(subData);
-        return;
-    }
+    return stack;
     
 }
