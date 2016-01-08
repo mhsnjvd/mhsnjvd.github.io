@@ -173,7 +173,7 @@ function updateBizDevTable( table, tableData)
 }
 
 
-function plotBizDevVisualisation(data, subLevelData, subLevelList, subAreaProperty, areaProperty, area )
+function plotBizDevVisualisation(data, subLevelData, subAreaProperty, subLevelList,  areaProperty, area )
 {
     // **************** First plot ********************
     var svg = d3.select(document.getElementById("SVG01"));
@@ -233,11 +233,13 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
     stack.stackPlot = new stackObjectConstructor(svg, layeredData, stackSettings);
     stack.stackPlot.stackLayer.on("click", stackClick);
 
+    var fileName = dashBoardData.bizDevData.files[1].propertyName;
+
     function stackClick(d)
     {
         var label = stack.stackPlot.stackLayer.clickedData.data.label;
         var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
-        var subData = dashBoardData.bizDevData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
+        var subData = dashBoardData.bizDevData[fileName].filter( function(d) { return d[subAreaProperty] == label; }); 
         var property = "Status"
         var propertyValue = dashBoardData.bizDevData.bizDevColorToBizDevProperty( color );
         subData = subData.filter(function(d) { return d[property] == propertyValue; } );
@@ -253,49 +255,6 @@ function openTablePage(tableData)
     dashBoardData.bizDevData.selectedData = tableData;
     var tablePageWindow = window.open("./table.html");
     tablePageWindow.selecteData = tableData;
-}
-
-//function pieCreator()
-// svg is d3 selected svg
-// pieData is an array of objects with format: 
-// pieData = [ {label: xxxx, count: xxxx}, {}, {}, ...]
-function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
-{
-    // The mother of all objects:
-    var pie = {};
-
-    var dataSet = pieData.map(function(d){ return d.count; } );
-    var dummyData = dataSet.map(function(d) { return 1.0; } );
-
-    pie.piePlot = new pieObjectConstructor(svg, dummyData, pieStyle);
-    pie.piePlot.update(dataSet);
-
-    pie.rayPlot = new rayObjectConstructor(svg, dataSet, rayStyle);
-    pie.legend = new legendObjectConstructor( svg, legendData, legendStyle )
-
-    // Update everything in the pie:
-    pie.update = function(data)
-    {
-        pie.piePlot.update(data);
-        pie.rayPlot.update(data);
-    }
-    pie.piePlot.piePath.on("click", pieClick);
-
-    function pieClick(d)
-    {
-        /* Do nothing for the time being
-        var label = pie.piePlot.piePath.clickedData.data.label;
-        var color = pie.piePlot.piePath.clickedData.object.style("fill");
-        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
-        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
-        subData = subData.filter(function(d) { return d[property] == 1; } );
-        console.log(subData.length);
-        openTablePage(subData);
-        */
-        return;
-    }
-
-    return pie;
 }
 
 /*

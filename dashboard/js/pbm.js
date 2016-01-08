@@ -133,7 +133,6 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     var currentQuarter = "Q2";
     var pieData = [];
     var propertyName = Object.getOwnPropertyNames(data);
-    var pie = {};
 
     var legendData = propertyName;
     for ( var i = 0; i < propertyName.length; i++ )
@@ -149,7 +148,7 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     var pie1 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
     var title1 = addTitle(svg, "Head Count %");
 
-    pie = pie1;
+    var pie = pie1;
     var fileName = "staffData";
     pie1.piePlot.piePath.on("click", pieClick);
 
@@ -178,7 +177,7 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     var title2 = addTitle(svg, "Full Time Equivalent %");
 
     pie = pie2;
-    var fileName = "staffData";
+    fileName = "staffData";
     pie2.piePlot.piePath.on("click", pieClick);
 
 
