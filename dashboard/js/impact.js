@@ -33,7 +33,7 @@ function computeQuarterlyImpactData(impactData)
      * ****************************************/
     // Generic routine to compute quarterly data.     
     propertyNames = dashBoardData.impactData.files.map(function(d) { return d.propertyName; } );
-    var externalInspectionsDataArray =  impactData[propertyNames[0]];
+    var externalInspectionsDataArray = impactData[propertyNames[0]];
     var impactDataArray = impactData[propertyNames[1]];
 
     // This is the object returned:
@@ -53,42 +53,40 @@ function computeQuarterlyImpactData(impactData)
 
     // Count the number of G, A, R, missing and total for the second quarter
     var cData = impactDataArray.filter( function(d) { return d["G"] == 1; } );
-    data[headerColumn[0]][headerRow[1]] = cData.length;
-    data[headerColumn[0]][headerRow[4]] = sumArrayProperty( cData, "TOTAL");
+    data["Green"]["Q2"] = cData.length;
+    data["Amber"]["Income"] = sumArrayProperty( cData, "TOTAL");
 
     cData = impactDataArray.filter( function(d) { return d["A"] == 1; } );
-    data[headerColumn[1]][headerRow[1]] = cData.length;
-    data[headerColumn[1]][headerRow[4]] = sumArrayProperty( cData, "TOTAL");
+    data["Amber"]["Q2"] = cData.length;
+    data["Amber"]["Income"] = sumArrayProperty( cData, "TOTAL");
 
     cData = impactDataArray.filter( function(d) { return d["R"] == 1; } );
-    data[headerColumn[2]][headerRow[1]] = cData.length;
-    data[headerColumn[2]][headerRow[4]] = sumArrayProperty( cData, "TOTAL");
+    data["Red"]["Q2"] = cData.length;
+    data["Red"]["Income"] = sumArrayProperty( cData, "TOTAL");
 
-    data[headerColumn[3]][headerRow[1]] = impactDataArray.length - data[headerColumn[0]][headerRow[1]] - data[headerColumn[1]][headerRow[1]] - data[headerColumn[2]][headerRow[1]];
-    data[headerColumn[3]][headerRow[4]] = sumArrayProperty( impactDataArray, "TOTAL") - data[headerColumn[0]][headerRow[4]] - data[headerColumn[1]][headerRow[4]] - data[headerColumn[2]][headerRow[4]];
+    data["Unscored"]["Q2"] = impactDataArray.length - data["Green"]["Q2"] - data["Amber"]["Q2"] - data["Red"]["Q2"];
+    data["Unscored"]["Income"] = sumArrayProperty( impactDataArray, "TOTAL") - data["Green"]["Income"] - data["Amber"]["Income"] - data["Red"]["Income"];
 
-    data[headerColumn[4]][headerRow[1]] = impactDataArray.length;
-    data[headerColumn[4]][headerRow[4]] = sumArrayProperty( impactDataArray, "TOTAL");
+    data["Total Number of Contracts"]["Q2"] = impactDataArray.length;
+    data["Total Number of Contracts"]["Income"] = sumArrayProperty( impactDataArray, "TOTAL");
 
     // Outcomes as a %
     var nR = sumArrayProperty( impactDataArray, "R-Outcome");  
     var nA = sumArrayProperty( impactDataArray, "A-Outcome");  
     var nG = sumArrayProperty( impactDataArray, "G-Outcome");  
-    var totalContracts = nR + nA + nG; 
-    data[headerColumn[5]][headerRow[1]] = nG / totalContracts * 100.0;
-    data[headerColumn[6]][headerRow[1]] = nA / totalContracts * 100.0;
-    data[headerColumn[7]][headerRow[1]] = nR / totalContracts * 100.0;
+    var totalContracts = nR + nA + nG;
+    data["Green (Outcomes)"]["Q2"] = nG / totalContracts * 100.0;
+    data["Amber (Outcomes)"]["Q2"] = nA / totalContracts * 100.0;
+    data["Red (Outcomes)"]["Q2"] = nR / totalContracts * 100.0;
 
     // % of beneficiary outcomes
     cData = impactDataArray.filter( function(d) { return d["Beneficiary Feedback Collected"] == "Yes"; } );
-    data[headerColumn[8]][headerRow[1]] = cData.length/impactDataArray.length * 100;
+    data["Percentage %"]["Q2"] = cData.length/impactDataArray.length * 100;
     // Add extra fields to be used in visualisation:
-    data["Good Feedback"] = {};
-    data["Good Feedback"]["Q2"] = data[headerColumn[8]][headerRow[1]];
+    data["Feedback Collected"] = {};
+    data["Feedback Collected"]["Q2"] = data["Percentage %"]["Q2"];
     data["No Feedback"] = {};
-    data["No Feedback"]["Q2"] = 100.00 - data["Good Feedback"]["Q2"];
-    data["Negative Feedback"] = {};
-    data["Negative Feedback"]["Q2"] = 0.0; // Oh yeah!!!
+    data["No Feedback"]["Q2"] = 100.00 - data["Feedback Collected"]["Q2"];
 
 
     // External Inspections:
@@ -98,14 +96,13 @@ function computeQuarterlyImpactData(impactData)
     for ( var i = 0; i < numOfQuarters; i++ )
     {
        var quarterlyExternalInspectionsData = externalInspectionsDataArray.filter( function(d){ return d["Reporting Quarter"] === quarterNames[i]; } );
-      data[headerColumn[11]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Excellent/Outstanding"] == 1; } ).length;
-      data[headerColumn[12]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Good/Very Good"] == 1; } ).length;
-      data[headerColumn[13]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Requires Improvement/Satisfactory/Adequate"] == 1; } ).length;
-      data[headerColumn[14]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Unsatisfactory/Inadequate/Poor/Weak"] == 1; } ).length;
-      data[headerColumn[15]][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Unscored"] == 1; } ).length;
-      data[headerColumn[16]][quarterNames[i]] = quarterlyExternalInspectionsData.length;
+      data["Outstanding"][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Excellent/Outstanding"] == 1; } ).length;
+      data["Good/Very Good"][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Good/Very Good"] == 1; } ).length;
+      data["Satisfactory/Requires Improvement"][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Requires Improvement/Satisfactory/Adequate"] == 1; } ).length;
+      data["Unsatisfactory"][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Unsatisfactory/Inadequate/Poor/Weak"] == 1; } ).length;
+      data["Performance Unscored"][quarterNames[i]] = quarterlyExternalInspectionsData.filter( function(d) { return d["Unscored"] == 1; } ).length;
+      data["Total"][quarterNames[i]] = quarterlyExternalInspectionsData.length;
     }
-
 
     return data;
 }
@@ -234,7 +231,6 @@ function updateImpactTable( table, tableData)
     return table;    
 }
 
-
 function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelList, areaProperty, area)
 {
     // Update data table:
@@ -279,7 +275,8 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
 
     var stackSettings = {};
     stackSettings.color = pieStyle.color;
-    var stackData = makeImpactStackData(subLevelData, propertyName, subLevelList)
+    var values = propertyName.map(function(d) { return 1; } );
+    var stackData = makeImpactStackData(subLevelData, subLevelList, propertyName,values )
     var fileName = "contractsData";
     plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings )
     addTitle(svg, "Breakdown (Total No. of Contracts)"); 
@@ -309,7 +306,9 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     svg.style("background-color", "white");
 
     stackSettings.color = pieStyle.color;
-    stackData = makeImpactStackData(subLevelData, propertyName, subLevelList)
+    propertyName = ["Red (Outcomes)", "Amber (Outcomes)", "Green (Outcomes)"];
+    values = propertyName.map(function(d) { return 1; } );
+    stackData = makeImpactStackData(subLevelData, subLevelList, propertyName,values )
     fileName = "contractsData";
     plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings )
     addTitle(svg, "Next Level Breakdown (%)")
@@ -321,8 +320,8 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
 
     currentQuarter = "Q2";
     pieData = [];
-    propertyName = ["Negative Feedback", "No Feedback", "Good Feedback"];
-    legendData = ["-ve Feedback", "No Feedback", "+ve Feedback"];
+    propertyName = ["No Feedback", "Feedback Collected"];
+    legendData = ["No Feedback", "Feedback Collected"];
     for ( var i = 0; i < propertyName.length; i++ )
     {
         pieData.push( {label: legendData[i], value: data[propertyName[i]][currentQuarter]});
@@ -338,7 +337,9 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
 
     // Add fields to subLevelData 
     stackSettings.color = pieStyle.color;
-    stackData = makeImpactStackData(subLevelData, propertyName, subLevelList)
+    propertyName = ["No Feedback", "Feedback Collected"];
+    values = ["", "Yes"];
+    stackData = makeImpactStackData(subLevelData, subLevelList, propertyName, values)
     fileName = "contractsData";
     plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings )
     addTitle(svg, "Next Level Breakdown (%)")
@@ -371,7 +372,8 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     // Add fields to subLevelData 
     stackSettings = {};
     stackSettings.color = pieStyle.color;
-    stackData = makeImpactStackData(subLevelData, propertyName, subLevelList)
+    values = propertyName.map(function(d) { return 1; } );
+    stackData = makeImpactStackData(subLevelData, subLevelList, propertyName, values)
     fileName = "externalInspectionsData";
     plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings )
     addTitle(svg, "Next Level Breakdown (%)")
@@ -392,22 +394,35 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
         openTablePage(subData);
         return;
     }
-
-
     return;
 }
 
-function makeImpactStackData(data, propertyNames, subLevelList)
+function makeImpactStackData(data, subLevelList, propertyNames, values)
 {
+    var propertyTable = {
+        "Red (Outcomes)": "R-Outcome",
+        "Amber (Outcomes)": "A-Outcome",
+        "Green (Outcomes)": "G-Outcome",
+        "Red": "R",
+        "Amber": "A",
+        "Green": "G",
+        "Feedback Collected": "Percentage %",
+        "No Feedback": "Percentage %",
+        "Outstanding": "Excellent/Outstanding",
+        "Good/Very Good": "Good/Very Good",
+        "Satisfactory/Requires Improvement": "Requires Improvement/Satisfactory/Adequate",
+        "Unsatisfactory": "Unsatisfactory/Inadequate/Poor/Weak",
+        "Performance Unscored": "Unscored"
+    };
+
     var stackData = [];
     for ( var i = 0; i < propertyNames.length; i++ )
     {
         stackData[i] = [];
         for ( var j = 0; j < data.length; j++ )
         {
-            stackData[i][j] = {label: subLevelList[j], y: data[j][propertyNames[i]]["Q2"], propertyName: propertyNames[i], propertyValue: 1};
+            stackData[i][j] = {label: subLevelList[j], y: data[j][propertyNames[i]]["Q2"], propertyName: propertyTable[propertyNames[i]], propertyValue: values[i]};
         }
     }
     return stackData;
 }
-
