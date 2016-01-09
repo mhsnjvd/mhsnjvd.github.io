@@ -279,9 +279,9 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
 
     var stackSettings = {};
     stackSettings.color = pieStyle.color;
-    var stack = plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
+    var stackData = makeImpactStackData(subLevelData, propertyName, subLevelList)
     var fileName = "contractsData";
-    stack.stackPlot.stackLayer.on("click", stackClick);
+    plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings )
     addTitle(svg, "Breakdown (Total No. of Contracts)"); 
 
 
@@ -309,7 +309,9 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     svg.style("background-color", "white");
 
     stackSettings.color = pieStyle.color;
-    plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
+    stackData = makeImpactStackData(subLevelData, propertyName, subLevelList)
+    fileName = "contractsData";
+    plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings )
     addTitle(svg, "Next Level Breakdown (%)")
 
     /*  ************************* Fifth Plot ***********************************/
@@ -336,7 +338,9 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
 
     // Add fields to subLevelData 
     stackSettings.color = pieStyle.color;
-    plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
+    stackData = makeImpactStackData(subLevelData, propertyName, subLevelList)
+    fileName = "contractsData";
+    plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings )
     addTitle(svg, "Next Level Breakdown (%)")
 
     /*  ************************* Seventh Plot ***********************************/
@@ -367,9 +371,9 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     // Add fields to subLevelData 
     stackSettings = {};
     stackSettings.color = pieStyle.color;
-    stack = plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
+    stackData = makeImpactStackData(subLevelData, propertyName, subLevelList)
     fileName = "externalInspectionsData";
-    stack.stackPlot.stackLayer.on("click", stackClick);
+    plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings )
     addTitle(svg, "Next Level Breakdown (%)")
 
 
@@ -390,47 +394,20 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     }
 
 
-    function stackClick(d)
-    {
-        var label = stack.stackPlot.stackLayer.clickedData.data.label;
-        var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
-        var subData = dashBoardData.impactData[fileName].filter(function(d) { return d[subAreaProperty] == label; } )
-        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
-        subData = subData.filter(function(d) { return d[property] == 1; } );
-        console.log(subData.length);
-        openTablePage(subData);
-        return;
-    }
     return;
 }
 
-
-function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty, area, subAreaProperty)
+function makeImpactStackData(data, propertyNames, subLevelList)
 {
-    // The mother object:
-    var stack = {};
-
-    var width = +svg.attr("width");
-    var height = +svg.attr("height");
-    var margin = defineMargins(height, width);
-    // More space on the left for long names
-    margin.left = 2*margin.left;
-    stackSettings.margin = stackSettings.margin || margin;
-
-    plotVerticalGrid(svg, margin, 10);
-
-    var layeredData = [];
-
-    for ( var i = 0; i < layerNames.length; i++ )
+    var stackData = [];
+    for ( var i = 0; i < propertyNames.length; i++ )
     {
-        layeredData[i] = [];
+        stackData[i] = [];
         for ( var j = 0; j < data.length; j++ )
         {
-            layeredData[i][j] = {label: nameList[j], y: data[j][layerNames[i]]["Q2"]};
+            stackData[i][j] = {label: subLevelList[j], y: data[j][propertyNames[i]]["Q2"], propertyName: propertyNames[i], propertyValue: 1};
         }
     }
-
-    stack.stackPlot = new stackObjectConstructor(svg, layeredData, stackSettings);
-    return stack;
-    
+    return stackData;
 }
+
