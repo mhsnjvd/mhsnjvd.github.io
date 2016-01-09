@@ -1272,3 +1272,35 @@ function stackObjectConstructor(svg, layeredData, stackSettings)
     this.stackSVG = stackSVG;
     this.stackLayer = stackLayer;
 }
+
+function plotStack(svg, stackData, subAreaProperty, data, fileName, stackSettings )
+{
+    // The mother object:
+    var stack = {};
+
+    var width = +svg.attr("width");
+    var height = +svg.attr("height");
+    var margin = defineMargins(height, width);
+    // More space on the left for long names
+    margin.left = 2*margin.left;
+    stackSettings.margin = stackSettings.margin || margin;
+
+    plotVerticalGrid(svg, margin, 10);
+
+    stack = new stackObjectConstructor(svg, stackData, stackSettings);
+
+    stack.stackLayer.on("click", stackClick);
+
+    function stackClick(d)
+    {
+        var label = stack.stackLayer.clickedData.data.label;
+        var property = stack.stackLayer.clickedData.data.propertyName;
+        var value = stack.stackLayer.clickedData.data.propertyValue;
+        var subData = data[fileName].filter(function(d) { return d[subAreaProperty] == label; } )
+        subData = subData.filter(function(d) { return d[property] == value; } );
+        console.log(subData.length + " entries selected by the click.");
+        openTablePage(subData);
+        return;
+    }
+    return stack;
+}

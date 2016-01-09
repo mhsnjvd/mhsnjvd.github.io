@@ -275,20 +275,29 @@
             //          Select Functions               //
             /////////////////////////////////////////////
 
-            function updateImpactSelectors(data)
+            function updateImpactSelectors(data, selectedProperty, selectedValue)
             {
                  var fileNames = dashBoardData.impactData.files.map(function(d) { return d.propertyName; } );
+                 var nationProperty = dashBoardData.impactData.nationProperty;
                  var regionProperty = dashBoardData.impactData.regionProperty;
                  var localityProperty = dashBoardData.impactData.localityProperty;
     
                  var nFiles = fileNames.length;
-                 // Update Regions
-                 var regionList = getUniqueSortedList(data[fileNames[nFiles-1]], regionProperty);
-                 updateSelector( document.getElementById("impactRegionSelector"), ["Select Region"].concat(regionList) );
-    
+
                  // Update localities
-                 var localityList = getUniqueSortedList(data[fileNames[nFiles-1]], localityProperty);
-                 updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(localityList) );
+                 if ( selectedProperty == nationProperty )
+                 {
+                     var regionList = getUniqueSortedList(data[fileNames[nFiles-1]], regionProperty);
+                     updateSelector( document.getElementById("impactRegionSelector"), ["Select Region"].concat(regionList) );
+                 }
+
+                 // Update Regions
+                 if ( selectedProperty == nationProperty || selectedProperty == regionProperty )
+                 {
+                     var localityList = getUniqueSortedList(data[fileNames[nFiles-1]], localityProperty);
+                     updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(localityList) );
+                 }
+    
             }
 
             function impactSelectFunction(selectedProperty, selectedValue) 
@@ -332,11 +341,12 @@
                   </div>
                   
                   <div class="col-xs-10">
-                      <footer>
-                        <p class="pull-right"><a href="#">Back to top</a></p>
-                        <p>&copy; <span id="idFooter"> 2016, Inc.</span> &middot;
-                        <a id="idURL" href="#">Privacy</a> &middot; <a href="idURL">Terms</a></p>
-                      </footer>
+                  <br> <br> 
+                     <footer>
+                         <p class="pull-right"><a href="#">Back to top</a></p>
+                         <p>Powered by Aleron &middot; 2016</span> &middot;
+                         <a id="idURL" href="#">Privacy</a> &middot; <a href="idURL">Terms</a></p>
+                     </footer>
                   </div>
                   
                   <div class="col-xs-1">
@@ -344,14 +354,6 @@
                   
               </div>
           </div> 
-
-          <script src="./js/defs.js"></script>
-          <script type="text/javascript">
-               document.getElementById("idFooter").innerHTML =
-               companyName + " 2016";
-               document.getElementById("idURL").href =
-               companyURL;
-          </script>
  
     <!-- bootstrap core javascript
     ================================================== -->

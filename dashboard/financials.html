@@ -218,25 +218,35 @@
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
-            function updateFinancialsSelectors(data)
+            function updateFinancialsSelectors(data, selectedProperty, selectedValue)
             {
                  var fileNames = dashBoardData.financialsData.files.map(function(d) { return d.propertyName; } );
+                 var nationProperty = dashBoardData.financialsData.nationProperty;
                  var regionProperty = dashBoardData.financialsData.regionProperty;
                  var localityProperty = dashBoardData.financialsData.localityProperty;
                  var costCentreProperty = dashBoardData.financialsData.costCentreProperty;
     
                  var nFiles = fileNames.length;
                  // Update Regions
-                 var regionList = getUniqueSortedList(data[fileNames[nFiles-1]], regionProperty);
-                 updateSelector( document.getElementById("financialsRegionSelector"), ["Select Region"].concat(regionList) );
+                 if ( selectedProperty == nationProperty )
+                 {
+                     var regionList = getUniqueSortedList(data[fileNames[nFiles-1]], regionProperty);
+                     updateSelector( document.getElementById("financialsRegionSelector"), ["Select Region"].concat(regionList) );
+                 }
     
                  // Update localities
-                 var localityList = getUniqueSortedList(data[fileNames[nFiles-1]], localityProperty);
-                 updateSelector( document.getElementById("financialsLocalitySelector"), ["Select Locality"].concat(localityList) );
+                 if ( selectedProperty == nationProperty || selectedProperty == regionProperty )
+                 {
+                     var localityList = getUniqueSortedList(data[fileNames[nFiles-1]], localityProperty);
+                     updateSelector( document.getElementById("financialsLocalitySelector"), ["Select Locality"].concat(localityList) );
+                 }
     
                  // Update Cost Centres
-                 var costCentreList = getUniqueSortedList(data[fileNames[nFiles-1]], costCentreProperty);
-                 updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Cost Centre"].concat(costCentreList) );
+                 if ( selectedProperty == nationProperty || selectedProperty == regionProperty || selectedProperty == localityProperty )
+                 {
+                     var costCentreList = getUniqueSortedList(data[fileNames[nFiles-1]], costCentreProperty);
+                     updateSelector( document.getElementById("financialsCostCentreSelector"), ["Select Cost Centre"].concat(costCentreList) );
+                 }
             }
 
             function financialsSelectFunction(selectedProperty, selectedValue) 
@@ -279,11 +289,12 @@
                   </div>
                   
                   <div class="col-xs-10">
-                      <footer>
-                        <p class="pull-right"><a href="#">Back to top</a></p>
-                        <p>&copy; <span id="idFooter"> 2016, Inc.</span> &middot;
-                        <a id="idURL" href="#">Privacy</a> &middot; <a href="idURL">Terms</a></p>
-                      </footer>
+                  <br> <br> 
+                     <footer>
+                         <p class="pull-right"><a href="#">Back to top</a></p>
+                         <p>Powered by Aleron &middot; 2016</span> &middot;
+                         <a id="idURL" href="#">Privacy</a> &middot; <a href="idURL">Terms</a></p>
+                     </footer>
                   </div>
                   
                   <div class="col-xs-1">
@@ -291,14 +302,6 @@
                   
               </div>
           </div> 
-
-          <script src="./js/defs.js"></script>
-          <script type="text/javascript">
-               document.getElementById("idFooter").innerHTML =
-               companyName + " 2016";
-               document.getElementById("idURL").href =
-               companyURL;
-          </script>
  
     <!-- bootstrap core javascript
     ================================================== -->
