@@ -66,7 +66,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Aleron Dashboard</a>
+          <a class="navbar-brand" href="#">Barnardo's Dashboard</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -102,6 +102,7 @@
                 <div class="row">
                    <div class="col-xs-12">
                       <h1 class="page-header">Welcome to Barnardo's Dashboard</h1> 
+                      <h4 class="page-header">Barnardo's Children Services Performance Dashboard</h4>
                       <br> 
                       <br>          
                     </div>
@@ -109,13 +110,60 @@
 
                       
                  <div class="row">
+                     <!--
                     <div class="col-xs-12" id="mainBubble">     
                        <svg height="600" width="1100" class="mainBubbleSVG">
                        </svg>
                    </div>
+                   -->
                 </div>
 
 
+
+
+                <div class="row">
+                    <div class="col-xs-3">
+                        <a href="./impact.html">
+                            <img src="./images/impact.png">
+                        </a>
+                    </div>
+
+                    <div class="col-xs-3">
+                        <a href="./financials.html">
+                            <img src="./images/financials.png">
+                        </a>
+                    </div>
+
+                    <div class="col-xs-3">
+                        <a href="./pbm.html">
+                            <img src="./images/peopleBizModel.png">
+                        </a>
+                    </div>
+
+                    <div class="col-xs-3">
+                        <a href="./bd.html">
+                            <img src="./images/bizDev.png">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-3">
+                        <h4 class="text-center">Impact</h4>
+                    </div>
+                    <div class="col-xs-3">
+                        <h4 class="text-center">Finance</h4>
+                    </div>
+                    <div class="col-xs-3">
+                        <h5 class="text-center">People and Business Model </h5>
+                    </div>
+                    <div class="col-xs-3">
+                        <h5 class="text-center">Business Development</h5>
+                    </div>
+                </div>
+
+              <div class="row">
+                  <br> <br> <br> <br>
                 <footer>
                     <p class="pull-right"><a href="#">Back to top</a></p>
                     <p>&copy; <span id="idFooter"> 2016, Inc.</span> &middot;
@@ -296,6 +344,8 @@
       svg.attr("width", w);
       svg.attr("height",h);       
        
+
+
       d3.select("#bubbleItemNote").text("Developed by MJ for aleron.org (c) 2016.");
        
       var t = svg.transition()
