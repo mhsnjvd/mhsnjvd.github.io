@@ -141,8 +141,16 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     }
 
     var pieStyle = initPieSettings(width, height, d3.scale.category10());
+    pieStyle.cx = width/6;
+    pieStyle.cy = height/4;
+    pieStyle.outerRadius = width/6;
+    pieStyle.innerRadius = pieStyle.outerRadius/1.4;
+    pieStyle.textEnabled = 0;
+
     var rayStyle = initRaySettings(pieStyle);
     var legendStyle = initLegendSettings(pieStyle);
+    legendStyle.x = 10;
+    legendStyle.y = height/2;
 
 
     var pie1 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
@@ -168,9 +176,17 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
         pieData.push( {label: propertyName[i], value: data[propertyName[i]][currentQuarter]["FTE"]});
     }
 
-    pieStyle = initPieSettings(width, height, d3.scale.category10());
-    rayStyle = initRaySettings(pieStyle);
-    legendStyle = initLegendSettings(pieStyle);
+    var pieStyle = initPieSettings(width, height, d3.scale.category10());
+    pieStyle.cx = width/6;
+    pieStyle.cy = height/4;
+    pieStyle.outerRadius = width/6;
+    pieStyle.innerRadius = pieStyle.outerRadius/1.4;
+    pieStyle.textEnabled = 0;
+
+    var rayStyle = initRaySettings(pieStyle);
+    var legendStyle = initLegendSettings(pieStyle);
+    legendStyle.x = 10;
+    legendStyle.y = height/2;
 
 
     var pie2 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
@@ -198,51 +214,6 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     }
 
     return;
-}
-
-function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty, area, subAreaProperty)
-{
-    // The mother object:
-    var stack = {};
-
-    var width = +svg.attr("width");
-    var height = +svg.attr("height");
-    var margin = defineMargins(height, width);
-    // More space on the left for long names
-    margin.left = 2*margin.left;
-    stackSettings.margin = stackSettings.margin || margin;
-
-    plotVerticalGrid(svg, margin, 10);
-
-    var layeredData = [];
-
-    for ( var i = 0; i < layerNames.length; i++ )
-    {
-        layeredData[i] = [];
-        for ( var j = 0; j < data.length; j++ )
-        {
-            var thisArray = data[j][layerNames[i]];
-            var latestQuarterIndex = 1; // for quarter 2
-            layeredData[i][j] = {label: nameList[j], y:thisArray[latestQuarterIndex] };
-        }
-    }
-
-    stack.stackPlot = new stackObjectConstructor(svg, layeredData, stackSettings);
-    stack.stackPlot.stackLayer.on("click", stackClick);
-
-    function stackClick(d)
-    {
-        var label = stack.stackPlot.stackLayer.clickedData.data.label;
-        var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
-        var subData = dashBoardData.peopleBizModelData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
-        var property = "Status"
-        var propertyValue = dashBoardData.peopleBizModelData.peopleBizModelColorToBizDevProperty( color );
-        subData = subData.filter(function(d) { return d[property] == propertyValue; } );
-        console.log(subData.length);
-        openTablePage(subData);
-        return;
-    }
-    
 }
 
 function openTablePage(tableData)
