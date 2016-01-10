@@ -332,8 +332,7 @@ function plotFinancialsVisualisation(data, subLevelData, subLevelProperty, subLe
     // Get the latest financials file:
 
     var fileName = dashBoardData.financialsData.files[2].propertyName;
-    var latestQuarterData = dashBoardData.financialsData[fileName];
-    var value = getIdentifierCount( latestQuarterData, subLevelList, subLevelProperty);
+    var value = subLevelData.map( function(d) { return d["income"]["FY"]; } );
     var pieData = [];
     for ( var i = 0; i < subLevelList.length; i++ )
     {
@@ -354,7 +353,7 @@ function plotFinancialsVisualisation(data, subLevelData, subLevelProperty, subLe
     var legendStyle = initLegendSettings(pieStyle);
 
     var pie1 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
-    var title1 = addTitle(svg, "Next Level Breakdown (%)");
+    var title1 = addTitle(svg, "Full Year Income (£k)");
 
     // Plot cost centres
     if ( subLevelProperty == "CC" )

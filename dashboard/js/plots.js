@@ -453,8 +453,9 @@ function plotCircles(svg, margin, xData, yData, xScale, yScale, circleColor)
 
 // function to handle pieChart.
 // svg is a d3 selected svg
-// pieData should have label and count fields
+// pieData should have label and value fields
 // color is optional
+/*
 function plotPieChart(svg, pieData, color)
 {
         var pieChart = {};
@@ -477,7 +478,7 @@ function plotPieChart(svg, pieData, color)
             .innerRadius(innerRad/10);
 
         // create a function to compute the pie slice angles.
-        var pie = d3.layout.pie().sort(null).value(function(d) { return d.count; });
+        var pie = d3.layout.pie().sort(null).value(function(d) { return d.value; });
         if ( color === undefined )
         {
             color = d3.scale.category20b();
@@ -494,9 +495,9 @@ function plotPieChart(svg, pieData, color)
          .offset([-10, 0])
          .html(function(d) {
                 var label = d.data.label;
-                var count = d.data.count;
+                var value = d.data.value;
                 var percent = d.data.percent;                
-                var displayText = "<span style='color:red'>" + label + "</span>" + " count: " + count + " (" + dashBoardSettings.numberFormat(percent) + "%)";
+                var displayText = "<span style='color:red'>" + label + "</span>" + " value: " + value + " (" + dashBoardSettings.numberFormat(percent) + "%)";
                 return displayText;
            });        
 
@@ -513,8 +514,8 @@ function plotPieChart(svg, pieData, color)
         .style("fill", function(d, i) { return color(d.data.label); })
         .on("mouseover", function(d)
         {
-             var total = d3.sum( pieData.map(function(d) { return d.count; } ));
-             d.data.percent = d.data.count/total * 100;                                                              
+             var total = d3.sum( pieData.map(function(d) { return d.value; } ));
+             d.data.percent = d.data.value/total * 100;                                                              
              tip.show(d)       
         })
         .on("mouseout", function(d)
@@ -602,8 +603,8 @@ function plotPieChart(svg, pieData, color)
             this._current = i(0);
             return function(t) { return arc(i(t));    };
         }    
-        */
 }
+        */
 
 function plotVerticalGrid( svg, margin, nLines)
 {
@@ -831,6 +832,12 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
 
     pieStyle.strokeWidth = pieStyle.strokeWidth || 1.2;
     this.strokeWidth = pieStyle.strokeWidth; 
+    
+    pieStyle.percentageEnabled = pieStyle.percentageEnable || 0;
+    this.percentageEnabled = pieStyle.percentageEnabled;
+
+    pieStyle.tipEnabled = pieStyle.tipEnable || 0;
+    this.tipEnabled = pieStyle.tipEnabled;
 
     pieStyle.textColor = pieStyle.textColor || "black";
     this.textColor = pieStyle.textColor;
@@ -874,7 +881,7 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
        .offset([-10, 0])
        .html(function(d, i) {
             var percent = d.percent;                
-            var displayText = "<span style='color:red'>" + i + "</span>" + " count: " + percent + " (" + dashBoardSettings.numberFormat(percent) + "%)";
+            var displayText = "<span style='color:red'>" + i + "</span>" + " value: " + percent + " (" + dashBoardSettings.numberFormat(percent) + "%)";
                 return displayText;
            });        
      
@@ -912,8 +919,16 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
     {
         if ( pieStyle.textEnabled )
         {
-            var s = d3.sum(numData);
-            var percentData = numData.map(function(d) { return dashBoardSettings.pieNumberFormat((d*100)/s); } );
+            var percentData = [];
+            if ( pieStyle.percentageEnabled )
+            {
+                var s = d3.sum(numData);
+                percentData = numData.map(function(d) { return dashBoardSettings.pieNumberFormat((d*100)/s); } );
+            }
+            else
+            {
+                percentData = numData.map(function(d) { return d; } );
+            }
             var textData = percentData.map(function(d) {
                 var tol = 1e-10;
                 return ( d > tol ) ?  d + pieStyle.textSuffix : "";
@@ -1188,9 +1203,9 @@ function addTip()
    .offset([-10, 0])
    .html(function(d) {
         var label = d.data.label;
-        var count = d.data.count;
+        var value = d.data.value;
         var percent = d.data.percent;                
-        var displayText = "<span style='color:red'>" + label + "</span>" + " count: " + count + " (" + dashBoardSettings.numberFormat(percent) + "%)";
+        var displayText = "<span style='color:red'>" + label + "</span>" + " value: " + value + " (" + dashBoardSettings.numberFormat(percent) + "%)";
                 return displayText;
            });        
 }
