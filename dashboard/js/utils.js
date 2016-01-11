@@ -230,7 +230,7 @@ function cumsumArray(data)
 function openTablePage(tableData)
 {
     var tablePageWindow = window.open("./table.html");
-    tablePageWindow.selecteData = tableData;
+    tablePageWindow.selectedData = tableData;
 }
 
 
