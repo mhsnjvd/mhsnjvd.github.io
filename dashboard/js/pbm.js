@@ -54,7 +54,7 @@ function computeQuarterlyPeopleBizModelData(peopleBizModelData)
     var headerRow = ["Q2"];
 
     var jobPropertyName = "Job Type";
-    var jobTypes = getUniqueSortedList(dashBoardData.peopleBizModelData[fileNames[fileNames.length - 1]], jobPropertyName);
+    var jobTypes = ["Director", "AD", "Manager", "Team Manager", "Teacher", "Specialist", "Practitioner", "Admin", "Other"];
     //var headerColumn = ["AD", "CSMs", "Team Managers", "CSM + Team Leaders", "Practitioners", "Administrators", "Others", "TOTAL"];
     var headerColumn = jobTypes;
 
@@ -132,7 +132,7 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     var width = svg.attr("width");
     var currentQuarter = "Q2";
     var pieData = [];
-    var propertyName = Object.getOwnPropertyNames(data);
+    var propertyName = [ "Director", "AD", "Manager", "Team Manager", "Teacher", "Specialist", "Practitioner", "Admin", "Other"];
 
     var propertyTable = {
         "HC": "Normal Hours SUM",
@@ -151,6 +151,7 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     pieStyle.outerRadius = width/6;
     pieStyle.innerRadius = pieStyle.outerRadius/1.4;
     pieStyle.textEnabled = 0;
+    pieStyle.tipEnabled = 0;
 
     var rayStyle = initRaySettings(pieStyle);
     var legendStyle = initLegendSettings(pieStyle);
