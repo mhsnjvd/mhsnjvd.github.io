@@ -927,7 +927,7 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
             }
             else
             {
-                percentData = numData.map(function(d) { return d; } );
+                percentData = numData.map(function(d) { return dashBoardSettings.percentFormat(d); } ); 
             }
             var textData = percentData.map(function(d) {
                 var tol = 1e-10;

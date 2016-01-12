@@ -29,6 +29,7 @@ dashBoardSettings.color.pipeLineInProgress = "orange";
 dashBoardSettings.color.pipeLineQualifiedOut = "steelblue";
 
 dashBoardSettings.numberFormat = d3.format(",.2f");
+dashBoardSettings.percentFormat = d3.format(",.2f");
 dashBoardSettings.pieNumberFormat = d3.format(",.0f");
 
 // Path of data directory:
