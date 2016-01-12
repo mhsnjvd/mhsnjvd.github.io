@@ -250,13 +250,6 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
     
 }
 
-function openTablePage(tableData)
-{
-    dashBoardData.bizDevData.selectedData = tableData;
-    var tablePageWindow = window.open("./table.html");
-    tablePageWindow.selecteData = tableData;
-}
-
 /*
 function plotBizDevVisualisation(data, subLevelData, subLevelList, subAreaProperty, areaProperty, area )
 {
