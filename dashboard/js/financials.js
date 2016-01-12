@@ -359,7 +359,8 @@ function plotFinancialsVisualisation(data, subLevelData, subLevelProperty, subLe
     if ( subLevelProperty == "CC" )
     {
          // Use the latest quarter data file:
-         plotCostCentres( svg, dashBoardData.financialsData[fileName]);  
+         var locData = dashBoardData.financialsData[fileName].filter( function(d) { return d[areaProperty] == area; } );
+         plotCostCentres( svg, locData);  
     }
 
     return;
@@ -535,7 +536,7 @@ function plotCostCentres(svg, data)
       
       plotVerticalGrid( svg, margin, 25);
       plotHorisontalBars(svg, margin, xData, yData);
-      plotXLabel( svg, margin, "Latest income of Cost Centres within the Locality")
+      plotXLabel( svg, margin, "Latest income of Cost Centres within the Locality (£k)")
       plotYLabel( svg, margin, "CC ID")
       
 }   
