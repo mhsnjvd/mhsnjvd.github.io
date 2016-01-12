@@ -134,10 +134,15 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     var pieData = [];
     var propertyName = Object.getOwnPropertyNames(data);
 
+    var propertyTable = {
+        "HC": "Normal Hours SUM",
+        "FTE": "FTE_Normal hours/37"
+    };
+
     var legendData = propertyName;
     for ( var i = 0; i < propertyName.length; i++ )
     {
-        pieData.push( {label: propertyName[i], value: data[propertyName[i]][currentQuarter]["HC"]});
+        pieData.push( {label: propertyName[i], value: data[propertyName[i]][currentQuarter]["HC"], propertyName: "Job Type", propertyValue: propertyName[i]});
     }
 
     var pieStyle = initPieSettings(width, height, d3.scale.category10());
@@ -153,13 +158,9 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     legendStyle.y = height/2;
 
 
-    var pie1 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
-    var title1 = addTitle(svg, "Head Count %");
-
-    var pie = pie1;
     var fileName = "staffData";
-    pie1.piePlot.piePath.on("click", pieClick);
-
+    var pie1 = plotPie(svg, pieData, dashBoardData.peopleBizModelData[fileName], areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
+    var title1 = addTitle(svg, "Head Count %");
 
     // Update data table:
     var tableData = makePeopleBizModelTableData(data);
@@ -173,7 +174,7 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     pieData = [];
     for ( var i = 0; i < propertyName.length; i++ )
     {
-        pieData.push( {label: propertyName[i], value: data[propertyName[i]][currentQuarter]["FTE"]});
+        pieData.push( {label: propertyName[i], value: data[propertyName[i]][currentQuarter]["FTE"], propertyName: "Job Type", propertyValue: propertyName[i]});
     }
 
     var pieStyle = initPieSettings(width, height, d3.scale.category10());
@@ -189,37 +190,9 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     legendStyle.y = height/2;
 
 
-    var pie2 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
-    var title2 = addTitle(svg, "Full Time Equivalent %");
-
-    pie = pie2;
     fileName = "staffData";
-    pie2.piePlot.piePath.on("click", pieClick);
-
-
-    function pieClick(d)
-    {
-        var label = pie.piePlot.piePath.clickedData.data.label;
-        var color = pie.piePlot.piePath.clickedData.object.style("fill");
-        var subData = dashBoardData.peopleBizModelData[fileName];
-        if ( area != dashBoardData.allUKString )
-        {
-            subData = subData.filter( function(d) { return d[areaProperty] == area; }); 
-        }
-        var property = "Job Type";
-        subData = subData.filter(function(d) { return d[property] == label; } );
-        console.log(subData.length);
-        openTablePage(subData);
-        return;
-    }
+    var pie2 = plotPie(svg, pieData, dashBoardData.peopleBizModelData[fileName], areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
+    var title2 = addTitle(svg, "Full Time Equivalent %");
 
     return;
 }
-
-function openTablePage(tableData)
-{
-    dashBoardData.peopleBizModelData.selectedData = tableData;
-    var tablePageWindow = window.open("./table.html");
-    tablePageWindow.selecteData = tableData;
-}
-
