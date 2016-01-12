@@ -979,7 +979,7 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
 // svg is d3 selected svg
 // pieData is an array of objects with format: 
 // pieData = [ {label: xxxx, value: xxxx}, {}, {}, ...]
-function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
+function plotPie(svg, pieData, data, areaProperty, area, legendData, pieStyle, rayStyle, legendStyle)
 {
     // The mother of all objects:
     var pie = {};
@@ -999,6 +999,25 @@ function plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle)
     {
         pie.piePlot.update(data);
         pie.rayPlot.update(data);
+    }
+
+    var piePath = pie.piePlot.piePath;
+    piePath.on("click", pieClick);
+
+    function pieClick(d)
+    {
+        var label = piePath.clickedData.data.label;
+        var property = piePath.clickedData.data.propertyName;
+        var value = piePath.clickedData.data.propertyValue;
+        var subData = data;
+        if ( area != dashBoardData.allUKString )
+        {
+            subData = subData.filter( function(d) { return d[areaProperty] == area; }); 
+        }
+        subData = subData.filter( function(d) { return d[property] == value; } );
+        console.log(subData.length + " entries selected by the click.");
+        openTablePage(subData);
+        return;
     }
     return pie;
 }
