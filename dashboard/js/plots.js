@@ -1319,7 +1319,7 @@ function plotStack(svg, stackData, subAreaProperty, data, fileName, stackSetting
     margin.left = 2*margin.left;
     stackSettings.margin = stackSettings.margin || margin;
 
-    plotVerticalGrid(svg, margin, 10);
+    plotVerticalGrid(svg, stackSettings.margin, 10);
 
     stack = new stackObjectConstructor(svg, stackData, stackSettings);
 

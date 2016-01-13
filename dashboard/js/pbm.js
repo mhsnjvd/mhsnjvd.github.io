@@ -17,11 +17,32 @@
      { 
             // Copy the data read into the global variable:
             dashBoardData.peopleBizModelData[propertyName] = d;
+            var data = dashBoardData.peopleBizModelData;
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
             console.log(fileName + " read successfully.");
             console.log( dashBoardData.peopleBizModelData[propertyName].length );
      }); // end of d3.csv()                                
  })();
 
+
+(function() 
+{                                                                                                                               
+     var dataFileName = dashBoardData.peopleBizModelData.files[1].name;
+     var propertyName = dashBoardData.peopleBizModelData.files[1].propertyName;
+     
+     dashBoardData.peopleBizModelData[propertyName] = [];
+     var fileName = dashBoardSettings.dataDir +  dataFileName;
+     console.log("reading:" + fileName);
+     d3.csv( fileName, function(d)
+     { 
+            // Copy the data read into the global variable:
+            dashBoardData.peopleBizModelData[propertyName] = d;
+            var data = dashBoardData.peopleBizModelData;
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
+            console.log(fileName + " read successfully.");
+            console.log( dashBoardData.peopleBizModelData[propertyName].length );
+     }); // end of d3.csv()                                
+ })();
 
 // *******************************************************
 //    People and Business Model Utility functions
@@ -126,11 +147,19 @@ function makePeopleBizModelTableData(data)
 
 function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAreaProperty, areaProperty, area )
 {
+    var financialsData = dataSelectFunction(dashBoardData.financialsData, areaProperty, area, computeQuarterlyFinancialsData);
+    // Second Quarter
+    var quarterIndex = 1;
+    var income = financialsData.quarterlyData.income.quarterly[quarterIndex];
+    var expenditure = financialsData.quarterlyData.expenditure.quarterly[quarterIndex];
+    var currentQuarter = "Q2";
+    var totalManagers = data["Manager"][currentQuarter]["HC"] + data["Team Manager"][currentQuarter]["HC"];
+
     // **************** First plot ********************
     var svg = d3.select(document.getElementById("SVG01"));
+    svg.selectAll("*").remove();
     var height = svg.attr("height");
     var width = svg.attr("width");
-    var currentQuarter = "Q2";
     var pieData = [];
     var propertyName = [ "Director", "AD", "Manager", "Team Manager", "Teacher", "Specialist", "Practitioner", "Admin", "Other"];
 
@@ -163,12 +192,32 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     var pie1 = plotPie(svg, pieData, dashBoardData.peopleBizModelData[fileName], areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
     var title1 = addTitle(svg, "Head Count %");
 
+    var stackData = [];
+    xData = ["Expenditure/TM (£k)", "Income/TM (£k)" ];
+    yData = [expenditure/totalManagers, income/totalManagers ];
+    var numberOfStacksPerBar = 1;
+    for ( var i = 0; i < numberOfStacksPerBar; i++ )
+    {
+        stackData[i] = [];
+        for ( var j = 0; j < xData.length; j++ )
+        {
+            stackData[i][j] = {label: xData[j], y: yData[j], propertyName: "think", propertyValue: "about this"};
+        }
+    }
+
+    var stackSettings = {};
+    var margin = defineMargins(height, width);
+    margin.left = width/2;
+    stackSettings.margin = margin;
+    stackSettings.color = pieStyle.color;
+    plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings );
     // Update data table:
     var tableData = makePeopleBizModelTableData(data);
     updateTable( document.getElementById("dataTable"), tableData);
 
     // *********************** Second Plot ****************////
     svg = d3.select(document.getElementById("SVG02"));
+    svg.selectAll("*").remove();
     height = svg.attr("height");
     width = svg.attr("width");
     currentQuarter = "Q2";
@@ -194,6 +243,26 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     fileName = "staffData";
     var pie2 = plotPie(svg, pieData, dashBoardData.peopleBizModelData[fileName], areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
     var title2 = addTitle(svg, "Full Time Equivalent %");
+
+    totalManagers = data["Manager"][currentQuarter]["FTE"] + data["Team Manager"][currentQuarter]["FTE"];
+    xData = ["Expenditure/TM (£k)", "Income/TM (£k)" ];
+    yData = [expenditure/totalManagers, income/totalManagers ];
+    numberOfStacksPerBar = 1;
+    for ( var i = 0; i < numberOfStacksPerBar; i++ )
+    {
+        stackData[i] = [];
+        for ( var j = 0; j < xData.length; j++ )
+        {
+            stackData[i][j] = {label: xData[j], y: yData[j], propertyName: "think", propertyValue: "about this"};
+        }
+    }
+
+    stackSettings = {};
+    margin = defineMargins(height, width);
+    margin.left = width/2;
+    stackSettings.margin = margin;
+    stackSettings.color = pieStyle.color;
+    plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings )
 
     return;
 }

@@ -246,11 +246,9 @@
             // Upload the data file and process it:
             d3.csv( dashBoardSettings.dataDir + dashBoardData.bizDevData.files[dashBoardData.bizDevData.files.length - 1].name, function(d)
             { 
-              // Copy the data read into the global variable:
-              var nFiles = dashBoardData.bizDevData.files.length;
-              var fileNames = dashBoardData.bizDevData.files.map(function(d) { return d.propertyName; });
-              dashBoardData.bizDevData[fileNames[nFiles-1]] = d;
-              console.log("Done reading " + dashBoardData.bizDevData.files[nFiles-1].name);
+              // TODO: How to avoid this:
+              dashBoardData.bizDevData["lastFile"] = d;
+              console.log("Done reading " + dashBoardData.bizDevData.files[dashBoardData.bizDevData.files.length - 1].name);
 
               resetBizDev();
 

@@ -315,11 +315,9 @@
             // Upload the data file and process it:
             d3.csv( dashBoardSettings.dataDir + dashBoardData.impactData.files[dashBoardData.impactData.files.length - 1].name, function(d)
             { 
-              // Copy the data read into the global variable:
-              var nFiles = dashBoardData.impactData.files.length;
-              var fileNames = dashBoardData.impactData.files.map(function(d) { return d.propertyName; });
-              dashBoardData.impactData[fileNames[nFiles-1]] = d;
-              console.log("Done reading " + dashBoardData.impactData.files[nFiles-1].name);
+              // TODO: How to avoid reading this file again:
+              dashBoardData.impactData["lastFile"] = d;
+              console.log("Done reading " + dashBoardData.impactData.files[dashBoardData.impactData.files.length - 1].name);
 
               resetImpact();
 

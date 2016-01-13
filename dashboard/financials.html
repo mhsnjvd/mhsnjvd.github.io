@@ -263,10 +263,8 @@
             // Upload the data file and process it:
             d3.csv(dashBoardSettings.dataDir + dashBoardData.financialsData.files[dashBoardData.financialsData.files.length - 1].name, function(d)
             { 
-              // Copy the data read into the global variable:
-              var nFiles = dashBoardData.financialsData.files.length;
-              var fileNames = dashBoardData.financialsData.files.map(function(d) { return d.propertyName; });
-              dashBoardData.financialsData[fileNames[nFiles-1]] = d;
+              // TODO: How to avoid reading this file again:
+              dashBoardData.impactData["lastFile"] = d;
               console.log(dashBoardSettings.dataDir + dashBoardData.financialsData.files[dashBoardData.financialsData.files.length - 1].name + " read" ); 
               resetFinancials();
             });                                 

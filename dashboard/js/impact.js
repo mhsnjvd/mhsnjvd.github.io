@@ -17,11 +17,32 @@
      { 
             // Copy the data read into the global variable:
             dashBoardData.impactData[propertyName] = d;
+            var data = dashBoardData.impactData
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
             console.log(fileName + " read successfully.");
             console.log( dashBoardData.impactData[propertyName].length + " entries read.");
      }); // end of d3.csv()                                
  })();
 
+
+(function() 
+{                                                                                                                               
+     var dataFileName = dashBoardData.impactData.files[1].name;
+     var propertyName = dashBoardData.impactData.files[1].propertyName;
+     
+     dashBoardData.impactData[propertyName] = [];
+     var fileName = dashBoardSettings.dataDir +  dataFileName;
+     console.log("reading:" + fileName);
+     d3.csv( fileName, function(d)
+     { 
+            // Copy the data read into the global variable:
+            dashBoardData.impactData[propertyName] = d;
+            var data = dashBoardData.impactData
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
+            console.log(fileName + " read successfully.");
+            console.log( dashBoardData.impactData[propertyName].length + " entries read.");
+     }); // end of d3.csv()                                
+ })();
 
 // *******************************************************
 //    Impact Measurement Utility Functions

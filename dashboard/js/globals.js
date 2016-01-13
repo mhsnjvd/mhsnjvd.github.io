@@ -74,7 +74,7 @@ dashBoardData.financialsData.regionProperty = dashBoardData.financialsData.hiera
 dashBoardData.financialsData.localityProperty = dashBoardData.financialsData.hierarchicalProperties[2];
 dashBoardData.financialsData.costCentreProperty = dashBoardData.financialsData.hierarchicalProperties[3];
 
-dashBoardData.peopleBizModelData.hierarchicalProperties = ["Nation", "RNBL", "Loc", "CC"];
+dashBoardData.peopleBizModelData.hierarchicalProperties = ["Nation", "R/N/BL", "Locality", "CC"];
 dashBoardData.peopleBizModelData.nationProperty = dashBoardData.peopleBizModelData.hierarchicalProperties[0];
 dashBoardData.peopleBizModelData.nationList = ["Business Lines", "Celtic Nations", "England", "Pan Regional", "Other"];
 dashBoardData.peopleBizModelData.regionProperty = dashBoardData.peopleBizModelData.hierarchicalProperties[1];

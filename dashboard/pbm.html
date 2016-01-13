@@ -107,6 +107,7 @@
     <script type="text/javascript" src="./js/globals.js"></script>
     <script type="text/javascript" src="./js/utils.js"></script>
     <script type="text/javascript" src="./js/plots.js"></script>
+    <script type="text/javascript" src="./js/financials.js"></script>
     <script type="text/javascript" src="./js/pbm.js"></script>
 
     <div class="container-fluid">
@@ -249,12 +250,9 @@
             // Upload the data file and process it:
             d3.csv( dashBoardSettings.dataDir + dashBoardData.peopleBizModelData.files[dashBoardData.peopleBizModelData.files.length - 1].name, function(d)
             { 
-              // Copy the data read into the global variable:
-              var nFiles = dashBoardData.peopleBizModelData.files.length;
-              var fileNames = dashBoardData.peopleBizModelData.files.map(function(d) { return d.propertyName; });
-              dashBoardData.peopleBizModelData[fileNames[nFiles-1]] = d;
-              console.log("Done reading " + dashBoardData.peopleBizModelData.files[nFiles-1].name);
-
+              // TODO: How to avoid this:
+              dashBoardData.peopleBizModelData["lastFile"] = d;
+              console.log("Done reading " + dashBoardData.peopleBizModelData.files[dashBoardData.peopleBizModelData.files.length - 1].name);
               resetPeopleBizModel();
 
             });                                 

@@ -2,16 +2,43 @@
 // Reading the files
 //*********************************/
 // Make sure the file is read before reading the second file. This is the ( function() {})(); construct:
-(function() {
-   d3.csv( dashBoardSettings.dataDir +  dashBoardData.bizDevData.files[0].name, function(d)
-   { 
-     // Copy the data read into the global variable:
-     dashBoardData.bizDevData[dashBoardData.bizDevData.files[0].propertyName]= d;
-     // Copy the data locally as well
-     var data = d;
-     console.log(dashBoardSettings.dataDir +  dashBoardData.bizDevData.files[0].name + " read successfuly");
-   }); // end of d3.csv()                                
-})();
+(function() 
+{                                                                                                                               
+     var dataFileName = dashBoardData.bizDevData.files[0].name;
+     var propertyName = dashBoardData.bizDevData.files[0].propertyName;
+     
+     dashBoardData.bizDevData[propertyName] = [];
+     var fileName = dashBoardSettings.dataDir +  dataFileName;
+     console.log("reading:" + fileName);
+     d3.csv( fileName, function(d)
+     { 
+            // Copy the data read into the global variable:
+            dashBoardData.bizDevData[propertyName] = d;
+            var data = dashBoardData.bizDevData
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
+            console.log(fileName + " read successfully.");
+            console.log( dashBoardData.impactData[propertyName].length + " entries read.");
+     }); // end of d3.csv()                                
+ })();
+
+(function() 
+{                                                                                                                               
+     var dataFileName = dashBoardData.bizDevData.files[1].name;
+     var propertyName = dashBoardData.bizDevData.files[1].propertyName;
+     
+     dashBoardData.bizDevData[propertyName] = [];
+     var fileName = dashBoardSettings.dataDir +  dataFileName;
+     console.log("reading:" + fileName);
+     d3.csv( fileName, function(d)
+     { 
+            // Copy the data read into the global variable:
+            dashBoardData.bizDevData[propertyName] = d;
+            var data = dashBoardData.bizDevData
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
+            console.log(fileName + " read successfully.");
+            console.log( dashBoardData.impactData[propertyName].length + " entries read.");
+     }); // end of d3.csv()                                
+ })();
 // *******************************************************
 //    Business Development Utility functions
 // *****************************************************//

@@ -17,6 +17,8 @@
      { 
             // Copy the data read into the global variable:
             dashBoardData.financialsData[propertyName] = d;
+            var data = dashBoardData.financialsData
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
             console.log(fileName + " read successfully.");
             console.log( dashBoardData.financialsData[propertyName].length + " entries read." );
      }); // end of d3.csv()                                
@@ -35,6 +37,8 @@
      { 
             // Copy the data read into the global variable:
             dashBoardData.financialsData[propertyName] = d;
+            var data = dashBoardData.financialsData
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
             console.log(fileName + " read successfully.");
             console.log( dashBoardData.financialsData[propertyName].length +  " entries read." );
      }); // end of d3.csv()                                
@@ -53,6 +57,8 @@
      { 
             // Copy the data read into the global variable:
             dashBoardData.financialsData[propertyName] = d;
+            var data = dashBoardData.financialsData
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
             console.log(fileName + " read successfully.");
             console.log( dashBoardData.financialsData[propertyName].length + " entries read.");
      }); // end of d3.csv()                                
