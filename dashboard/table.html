@@ -63,7 +63,18 @@
 .axis--x path {
   display: none;
 }
-
+/*
+tr {
+     max-height: 10px !important;
+     height: 10px !important;
+     overflow: auto !important;
+}
+*/
+tr {
+       line-height: 10px;
+          min-height: 10px;
+             height: 10px;
+         }
 </style>
 
   </head>
@@ -126,7 +137,8 @@
             <div class="col-xs-10">
               <h3 id="dataSummaryHeading" class="sub-header">Currently Selected Data</h3>
               <div class="table-responsive">
-                <table id="dataTable" class="table table-striped">
+                 <table id="dataTable" class="table table-striped">
+                     <!--<table id="dataTable" style="width: auto"> -->
                 </table>
               </div>
             </div>
@@ -145,7 +157,20 @@
           <script type="text/javascript" src="./js/plots.js"></script>
 
           <script type="text/javascript"> 
-          updateTable( document.getElementById("dataTable"), jsonToArray(window.selectedData));
+              updateTable( document.getElementById("dataTable"), jsonToArray(window.selectedData));
+
+              //adjustTableHeight();
+
+function adjustTableHeight()
+{
+   var num_rows_tbody = document.getElementById("dataTable").rows.length;
+   for (a = 0; a <= num_rows_tbody - 1; a++)
+  {
+        document.getElementById("dataTable").getElementsByTagName("td")[a].style.height = "2px";
+        document.getElementById("dataTable").getElementsByTagName("td")[a].style.width = "auto";
+
+   }
+}
           </script>
          
           <!-- FOOTER -->
