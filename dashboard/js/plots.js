@@ -919,23 +919,23 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
     {
         if ( pieStyle.textEnabled )
         {
-            var percentData = [];
+            var formattedData = [];
             if ( pieStyle.percentageEnabled )
             {
                 var s = d3.sum(numData);
-                percentData = numData.map(function(d) { return dashBoardSettings.pieNumberFormat((d*100)/s); } );
+                formattedData = numData.map(function(d) { return dashBoardSettings.piePercentFormat((d*100)/s); } );
             }
             else
             {
-                percentData = numData.map(function(d) { return dashBoardSettings.percentFormat(d); } ); 
+                formattedData = numData.map(function(d) { return dashBoardSettings.pieNumberFormat(d); } ); 
             }
-            var textData = percentData.map(function(d) {
+            var textData = formattedData.map(function(d, i) {
                 var tol = 1e-10;
-                return ( d > tol ) ?  d + pieStyle.textSuffix : "";
+                return ( numData[i] > tol ) ?  d + pieStyle.textSuffix : "";
             });
 
             textSVG.selectAll("text")
-            .data(pieLayOut(percentData))
+            .data(pieLayOut(numData))
             .enter()
             .append("text")
             .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"})

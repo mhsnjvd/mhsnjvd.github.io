@@ -309,9 +309,10 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     legendData = ["Red", "Amber", "Green"];
     for ( var i = 0; i < propertyName.length; i++ )
     {
-        pieData.push( {label: legendData[i], value: data[propertyName[i]][currentQuarter], propertyName: areaProperty, propertyValue: area});
+        pieData.push( {label: legendData[i], value: data[propertyName[i]][currentQuarter], propertyName: propertyTable[propertyName[i]], propertyValue: 1});
     }
 
+    pieStyle.percentageEnabled = 1
     var pie4 = plotPie(svg, pieData, dashBoardData.impactData[fileName], areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
     var title4 = addTitle(svg, "Outcome/Quality Performance (%)");
 
@@ -336,10 +337,11 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     currentQuarter = "Q2";
     pieData = [];
     propertyName = ["No Feedback", "Feedback Collected"];
+    values = ["", "Yes"];
     legendData = ["No Feedback", "Feedback Collected"];
     for ( var i = 0; i < propertyName.length; i++ )
     {
-        pieData.push( {label: legendData[i], value: data[propertyName[i]][currentQuarter], propertyName: areaProperty, propertyValue: area});
+        pieData.push( {label: legendData[i], value: data[propertyName[i]][currentQuarter], propertyName: propertyTable[propertyName[i]], propertyValue: values[i]});
     }
 
     var pie7 = plotPie(svg, pieData, dashBoardData.impactData[fileName], areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
@@ -373,12 +375,12 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     rayStyle.color = pieStyle.color;
     for ( var i = 0; i < propertyName.length; i++ )
     {
-        pieData.push( {label: legendData[i], value: data[propertyName[i]][currentQuarter], propertyName: areaProperty, propertyValue: area});
+        pieData.push( {label: legendData[i], value: data[propertyName[i]][currentQuarter],  propertyName: propertyTable[propertyName[i]], propertyValue: 1});
     }
 
     fileName = "externalInspectionsData";
     var pie10 = plotPie(svg, pieData, dashBoardData.impactData[fileName], areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
-    var title10 = addTitle(svg, "External Inspections (%)");
+    var title10 = addTitle(svg, "External Inspections (Total)");
 
     /* ****************** Eight Plot ***************************************/
     svg = d3.select(document.getElementById("SVG11"));
@@ -391,7 +393,7 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     values = propertyName.map(function(d) { return 1; } );
     stackData = makeImpactStackData(subLevelData, subLevelList, propertyName, values)
     plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings )
-    addTitle(svg, "Next Level Breakdown (%)")
+    addTitle(svg, "Next Level Breakdown (Total)")
 
     return;
 }
