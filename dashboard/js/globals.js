@@ -29,6 +29,8 @@ dashBoardSettings.color.pipeLineInProgress = "orange";
 dashBoardSettings.color.pipeLineQualifiedOut = "steelblue";
 
 dashBoardSettings.numberFormat = d3.format(",.2f");
+dashBoardSettings.percentFormat = d3.format(",.2f");
+dashBoardSettings.piePercentFormat = d3.format(",.1f");
 dashBoardSettings.pieNumberFormat = d3.format(",.0f");
 
 // Path of data directory:
@@ -72,7 +74,7 @@ dashBoardData.financialsData.regionProperty = dashBoardData.financialsData.hiera
 dashBoardData.financialsData.localityProperty = dashBoardData.financialsData.hierarchicalProperties[2];
 dashBoardData.financialsData.costCentreProperty = dashBoardData.financialsData.hierarchicalProperties[3];
 
-dashBoardData.peopleBizModelData.hierarchicalProperties = ["Nation", "RNBL", "Loc", "CC"];
+dashBoardData.peopleBizModelData.hierarchicalProperties = ["Nation", "R/N/BL", "Locality", "CC"];
 dashBoardData.peopleBizModelData.nationProperty = dashBoardData.peopleBizModelData.hierarchicalProperties[0];
 dashBoardData.peopleBizModelData.nationList = ["Business Lines", "Celtic Nations", "England", "Pan Regional", "Other"];
 dashBoardData.peopleBizModelData.regionProperty = dashBoardData.peopleBizModelData.hierarchicalProperties[1];

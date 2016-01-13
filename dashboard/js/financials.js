@@ -17,6 +17,8 @@
      { 
             // Copy the data read into the global variable:
             dashBoardData.financialsData[propertyName] = d;
+            var data = dashBoardData.financialsData
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
             console.log(fileName + " read successfully.");
             console.log( dashBoardData.financialsData[propertyName].length + " entries read." );
      }); // end of d3.csv()                                
@@ -35,6 +37,8 @@
      { 
             // Copy the data read into the global variable:
             dashBoardData.financialsData[propertyName] = d;
+            var data = dashBoardData.financialsData
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
             console.log(fileName + " read successfully.");
             console.log( dashBoardData.financialsData[propertyName].length +  " entries read." );
      }); // end of d3.csv()                                
@@ -53,6 +57,8 @@
      { 
             // Copy the data read into the global variable:
             dashBoardData.financialsData[propertyName] = d;
+            var data = dashBoardData.financialsData
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
             console.log(fileName + " read successfully.");
             console.log( dashBoardData.financialsData[propertyName].length + " entries read.");
      }); // end of d3.csv()                                
@@ -332,12 +338,11 @@ function plotFinancialsVisualisation(data, subLevelData, subLevelProperty, subLe
     // Get the latest financials file:
 
     var fileName = dashBoardData.financialsData.files[2].propertyName;
-    var latestQuarterData = dashBoardData.financialsData[fileName];
-    var value = getIdentifierCount( latestQuarterData, subLevelList, subLevelProperty);
+    var fyIncomes = subLevelData.map( function(d) { return d["income"]["FY"]; } );
     var pieData = [];
     for ( var i = 0; i < subLevelList.length; i++ )
     {
-        pieData.push( {label: subLevelList[i], value: value[i]});
+        pieData.push( {label: subLevelList[i], value: fyIncomes[i], propertyName: "a", propertyValue: 1});
     }
     
     svg = d3.select(document.getElementById("SVG02"));
@@ -350,62 +355,27 @@ function plotFinancialsVisualisation(data, subLevelData, subLevelProperty, subLe
 
     var legendData = subLevelList;
     var pieStyle = initPieSettings(width, height, d3.scale.category20() );
+    pieStyle.textEnabled = 1;
     var rayStyle = initRaySettings(pieStyle);
     var legendStyle = initLegendSettings(pieStyle);
 
-    var pie1 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
-    var title1 = addTitle(svg, "Next Level Breakdown (%)");
+    var finData = dashBoardData.financialsData;
+    finData = finData[fileName];
 
     // Plot cost centres
     if ( subLevelProperty == "CC" )
     {
          // Use the latest quarter data file:
-         plotCostCentres( svg, dashBoardData.financialsData[fileName]);  
+         var locData = finData.filter( function(d) { return d[areaProperty] == area; } );
+         plotCostCentres( svg, locData);  
+    }
+    else
+    {
+        var pie1 = plotPie(svg, pieData, finData, areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
+        var title1 = addTitle(svg, "Full Year Income (£k)");
     }
 
     return;
-}
-
-function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty, area, subAreaProperty)
-{
-    // The mother object:
-    var stack = {};
-
-    var width = +svg.attr("width");
-    var height = +svg.attr("height");
-    var margin = defineMargins(height, width);
-    // More space on the left for long names
-    margin.left = 2*margin.left;
-    stackSettings.margin = stackSettings.margin || margin;
-
-    plotVerticalGrid(svg, margin, 10);
-
-    var layeredData = [];
-
-    for ( var i = 0; i < layerNames.length; i++ )
-    {
-        layeredData[i] = [];
-        for ( var j = 0; j < data.length; j++ )
-        {
-            layeredData[i][j] = {label: nameList[j], y: data[j][layerNames[i]]["Q2"]};
-        }
-    }
-
-    stack.stackPlot = new stackObjectConstructor(svg, layeredData, stackSettings);
-    stack.stackPlot.stackLayer.on("click", stackClick);
-
-    function stackClick(d)
-    {
-        var label = stack.stackPlot.stackLayer.clickedData.data.label;
-        var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
-        var subData = dashBoardData.impactData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
-        var property = dashBoardData.impactData.impactColorToImpactProperty(color);
-        subData = subData.filter(function(d) { return d[property] == 1; } );
-        console.log(subData.length);
-        openTablePage(subData);
-        return;
-    }
-    
 }
 
 // All data is assumed positive
@@ -536,7 +506,7 @@ function plotCostCentres(svg, data)
       
       plotVerticalGrid( svg, margin, 25);
       plotHorisontalBars(svg, margin, xData, yData);
-      plotXLabel( svg, margin, "Latest income of Cost Centres within the Locality")
+      plotXLabel( svg, margin, "Latest income of Cost Centres within the Locality (£k)")
       plotYLabel( svg, margin, "CC ID")
       
 }   

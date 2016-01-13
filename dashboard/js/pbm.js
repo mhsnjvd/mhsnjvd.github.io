@@ -17,11 +17,32 @@
      { 
             // Copy the data read into the global variable:
             dashBoardData.peopleBizModelData[propertyName] = d;
+            var data = dashBoardData.peopleBizModelData;
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
             console.log(fileName + " read successfully.");
             console.log( dashBoardData.peopleBizModelData[propertyName].length );
      }); // end of d3.csv()                                
  })();
 
+
+(function() 
+{                                                                                                                               
+     var dataFileName = dashBoardData.peopleBizModelData.files[1].name;
+     var propertyName = dashBoardData.peopleBizModelData.files[1].propertyName;
+     
+     dashBoardData.peopleBizModelData[propertyName] = [];
+     var fileName = dashBoardSettings.dataDir +  dataFileName;
+     console.log("reading:" + fileName);
+     d3.csv( fileName, function(d)
+     { 
+            // Copy the data read into the global variable:
+            dashBoardData.peopleBizModelData[propertyName] = d;
+            var data = dashBoardData.peopleBizModelData;
+            addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
+            console.log(fileName + " read successfully.");
+            console.log( dashBoardData.peopleBizModelData[propertyName].length );
+     }); // end of d3.csv()                                
+ })();
 
 // *******************************************************
 //    People and Business Model Utility functions
@@ -54,7 +75,7 @@ function computeQuarterlyPeopleBizModelData(peopleBizModelData)
     var headerRow = ["Q2"];
 
     var jobPropertyName = "Job Type";
-    var jobTypes = getUniqueSortedList(dashBoardData.peopleBizModelData[fileNames[fileNames.length - 1]], jobPropertyName);
+    var jobTypes = ["Director", "AD", "Manager", "Team Manager", "Teacher", "Specialist", "Practitioner", "Admin", "Other"];
     //var headerColumn = ["AD", "CSMs", "Team Managers", "CSM + Team Leaders", "Practitioners", "Administrators", "Others", "TOTAL"];
     var headerColumn = jobTypes;
 
@@ -126,129 +147,122 @@ function makePeopleBizModelTableData(data)
 
 function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAreaProperty, areaProperty, area )
 {
+    var financialsData = dataSelectFunction(dashBoardData.financialsData, areaProperty, area, computeQuarterlyFinancialsData);
+    // Second Quarter
+    var quarterIndex = 1;
+    var income = financialsData.quarterlyData.income.quarterly[quarterIndex];
+    var expenditure = financialsData.quarterlyData.expenditure.quarterly[quarterIndex];
+    var currentQuarter = "Q2";
+    var totalManagers = data["Manager"][currentQuarter]["HC"] + data["Team Manager"][currentQuarter]["HC"];
+
     // **************** First plot ********************
     var svg = d3.select(document.getElementById("SVG01"));
+    svg.selectAll("*").remove();
     var height = svg.attr("height");
     var width = svg.attr("width");
-    var currentQuarter = "Q2";
     var pieData = [];
-    var propertyName = Object.getOwnPropertyNames(data);
+    var propertyName = [ "Director", "AD", "Manager", "Team Manager", "Teacher", "Specialist", "Practitioner", "Admin", "Other"];
+
+    var propertyTable = {
+        "HC": "Normal Hours SUM",
+        "FTE": "FTE_Normal hours/37"
+    };
 
     var legendData = propertyName;
     for ( var i = 0; i < propertyName.length; i++ )
     {
-        pieData.push( {label: propertyName[i], value: data[propertyName[i]][currentQuarter]["HC"]});
+        pieData.push( {label: propertyName[i], value: data[propertyName[i]][currentQuarter]["HC"], propertyName: "Job Type", propertyValue: propertyName[i]});
     }
 
     var pieStyle = initPieSettings(width, height, d3.scale.category10());
+    pieStyle.cx = width/6;
+    pieStyle.cy = height/4;
+    pieStyle.outerRadius = width/6;
+    pieStyle.innerRadius = pieStyle.outerRadius/1.4;
+    pieStyle.textEnabled = 0;
+    pieStyle.tipEnabled = 0;
+
     var rayStyle = initRaySettings(pieStyle);
     var legendStyle = initLegendSettings(pieStyle);
+    legendStyle.x = 10;
+    legendStyle.y = height/2;
 
 
-    var pie1 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
+    var fileName = "staffData";
+    var pie1 = plotPie(svg, pieData, dashBoardData.peopleBizModelData[fileName], areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
     var title1 = addTitle(svg, "Head Count %");
 
-    var pie = pie1;
-    var fileName = "staffData";
-    pie1.piePlot.piePath.on("click", pieClick);
+    var stackData = [];
+    xData = ["Expenditure/TM (£k)", "Income/TM (£k)" ];
+    yData = [expenditure/totalManagers, income/totalManagers ];
+    var numberOfStacksPerBar = 1;
+    for ( var i = 0; i < numberOfStacksPerBar; i++ )
+    {
+        stackData[i] = [];
+        for ( var j = 0; j < xData.length; j++ )
+        {
+            stackData[i][j] = {label: xData[j], y: yData[j], propertyName: "think", propertyValue: "about this"};
+        }
+    }
 
-
+    var stackSettings = {};
+    var margin = defineMargins(height, width);
+    margin.left = width/2;
+    stackSettings.margin = margin;
+    stackSettings.color = pieStyle.color;
+    plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings );
     // Update data table:
     var tableData = makePeopleBizModelTableData(data);
     updateTable( document.getElementById("dataTable"), tableData);
 
     // *********************** Second Plot ****************////
     svg = d3.select(document.getElementById("SVG02"));
+    svg.selectAll("*").remove();
     height = svg.attr("height");
     width = svg.attr("width");
     currentQuarter = "Q2";
     pieData = [];
     for ( var i = 0; i < propertyName.length; i++ )
     {
-        pieData.push( {label: propertyName[i], value: data[propertyName[i]][currentQuarter]["FTE"]});
+        pieData.push( {label: propertyName[i], value: data[propertyName[i]][currentQuarter]["FTE"], propertyName: "Job Type", propertyValue: propertyName[i]});
     }
 
-    pieStyle = initPieSettings(width, height, d3.scale.category10());
-    rayStyle = initRaySettings(pieStyle);
-    legendStyle = initLegendSettings(pieStyle);
+    var pieStyle = initPieSettings(width, height, d3.scale.category10());
+    pieStyle.cx = width/6;
+    pieStyle.cy = height/4;
+    pieStyle.outerRadius = width/6;
+    pieStyle.innerRadius = pieStyle.outerRadius/1.4;
+    pieStyle.textEnabled = 0;
+
+    var rayStyle = initRaySettings(pieStyle);
+    var legendStyle = initLegendSettings(pieStyle);
+    legendStyle.x = 10;
+    legendStyle.y = height/2;
 
 
-    var pie2 = plotPie(svg, pieData, legendData, pieStyle, rayStyle, legendStyle);
+    fileName = "staffData";
+    var pie2 = plotPie(svg, pieData, dashBoardData.peopleBizModelData[fileName], areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
     var title2 = addTitle(svg, "Full Time Equivalent %");
 
-    pie = pie2;
-    fileName = "staffData";
-    pie2.piePlot.piePath.on("click", pieClick);
-
-
-    function pieClick(d)
+    totalManagers = data["Manager"][currentQuarter]["FTE"] + data["Team Manager"][currentQuarter]["FTE"];
+    xData = ["Expenditure/TM (£k)", "Income/TM (£k)" ];
+    yData = [expenditure/totalManagers, income/totalManagers ];
+    numberOfStacksPerBar = 1;
+    for ( var i = 0; i < numberOfStacksPerBar; i++ )
     {
-        var label = pie.piePlot.piePath.clickedData.data.label;
-        var color = pie.piePlot.piePath.clickedData.object.style("fill");
-        var subData = dashBoardData.peopleBizModelData[fileName];
-        if ( area != dashBoardData.allUKString )
+        stackData[i] = [];
+        for ( var j = 0; j < xData.length; j++ )
         {
-            subData = subData.filter( function(d) { return d[areaProperty] == area; }); 
+            stackData[i][j] = {label: xData[j], y: yData[j], propertyName: "think", propertyValue: "about this"};
         }
-        var property = "Job Type";
-        subData = subData.filter(function(d) { return d[property] == label; } );
-        console.log(subData.length);
-        openTablePage(subData);
-        return;
     }
+
+    stackSettings = {};
+    margin = defineMargins(height, width);
+    margin.left = width/2;
+    stackSettings.margin = margin;
+    stackSettings.color = pieStyle.color;
+    plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings )
 
     return;
 }
-
-function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty, area, subAreaProperty)
-{
-    // The mother object:
-    var stack = {};
-
-    var width = +svg.attr("width");
-    var height = +svg.attr("height");
-    var margin = defineMargins(height, width);
-    // More space on the left for long names
-    margin.left = 2*margin.left;
-    stackSettings.margin = stackSettings.margin || margin;
-
-    plotVerticalGrid(svg, margin, 10);
-
-    var layeredData = [];
-
-    for ( var i = 0; i < layerNames.length; i++ )
-    {
-        layeredData[i] = [];
-        for ( var j = 0; j < data.length; j++ )
-        {
-            var thisArray = data[j][layerNames[i]];
-            var latestQuarterIndex = 1; // for quarter 2
-            layeredData[i][j] = {label: nameList[j], y:thisArray[latestQuarterIndex] };
-        }
-    }
-
-    stack.stackPlot = new stackObjectConstructor(svg, layeredData, stackSettings);
-    stack.stackPlot.stackLayer.on("click", stackClick);
-
-    function stackClick(d)
-    {
-        var label = stack.stackPlot.stackLayer.clickedData.data.label;
-        var color = stack.stackPlot.stackLayer.clickedData.object.style("fill");
-        var subData = dashBoardData.peopleBizModelData.currentNationData.filter( function(d) { return d[subAreaProperty] == label; }); 
-        var property = "Status"
-        var propertyValue = dashBoardData.peopleBizModelData.peopleBizModelColorToBizDevProperty( color );
-        subData = subData.filter(function(d) { return d[property] == propertyValue; } );
-        console.log(subData.length);
-        openTablePage(subData);
-        return;
-    }
-    
-}
-
-function openTablePage(tableData)
-{
-    dashBoardData.peopleBizModelData.selectedData = tableData;
-    var tablePageWindow = window.open("./table.html");
-    tablePageWindow.selecteData = tableData;
-}
-
