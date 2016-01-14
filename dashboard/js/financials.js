@@ -372,7 +372,7 @@ function plotFinancialsVisualisation(data, subLevelData, subLevelProperty, subLe
     else
     {
         var pie1 = plotPie(svg, pieData, finData, areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
-        var title1 = addTitle(svg, "Full Year Income (£k)");
+        var title1 = addTitle(svg, "Full Year Forecasted Income (£k)");
     }
 
     return;
@@ -438,7 +438,8 @@ function plotQuarterlyFinancialsData( svg, data)
       plotCircles( svg, margin, xData, yData, xScale, yScale, color.expenditure);
 
       plotXAxis(svg, margin, xData, xScale );
-      plotXLabel(svg, margin, "Quarterly Financial Data");
+      //plotXLabel(svg, margin, "Quarterly Financial Data");
+      addTitle(svg, "Quarterly Financial Data");
       plotYAxis(svg, margin, yScale);
       plotYLabel(svg, margin, "£K");         
 
@@ -446,10 +447,10 @@ function plotQuarterlyFinancialsData( svg, data)
       var legendRectSize = 18;
       var legendSpacing = 4;     
 
-      var labels = [ {label:"Income" , color: color.income},
-                     {label:"Forecast" , color: color.forecast},
-                     {label:"Budget" , color: color.budget},
-                     {label:"Previous" , color: color.previousYear},
+      var labels = [ {label:"Actual Income" , color: color.income},
+                     {label:"Forecasted Income" , color: color.forecast},
+                     {label:"Budgeted Income" , color: color.budget},
+                     {label:"Previous Year Income" , color: color.previousYear},
                      {label:"Expenditure" , color: color.expenditure},
 
                     ]; 
