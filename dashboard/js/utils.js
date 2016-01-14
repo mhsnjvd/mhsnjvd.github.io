@@ -12,7 +12,12 @@ function sumArrayProperty( data, property)
     for ( var i = 0; i < data.length; i++ )
     {
         // Try to convert each entry to a number:
-        s = Number(data[i][property]);
+        s = data[i][property];
+        if ( isNaN(s) )
+        {
+            s = s.replace(",","");
+        }
+        s = Number(s);
         // check for NaNs:
         if ( isNaN(s) )
         {

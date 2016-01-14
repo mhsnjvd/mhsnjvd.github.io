@@ -226,6 +226,7 @@ function computeQuarterlyFinancialsData(data)
     quarterlyData = data[files[0].propertyName];
 
     // Compute the quarterly for last year
+    unitDivisor = 1000;
     dataOut.previousYear.quarterly[0] = sumArrayProperty(quarterlyData, "Q1_Inc_YTD") / unitDivisor;
     dataOut.previousYear.quarterly[1] = sumArrayProperty(quarterlyData, "Q2_Inc_YTD") / unitDivisor;
     dataOut.previousYear.quarterly[2] = sumArrayProperty(quarterlyData, "Q3_Inc_YTD") / unitDivisor;
@@ -247,8 +248,15 @@ function makeFinancialsTableData(data)
     var tableData = [];
     tableData.push(tableHeader);
 
-    var firstColumn = ["Income", "Expenditure", "Budget", "VF", "VF % of Exp", "Previous Year"];
-    var propertyNames = ["income", "expenditure", "budget", "vf", "vfByExp", "previousYear" ];
+    var firstColumn = ["Income/Forecasted Income", "Expenditure", "VF", "VF % of Exp", "Budgeted Income",  "Previous Year Income"];
+    /*
+    - put Forecasted Income at the top, then Expenditure, VF and VF % of Exp. 
+        - Add a empty line / space
+        - Have the Budgeted Income and then the Delta with Forecasted Income and the Delta %
+        - Add a empty line / space
+        - Have Prior Year Income and then the Delta with Forecasted Income and the Delta 
+        */
+    var propertyNames = ["income", "expenditure", "vf", "vfByExp", "budget",  "previousYear" ];
 
     for ( var i = 0; i < firstColumn.length; i++ )
     {
