@@ -133,7 +133,7 @@ function makePeopleBizModelTableData(data)
             {
                 var thisEntry = +data[firstColumn[i]][topRow[j]][subTopRow[k]];
                 // Don't add decimals if it's a head count
-                if ( subTopRow[k] !== "HC" )
+                //if ( subTopRow[k] !== "HC" )
                 {
                     thisEntry = dashBoardSettings.numberFormat( +data[firstColumn[i]][topRow[j]][subTopRow[k]] );
                 }
@@ -143,6 +143,24 @@ function makePeopleBizModelTableData(data)
         tableData.push(row);
     }
     return tableData;
+}
+
+
+function updatePeopleBizModelTable( table, tableData)
+{
+    // Call the regular update table:
+    table = updateTable(table, tableData);
+    
+    // Number of rows
+    var M = tableData.length;
+    // Number of columns
+    var N = tableData[0].length;
+
+    for ( var j = 1; j < N; j++ )
+    {
+        table.rows[0].cells[j].align = "right";
+    }
+    //return table;
 }
 
 function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAreaProperty, areaProperty, area )
@@ -175,11 +193,11 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     }
 
     var pieStyle = initPieSettings(width, height, d3.scale.category10());
-    pieStyle.cx = width/6;
-    pieStyle.cy = height/4;
-    pieStyle.outerRadius = width/6;
-    pieStyle.innerRadius = pieStyle.outerRadius/1.4;
-    pieStyle.textEnabled = 0;
+    //pieStyle.cx = width/6;
+    //pieStyle.cy = height/4;
+    //pieStyle.outerRadius = width/6;
+    //pieStyle.innerRadius = pieStyle.outerRadius/1.4;
+    pieStyle.textEnabled = 1;
     pieStyle.tipEnabled = 0;
 
     var rayStyle = initRaySettings(pieStyle);
@@ -190,11 +208,11 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
 
     var fileName = "staffData";
     var pie1 = plotPie(svg, pieData, dashBoardData.peopleBizModelData[fileName], areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
-    var title1 = addTitle(svg, "Head Count %");
+    var title1 = addTitle(svg, "Head Count");
 
     var stackData = [];
-    xData = ["Expenditure/TM (£k)", "Income/TM (£k)" ];
-    yData = [expenditure/totalManagers, income/totalManagers ];
+    xData = ["Expenditure/TM (£k)", "", "Income/TM (£k)", "" ];
+    yData = [expenditure/totalManagers, "", income/totalManagers, "" ];
     var numberOfStacksPerBar = 1;
     for ( var i = 0; i < numberOfStacksPerBar; i++ )
     {
@@ -206,14 +224,19 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     }
 
     var stackSettings = {};
+    svg = d3.select(document.getElementById("SVG03"));
+    height = svg.attr("height");
+    width = svg.attr("width");
+    svg.selectAll("*").remove();
     var margin = defineMargins(height, width);
-    margin.left = width/2;
+    margin.left = 2*margin.left;
     stackSettings.margin = margin;
     stackSettings.color = pieStyle.color;
     plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings );
+    addTitle(svg, "HC Income per manager")
     // Update data table:
     var tableData = makePeopleBizModelTableData(data);
-    updateTable( document.getElementById("dataTable"), tableData);
+    updatePeopleBizModelTable( document.getElementById("dataTable"), tableData);
 
     // *********************** Second Plot ****************////
     svg = d3.select(document.getElementById("SVG02"));
@@ -228,11 +251,13 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     }
 
     var pieStyle = initPieSettings(width, height, d3.scale.category10());
+    /*
     pieStyle.cx = width/6;
     pieStyle.cy = height/4;
     pieStyle.outerRadius = width/6;
     pieStyle.innerRadius = pieStyle.outerRadius/1.4;
-    pieStyle.textEnabled = 0;
+    */
+    pieStyle.textEnabled = 1;
 
     var rayStyle = initRaySettings(pieStyle);
     var legendStyle = initLegendSettings(pieStyle);
@@ -242,11 +267,11 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
 
     fileName = "staffData";
     var pie2 = plotPie(svg, pieData, dashBoardData.peopleBizModelData[fileName], areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
-    var title2 = addTitle(svg, "Full Time Equivalent %");
+    var title2 = addTitle(svg, "Full Time Equivalent");
 
     totalManagers = data["Manager"][currentQuarter]["FTE"] + data["Team Manager"][currentQuarter]["FTE"];
-    xData = ["Expenditure/TM (£k)", "Income/TM (£k)" ];
-    yData = [expenditure/totalManagers, income/totalManagers ];
+    xData = ["Expenditure/TM (£k)","", "Income/TM (£k)", "" ];
+    yData = [expenditure/totalManagers, "", income/totalManagers, "" ];
     numberOfStacksPerBar = 1;
     for ( var i = 0; i < numberOfStacksPerBar; i++ )
     {
@@ -258,11 +283,16 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     }
 
     stackSettings = {};
+    svg = d3.select(document.getElementById("SVG04"));
+    svg.selectAll("*").remove();
+    height = svg.attr("height");
+    width = svg.attr("width");
     margin = defineMargins(height, width);
-    margin.left = width/2;
+    margin.left = 2*margin.left;
     stackSettings.margin = margin;
     stackSettings.color = pieStyle.color;
     plotStack(svg, stackData, subAreaProperty, dashBoardData.impactData, fileName, stackSettings )
+    addTitle(svg, "FTE Income per manager")
 
     return;
 }
