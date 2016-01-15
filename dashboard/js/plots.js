@@ -1230,7 +1230,7 @@ function addTip()
 }
 
 
-function stackObjectConstructor(svg, layeredData, stackSettings)
+function stackObjectConstructor(svg, stackedData, stackSettings)
 {
     stackSettings.color = stackSettings.color || d3.scale.category20();
     this.color = stackSettings.color;
@@ -1240,6 +1240,8 @@ function stackObjectConstructor(svg, layeredData, stackSettings)
     var height = +svg.attr("height");
     var margin = stackSettings.margin || defineMargins(height, width);
 
+    stackSettings.textEnabled = stackSettings.textEnabled || 1;
+    this.textEnabled = stackSettings.textEnabled;
     // Optional settings:
     stackSettings = stackSettings || {};
 
@@ -1252,8 +1254,10 @@ function stackObjectConstructor(svg, layeredData, stackSettings)
     var stackSVG = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     
+    
     var stackLayOut = d3.layout.stack();
-    var stackedData = stackLayOut(layeredData);
+    // Data is modified:
+    stackLayOut(stackedData);
     
       y.domain(stackedData[0].map(function(d) { return d.label; }));
       x.domain([0, d3.max(stackedData[stackedData.length - 1], function(d) { return d.y0 + d.y; })]).nice();
@@ -1275,6 +1279,42 @@ function stackObjectConstructor(svg, layeredData, stackSettings)
     stackLayer.clickedData = {};
     stackLayer.clickedData.object = {};
     stackLayer.clickedData.data = {};
+
+    var textSVG = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var textLayer =  textSVG.selectAll(".layer")
+        .data(stackedData)
+        .enter().append("g")
+        .attr("class", "layer");
+
+    if ( stackSettings.textEnabled )
+    {
+        textLayer.selectAll("text")
+        .data(function(d){ return d; })
+        .enter()
+        .append("text")
+        .attr("x", function(d) { return x(d.y0 + d.y/1.1);} )
+        //.attr("x", function(d) { return width/2;} )
+        .attr("y", function(d, i)
+        {
+            return y(d.label) + y.rangeBand()/2;
+        })
+        //.attr("y", function(d) { return height/2;} )
+        .attr("text-anchor", "middle")
+        .text( function(d, i) 
+                { 
+                    if ( Math.abs(d.y) < 1e-10 )
+                    {
+                        return "";
+                    }
+                    else
+                    {
+                        return dashBoardSettings.stackNumberFormat(d.y); 
+                    }
+                })
+        .style("fill", "black" );
+    }
 
     function stackMouseOver(d)
     {

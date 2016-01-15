@@ -12,7 +12,12 @@ function sumArrayProperty( data, property)
     for ( var i = 0; i < data.length; i++ )
     {
         // Try to convert each entry to a number:
-        s = Number(data[i][property]);
+        s = data[i][property];
+        if ( isNaN(s) )
+        {
+            s = s.replace(",","");
+        }
+        s = Number(s);
         // check for NaNs:
         if ( isNaN(s) )
         {
@@ -65,6 +70,21 @@ function updateTable( table, tableData)
         {
             var cell = row.insertCell(j);   
             cell.innerHTML = tableData[i][j];
+
+            // Align numbers to the right:
+            var s = tableData[i][j];
+            // Make sure no commas are there:
+            if ( isNaN(s) )
+            {
+                s = s.replace(",","");
+            }
+            // Check if it can be a number
+            s = Number(s);
+            // if this is a number, align right:
+            if ( !isNaN(s) )
+            {
+                cell.align = "right";
+            }
         }
     }
     return table;    

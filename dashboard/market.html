@@ -9,7 +9,7 @@
   <meta name="author" content="">
   <link rel="icon" href="favicon.jpg">
 
-  <title>Barnardo's | People and Business Model Data Drilling</title>
+  <title>Barnardo's | Market Data Analysis and Data Drilling</title>
 
   <!-- Bootstrap core CSS -->
   <link href="./css/bootstrap.min.css" rel="stylesheet">
@@ -107,8 +107,7 @@
     <script type="text/javascript" src="./js/globals.js"></script>
     <script type="text/javascript" src="./js/utils.js"></script>
     <script type="text/javascript" src="./js/plots.js"></script>
-    <script type="text/javascript" src="./js/financials.js"></script>
-    <script type="text/javascript" src="./js/pbm.js"></script>
+    <script type="text/javascript" src="./js/impact.js"></script>
 
     <div class="container-fluid">
 
@@ -116,9 +115,9 @@
         <div class="row">
 
             <div class="col-sm-12">
-              <h1 class="page-header">People and Business Model Data Analysis</h1> 
-              <h4 class="page-header">Quarterly People and Business Model Data &nbsp  &nbsp 
-                  <button type="button" id="resetButton" onclick="resetPeopleBizModel()">Reset Data</button></h4>       
+              <h1 class="page-header">Market Data Analysis</h1> 
+              <h4 class="page-header">Quarterly Market Data Data &nbsp  &nbsp 
+                  <button type="button" id="resetButton" onclick="resetImpact()">Reset Data</button></h4>       
             </div>
 
         </div>
@@ -127,25 +126,27 @@
            <!-- strat  row -->
             <div class="row">
 
-               <div class="col-xs-3">
-                     <select style="width: 250px" id="peopleBizModelNationSelector" onchange="peopleBizModelSelectFunction(dashBoardData.peopleBizModelData.nationProperty, this.value)">
+               <div class="col-xs-4">
+                     <select style="width: 250px" id="impactNationSelector" onchange="impactSelectFunction(dashBoardData.impactData.nationProperty, this.value)">
                      </select>
                </div>
 
-               <div class="col-xs-3">
-                     <select style="width: 250px" id="peopleBizModelRegionSelector" onchange="peopleBizModelSelectFunction(dashBoardData.peopleBizModelData.regionProperty, this.value)">
+               <div class="col-xs-4">
+                     <select style="width: 250px" id="impactRegionSelector" onchange="impactSelectFunction(dashBoardData.impactData.regionProperty, this.value)">
                      </select>
                </div>
 
-               <div class="col-xs-3">
-                     <select style="width: 250px" id="peopleBizModelLocalitySelector" onchange="peopleBizModelSelectFunction(dashBoardData.peopleBizModelData.localityProperty, this.value)">
+               <div class="col-xs-4">
+                     <select style="width: 250px" id="impactLocalitySelector" onchange="impactSelectFunction(dashBoardData.impactData.localityProperty, this.value)">
                  </select>
                </div>
 
+               <!--
                <div class="col-xs-3">
-                     <select style="width: 250px" id="peopleBizModelCostCentreSelector" onchange="peopleBizModelSelectFunction(dashBoardData.peopleBizModelData.costCentreProperty, this.value)">
+                 <select style="width: 250px" id="impactContractNameSelector" onchange="impactContractNameSelectFunction()">
                  </select>
                </div>
+                 -->
 
                
            </div>
@@ -160,33 +161,6 @@
         <br>
         <br>
 
-        <!-- Row starts here *********************** -->
-        <div class="row">
-
-             <div class="col-xs-6">
-                 <svg id="SVG01" height="500" width="500" style="background-color: white"></svg>
-             </div>
-
-             <div class="col-xs-6">
-                 <svg id="SVG02" height="500" width="500" style="background-color: white"></svg>
-             </div>
-
-        </div>
-        <!-- Row ends here **************500******              -->
-
-        <!-- Row starts here *********************** -->
-        <div class="row">
-
-             <div class="col-xs-6">
-                 <svg id="SVG03" height="500" width="500" style="background-color: white"></svg>
-             </div>
-
-             <div class="col-xs-6">
-                 <svg id="SVG04" height="500" width="500" style="background-color: white"></svg>
-             </div>
-
-        </div>
-        <!-- Row ends here **************500******              -->
         <!-- Row starts here *********************** -->
         <div class="row">
             <div class="col-xs-12">
@@ -217,67 +191,63 @@
             /////////////////////////////////////////////
             //          Select Functions               //
             /////////////////////////////////////////////
-            function updatePeopleBizModelSelectors(data, selectedProperty, selectedValue)
+
+            function updateImpactSelectors(data, selectedProperty, selectedValue)
             {
-                 var fileNames = dashBoardData.peopleBizModelData.files.map(function(d) { return d.propertyName; } );
-                 var nationProperty = dashBoardData.peopleBizModelData.nationProperty;
-                 var regionProperty = dashBoardData.peopleBizModelData.regionProperty;
-                 var localityProperty = dashBoardData.peopleBizModelData.localityProperty;
-                 var costCentreProperty = dashBoardData.peopleBizModelData.costCentreProperty;
+                 var fileNames = dashBoardData.impactData.files.map(function(d) { return d.propertyName; } );
+                 var nationProperty = dashBoardData.impactData.nationProperty;
+                 var regionProperty = dashBoardData.impactData.regionProperty;
+                 var localityProperty = dashBoardData.impactData.localityProperty;
     
                  var nFiles = fileNames.length;
-                 // Update Regions
+
+                 // Update localities
                  if ( selectedProperty == nationProperty )
                  {
                      var regionList = getUniqueSortedList(data[fileNames[nFiles-1]], regionProperty);
-                     updateSelector( document.getElementById("peopleBizModelRegionSelector"), ["Select Region"].concat(regionList) );
+                     updateSelector( document.getElementById("impactRegionSelector"), ["Select Region"].concat(regionList) );
                  }
-    
-                 // Update localities
+
+                 // Update Regions
                  if ( selectedProperty == nationProperty || selectedProperty == regionProperty )
                  {
                      var localityList = getUniqueSortedList(data[fileNames[nFiles-1]], localityProperty);
-                     updateSelector( document.getElementById("peopleBizModelLocalitySelector"), ["Select Locality"].concat(localityList) );
+                     updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(localityList) );
                  }
-
-                 // Update cost centres
-                 if ( selectedProperty == nationProperty || selectedProperty == regionProperty || selectedProperty == localityProperty )
-                 {
-                     var costCentreList = getUniqueSortedList(data[fileNames[nFiles-1]], costCentreProperty);
-                     updateSelector( document.getElementById("peopleBizModelCostCentreSelector"), ["Select Cost Centre"].concat(costCentreList) );
-                 }
+    
             }
 
-            function peopleBizModelSelectFunction(selectedProperty, selectedValue) 
+            function impactSelectFunction(selectedProperty, selectedValue) 
             {
                 var funObj = {};
-                var data = dashBoardData.peopleBizModelData;
-                funObj.computeQuarterlyFun = computeQuarterlyPeopleBizModelData;
-                funObj.updateSelectorsFun = updatePeopleBizModelSelectors;
-                funObj.visualisationFun = plotPeopleBizModelVisualisation;
+                var data = dashBoardData.impactData;
+                funObj.computeQuarterlyFun = computeQuarterlyImpactData;
+                funObj.updateSelectorsFun = updateImpactSelectors;
+                funObj.visualisationFun = plotImpactVisualisation;
                 generalSelectFunction(data, selectedProperty, selectedValue, funObj);
                 return;
             }
 
 
             // Upload the data file and process it:
-            d3.csv( dashBoardSettings.dataDir + dashBoardData.peopleBizModelData.files[dashBoardData.peopleBizModelData.files.length - 1].name, function(d)
+            /*
+            d3.csv( dashBoardSettings.dataDir + dashBoardData.impactData.files[dashBoardData.impactData.files.length - 1].name, function(d)
             { 
-              // TODO: How to avoid this:
-              dashBoardData.peopleBizModelData["lastFile"] = d;
-              console.log("Done reading " + dashBoardData.peopleBizModelData.files[dashBoardData.peopleBizModelData.files.length - 1].name);
-              resetPeopleBizModel();
+              // TODO: How to avoid reading this file again:
+              dashBoardData.impactData["lastFile"] = d;
+              console.log("Done reading " + dashBoardData.impactData.files[dashBoardData.impactData.files.length - 1].name);
+
+              resetImpact();
 
             });                                 
 
-            function resetPeopleBizModel()
+            function resetImpact()
             {
-              var data = dashBoardData.peopleBizModelData;
-              var nationSelector = document.getElementById("peopleBizModelNationSelector");
-              initVisualisation(data, peopleBizModelSelectFunction, nationSelector);
+              var data = dashBoardData.impactData;
+              var nationSelector = document.getElementById("impactNationSelector");
+              initVisualisation(data, impactSelectFunction, nationSelector);
             }
-
-
+            */
          </script>
          
           <!-- FOOTER -->
