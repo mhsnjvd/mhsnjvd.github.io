@@ -124,6 +124,18 @@ function computeQuarterlyFinancialsData(data)
 
     dataOut.vfByExp = {};
     addFinancialDataFields(dataOut.vfByExp);
+    
+    dataOut.deltaBudget = {};
+    addFinancialDataFields(dataOut.deltaBudget);
+
+    dataOut.deltaBudgetPercentage = {};
+    addFinancialDataFields(dataOut.deltaBudgetPercentage);
+
+    dataOut.deltaPreviousYear = {};
+    addFinancialDataFields(dataOut.deltaPreviousYear);
+
+    dataOut.deltaPreviousYearPercentage = {};
+    addFinancialDataFields(dataOut.deltaPreviousYearPercentage);
 
     dataOut.previousYear = {};
     addFinancialDataFields(dataOut.previousYear);
@@ -211,6 +223,8 @@ function computeQuarterlyFinancialsData(data)
         dataOut.budget.quarterly[i] = dataOut.budget.quarterly[i-1] + budgetDelta;
     }
 
+
+
     //*****************************************
     // TODO: Make expenditure quarterly data positive
     // ******************************************
@@ -239,6 +253,16 @@ function computeQuarterlyFinancialsData(data)
     dataOut.previousYear.variation = dataOut.previousYear.FY - dataOut.previousYear.FYBudget;
     dataOut.previousYear.variationPercentage = (dataOut.previousYear.variation / dataOut.previousYear.FYBudget * 100) || 0.0;
 
+    // Compute deltas:
+    //
+    for ( var i = 0; i < dataOut.quarterNames.length; i++ )
+    {
+        dataOut.deltaBudget.quarterly[i] = dataOut.income.quarterly[i]-dataOut.budget.quarterly[i];
+        dataOut.deltaBudgetPercentage.quarterly[i] = (dataOut.deltaBudget.quarterly[i] / dataOut.income.quarterly[i] * 100) || 0.0;
+        dataOut.deltaPreviousYear.quarterly[i] = dataOut.income.quarterly[i]-dataOut.previousYear.quarterly[i];
+        dataOut.deltaPreviousYearPercentage.quarterly[i] = (dataOut.deltaPreviousYear.quarterly[i] / dataOut.income.quarterly[i] * 100) || 0.0;
+    }
+
     return dataOut;
 }
 
@@ -248,32 +272,36 @@ function makeFinancialsTableData(data)
     var tableData = [];
     tableData.push(tableHeader);
 
-    var firstColumn = ["Income/Forecasted Income", "Expenditure", "VF", "VF % of Exp", "Budgeted Income",  "Previous Year Income"];
-    /*
-    - put Forecasted Income at the top, then Expenditure, VF and VF % of Exp. 
-        - Add a empty line / space
-        - Have the Budgeted Income and then the Delta with Forecasted Income and the Delta %
-        - Add a empty line / space
-        - Have Prior Year Income and then the Delta with Forecasted Income and the Delta 
-        */
-    var propertyNames = ["income", "expenditure", "vf", "vfByExp", "budget",  "previousYear" ];
+    // Use "" to indicate an empty row:
+    var firstColumn = ["Income/Forecasted Income", "Expenditure", "VF", "VF % of Exp", "", "Budgeted Income", "Income - Budget", "Income - Budget (%)", "",  "Previous Year Income", "Current Income - Previous Year Income", "Current Income - Previous Year Income (%)",  ];
+    var propertyNames = ["income", "expenditure", "vf", "vfByExp", "", "budget", "deltaBudget", "deltaBudgetPercentage", "", "previousYear", "deltaPreviousYear", "deltaPreviousYearPercentage"   ];
 
     for ( var i = 0; i < firstColumn.length; i++ )
     {
         var row = [];
-        row.push( firstColumn[i]);
-        // Attach quarterly data:
-        row = row.concat( data[propertyNames[i]].quarterly );
-        // Push other things:
-        row.push( data[propertyNames[i]].FY );
-        row.push( data[propertyNames[i]].FYBudget );
-        row.push( data[propertyNames[i]].variation );
-        row.push( data[propertyNames[i]].variationPercentage );
-
-        // Format this row, leaving the first element which is a string:
-        for ( var j = 1; j < row.length; j++ )
+        if ( firstColumn[i] == "" )
         {
-            row[j] = (dashBoardSettings.numberFormat(row[j]));
+            for ( j = 0; j < tableHeader.length; j++ )
+            {
+                row[j] = "";
+            }
+        }
+        else
+        {
+            row.push( firstColumn[i]);
+            // Attach quarterly data:
+            row = row.concat( data[propertyNames[i]].quarterly );
+            // Push other things:
+            row.push( data[propertyNames[i]].FY );
+            row.push( data[propertyNames[i]].FYBudget );
+            row.push( data[propertyNames[i]].variation );
+            row.push( data[propertyNames[i]].variationPercentage );
+
+            // Format this row, leaving the first element which is a string:
+            for ( var j = 1; j < tableHeader.length; j++ )
+            {
+                row[j] = (dashBoardSettings.numberFormat(row[j]));
+            }
         }
         tableData.push(row);
     }
@@ -287,48 +315,16 @@ function makeFinancialsTableData(data)
 // the first row is conisdered as the table head.
 function updateFinancialsTable( table, tableData)
 {
-    while ( table.rows.length > 0 )
-    {
-        table.deleteRow(0);
-    }
+    table =  updateTable(table, tableData);
 
     // Number of rows
     var M = tableData.length;
     // Number of columns
     var N = tableData[0].length;
-
-    // Which rows are headers?
-
-    // Make All the rows
-    for ( var i = 0; i < M; i++ )
-    {    
-        var row;
-        row = table.insertRow(i);
-        for ( var j = 0; j < N; j++ )
-        {
-            var cell = row.insertCell(j);   
-            cell.innerHTML = tableData[i][j];
-            // Align all but the first column to the right:
-            if ( j !== 0 )
-            {
-                cell.align = "right";
-            }
-        }
-    }
-
-    // Only the first row is the header row for this table:
-    var headerIndices = [0];
-
-    // Make header rows specified by their indices to be bold:
-    for ( var i = 0; i < headerIndices.length; i++ )
+    // Align all but the last column to the right
+    for ( var j = 1; j < N; j++ )
     {
-        // Make table header
-        //var header = table.createTHead();
-        //var row = header.insertRow(0);
-        for ( var j = 0; j < N; j++ )
-        {
-            table.rows[headerIndices[i]].cells[j].innerHTML = table.rows[headerIndices[i]].cells[j].innerHTML.bold();      
-        }
+        table.rows[0].cells[j].align = "right";
     }
     return table;    
 }
