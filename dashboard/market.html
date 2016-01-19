@@ -107,7 +107,7 @@
     <script type="text/javascript" src="./js/globals.js"></script>
     <script type="text/javascript" src="./js/utils.js"></script>
     <script type="text/javascript" src="./js/plots.js"></script>
-    <script type="text/javascript" src="./js/impact.js"></script>
+    <script type="text/javascript" src="./js/market.js"></script>
 
     <div class="container-fluid">
 
@@ -117,7 +117,7 @@
             <div class="col-sm-12">
               <h1 class="page-header">Market Data Analysis</h1> 
               <h4 class="page-header">Quarterly Market Data Data &nbsp  &nbsp 
-                  <button type="button" id="resetButton" onclick="resetImpact()">Reset Data</button></h4>       
+                  <button type="button" id="resetButton" onclick="resetMarket()">Reset Data</button></h4>       
             </div>
 
         </div>
@@ -127,23 +127,23 @@
             <div class="row">
 
                <div class="col-xs-4">
-                     <select style="width: 250px" id="impactNationSelector" onchange="impactSelectFunction(dashBoardData.impactData.nationProperty, this.value)">
+                     <select style="width: 250px" id="marketNationSelector" onchange="marketSelectFunction(dashBoardData.marketData.nationProperty, this.value)">
                      </select>
                </div>
 
                <div class="col-xs-4">
-                     <select style="width: 250px" id="impactRegionSelector" onchange="impactSelectFunction(dashBoardData.impactData.regionProperty, this.value)">
+                     <select style="width: 250px" id="marketRegionSelector" onchange="marketSelectFunction(dashBoardData.marketData.regionProperty, this.value)">
                      </select>
                </div>
 
                <div class="col-xs-4">
-                     <select style="width: 250px" id="impactLocalitySelector" onchange="impactSelectFunction(dashBoardData.impactData.localityProperty, this.value)">
+                     <select style="width: 250px" id="marketLocalitySelector" onchange="marketSelectFunction(dashBoardData.marketData.localityProperty, this.value)">
                  </select>
                </div>
 
                <!--
                <div class="col-xs-3">
-                 <select style="width: 250px" id="impactContractNameSelector" onchange="impactContractNameSelectFunction()">
+                 <select style="width: 250px" id="marketContractNameSelector" onchange="marketContractNameSelectFunction()">
                  </select>
                </div>
                  -->
@@ -192,12 +192,12 @@
             //          Select Functions               //
             /////////////////////////////////////////////
 
-            function updateImpactSelectors(data, selectedProperty, selectedValue)
+            function updateMarketSelectors(data, selectedProperty, selectedValue)
             {
-                 var fileNames = dashBoardData.impactData.files.map(function(d) { return d.propertyName; } );
-                 var nationProperty = dashBoardData.impactData.nationProperty;
-                 var regionProperty = dashBoardData.impactData.regionProperty;
-                 var localityProperty = dashBoardData.impactData.localityProperty;
+                 var fileNames = dashBoardData.marketData.files.map(function(d) { return d.propertyName; } );
+                 var nationProperty = dashBoardData.marketData.nationProperty;
+                 var regionProperty = dashBoardData.marketData.regionProperty;
+                 var localityProperty = dashBoardData.marketData.localityProperty;
     
                  var nFiles = fileNames.length;
 
@@ -205,25 +205,25 @@
                  if ( selectedProperty == nationProperty )
                  {
                      var regionList = getUniqueSortedList(data[fileNames[nFiles-1]], regionProperty);
-                     updateSelector( document.getElementById("impactRegionSelector"), ["Select Region"].concat(regionList) );
+                     updateSelector( document.getElementById("marketRegionSelector"), ["Select Region"].concat(regionList) );
                  }
 
                  // Update Regions
                  if ( selectedProperty == nationProperty || selectedProperty == regionProperty )
                  {
                      var localityList = getUniqueSortedList(data[fileNames[nFiles-1]], localityProperty);
-                     updateSelector( document.getElementById("impactLocalitySelector"), ["Select Locality"].concat(localityList) );
+                     updateSelector( document.getElementById("marketLocalitySelector"), ["Select Locality"].concat(localityList) );
                  }
     
             }
 
-            function impactSelectFunction(selectedProperty, selectedValue) 
+            function marketSelectFunction(selectedProperty, selectedValue) 
             {
                 var funObj = {};
-                var data = dashBoardData.impactData;
-                funObj.computeQuarterlyFun = computeQuarterlyImpactData;
-                funObj.updateSelectorsFun = updateImpactSelectors;
-                funObj.visualisationFun = plotImpactVisualisation;
+                var data = dashBoardData.marketData;
+                funObj.computeQuarterlyFun = computeQuarterlyMarketData;
+                funObj.updateSelectorsFun = updateMarketSelectors;
+                funObj.visualisationFun = plotMarketVisualisation;
                 generalSelectFunction(data, selectedProperty, selectedValue, funObj);
                 return;
             }
@@ -231,21 +231,21 @@
 
             // Upload the data file and process it:
             /*
-            d3.csv( dashBoardSettings.dataDir + dashBoardData.impactData.files[dashBoardData.impactData.files.length - 1].name, function(d)
+            d3.csv( dashBoardSettings.dataDir + dashBoardData.marketData.files[dashBoardData.marketData.files.length - 1].name, function(d)
             { 
               // TODO: How to avoid reading this file again:
-              dashBoardData.impactData["lastFile"] = d;
-              console.log("Done reading " + dashBoardData.impactData.files[dashBoardData.impactData.files.length - 1].name);
+              dashBoardData.marketData["lastFile"] = d;
+              console.log("Done reading " + dashBoardData.marketData.files[dashBoardData.marketData.files.length - 1].name);
 
-              resetImpact();
+              resetMarket();
 
             });                                 
 
-            function resetImpact()
+            function resetMarket()
             {
-              var data = dashBoardData.impactData;
-              var nationSelector = document.getElementById("impactNationSelector");
-              initVisualisation(data, impactSelectFunction, nationSelector);
+              var data = dashBoardData.marketData;
+              var nationSelector = document.getElementById("marketNationSelector");
+              initVisualisation(data, marketSelectFunction, nationSelector);
             }
             */
          </script>
@@ -268,7 +268,6 @@
                   
                   <div class="col-xs-1">
                   </div>
-                  
               </div>
           </div> 
  
