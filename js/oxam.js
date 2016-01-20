@@ -125,7 +125,138 @@ function runOfGames(nGames, nCards)
             wins = wins + 1;
         }
     }
-    var p = (100.0*wins)/nGames;
-    console.log('Probability of win: ' + p + ' %');
     return wins;
+}
+
+
+
+function runGraphicalGame(nCards)
+{
+    var svg = d3.select(document.getElementById("SVG01"));
+    svg.selectAll("*").remove();
+    var height = svg.attr("height");
+    var width = svg.attr("width");
+
+    var cards = getCards(nCards);
+    cards = shuffle(cards);
+
+    var margin = {};
+    margin.left = width/30;
+    margin.right = width/30;
+    margin.top = height/20;
+    margin.bottom = height/5;
+
+    var xScale = d3.scale.ordinal().domain(d3.range(nCards)).rangeRoundBands([margin.left, width-margin.right], .2);
+    var yScale = d3.scale.linear().domain([0, nCards+1]).range([height-margin.bottom, margin.top]);
+    var hScale = d3.scale.linear().domain([0, nCards+1]).range([0, height-margin.top-margin.bottom]);
+
+    var expCard = d3.sum(cards)/cards.length;
+    
+    var lastCardIndex = -1;
+    svg.style("background-color", "whiteSmoke");
+    svg.selectAll('rect')
+    .data(cards)
+    .enter()
+    .append('rect')
+    .attr('x', function(d,i) { return xScale(i); } )
+    .attr('y', function(d,i) { return yScale(expCard); } )
+    .attr('height', function(d,i){ return hScale(expCard);} )
+    .attr('width', function(d,i){ return xScale.rangeBand();})
+    .attr('fill', 'blue')
+    .on("click", cardClick);
+
+    function cardClick(d,i)
+    {
+       if ( i == lastCardIndex + 1 )
+       {
+           lastCardIndex = lastCardIndex + 1;
+           var bar = d3.select(this);
+           bar.transition(2000)
+           .attr("width", 0)
+           .transition(2000)
+           .attr("width", xScale.rangeBand())
+           .style("fill", "red")
+           .transition(2000)
+           .attr("y", yScale(d))
+           .attr("height", hScale(d));
+
+           if ( i <= cards.length - 2 )
+           {
+               var p = probOfNextCardHigher(cards, i);
+               var message = "";
+               if ( p >= .5 )
+               {
+                   message = "Please click the next card, which is higher with probability: " + p;
+               }
+               else
+               {
+                   message = "Please click the next card, which is lower with probability: " + (1-p);
+               }
+               d3.select("#messagePara")
+               .text(message)
+               .style("font-weight", "bold");
+           }
+
+           if ( i == cards.length - 1 )
+           {
+               d3.select("#messagePara")
+               .text("This run is finished! press the restart button to play again.")
+               .style("font-weight", "bold");
+           }
+
+           
+
+           svgText.attr("y", function(d, j)
+           {
+               if ( j <= i )
+               {
+                  return yScale(d)-5;
+               }
+               else
+               {
+                  return yScale(.3);
+               }
+           });
+       }
+
+    }
+
+
+    var svgText = svg.selectAll("text")
+    .data(cards)
+    .enter()
+    .append("text")
+    .attr("x", function(d,i) { return xScale(i) + xScale.rangeBand()/2; } )
+    .attr("y", function(d,i) { return yScale(.3); } )
+    .text(function(d) { return d; } )
+    .attr("text-anchor", "middle")
+    .attr("fill", "blue");
+}
+
+function reset()
+{
+    var nCards = 13;
+    runGraphicalGame(nCards);
+}
+
+function simulate()
+{
+    reset()
+    var nGames = document.getElementById("nGamesField").value;
+    if ( nGames > 100000 )
+    {
+        nGames = 100000;
+    }
+    if ( nGames <= 0 )
+    {
+        nGames = 1;
+    }
+    document.getElementById("nGamesField").value = nGames;
+
+    var nCards = 13;
+    var wins = runOfGames(nGames, nCards);
+    var p = (wins*100.0/nGames);
+    d3.select(document.getElementById("probPara"))
+    .text(wins + " out of " + nGames + " games won. Porbability of win = " + p + "%." )
+    .style("font-weight", "bold");
 }
