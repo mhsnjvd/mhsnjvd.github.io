@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="favicon.jpg">
+
+  <title>OxAM | Card Guessing Game</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+  <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+  <!-- <script src="js/ie-emulation-modes-warning.js"></script> -->
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <![endif]-->
+  <script src="./js/d3.min.js"></script>
+
+  </head>
+
+    <body>
+
+     <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">OxAM Card Game</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+              <li class="active"><a href="#">Home</a></li>
+                <li><a href="./oxam.html">Card Game</a></li>
+                <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<span class="caret"></span></a>
+                </li>         
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <script type="text/javascript" src="./js/oxam.js"></script>
+
+    <div class="container-fluid">
+
+        <!-- Row starts here *********************** -->
+        <div class="row">
+
+            <div class="col-sm-12">
+              <h1 class="page-header">&nbsp</h1> 
+              <h4 class="page-header" style='text-align: center'>
+                  <button type="button" id="resetButton" onclick="reset()">Restart</button></h4>       
+            </div>
+
+        
+        </div>
+        <!-- Row ends here *********************** -->
+
+           <!-- strat  row -->
+            <div class="row">
+
+              <!-- 
+               <div class="col-xs-4">
+                     <select style="width: 250px" id="nGamesSelector" onchange="nGamesSelectFunction(this.value)">
+                     </select>
+               </div>
+
+               <div class="col-xs-4">
+                     <select style="width: 250px" id="nCardsSelector" onchange="nCardsSelectFunction(this.value)">
+                     </select>
+               </div>
+               -->
+
+               <div class="col-xs-4">
+               </div>
+               
+           </div>
+            <!-- finish row -->
+
+    </div>
+    <!-- Container fluid div ends here *********************** -->
+
+    <!-- Start another containter fulid *********************** -->
+    <div class="container-fluid">
+        <!-- Add some padding -->
+        <br>
+
+        <!-- Row starts here *********************** -->
+        <div class="row">
+
+             <div class="col-xs-1">
+             </div>
+
+             <div class="col-xs-10">
+                 <p id='messagePara' style='text-align: center'> 
+                 <strong>Please click on the first card to start the game!</strong>
+                 </p>
+             </div>
+
+             <div class="col-xs-1">
+             </div>
+
+        </div>
+        <!-- Row ends here **************500******              -->
+        <!-- Row starts here *********************** -->
+        <div class="row">
+
+            
+             <div class="col-xs-1">
+             </div>
+
+             <div class="col-xs-10">
+                 <svg id="SVG01" height="200" width="1000" style="background-color: white"></svg>
+             </div>
+
+             <div class="col-xs-1">
+             </div>
+
+        </div>
+        <!-- Row ends here **************500******              -->
+
+
+        <!-- Row starts here *********************** -->
+        <div class="row">
+
+            
+             <div class="col-xs-1">
+             </div>
+
+             <div class="col-xs-10">
+                 <p>
+                 <strong> 
+                     Let's simulate the game with this strategy. At each step we guess the
+                     next card to be higher if the probability of next card being higher 
+                     is greater than or equal to 0.5.
+                 </strong>
+                 </p>
+                 <p>
+                 <strong> 
+                     Select Number of times you want to simulate the game (100000 max):
+                 </strong> 
+                 </p>
+                 <input id="nGamesField" type="number">
+
+                 <button input id="simulateButton" type="button" onclick="simulate()">Simulate</button>
+
+                 <p id="probPara">
+                 </p>
+
+             </div>
+
+             <div class="col-xs-1">
+             </div>
+
+        </div>
+        <!-- Row ends here **************500******              -->
+
+      </div>
+      <!-- Container fluid ends here -->
+
+
+        <script type="text/javascript">
+
+
+
+        function runGraphicalGame(nCards)
+        {
+            var svg = d3.select(document.getElementById("SVG01"));
+            svg.selectAll("*").remove();
+            var height = svg.attr("height");
+            var width = svg.attr("width");
+
+            var cards = getCards(nCards);
+            cards = shuffle(cards);
+
+            var margin = {};
+            margin.left = width/30;
+            margin.right = width/30;
+            margin.top = height/20;
+            margin.bottom = height/5;
+
+            var xScale = d3.scale.ordinal().domain(d3.range(nCards)).rangeRoundBands([margin.left, width-margin.right], .2);
+            var yScale = d3.scale.linear().domain([0, nCards+1]).range([height-margin.bottom, margin.top]);
+            var hScale = d3.scale.linear().domain([0, nCards+1]).range([0, height-margin.top-margin.bottom]);
+
+            var expCard = d3.sum(cards)/cards.length;
+            
+            var lastCardIndex = -1;
+            svg.style("background-color", "whiteSmoke");
+            svg.selectAll('rect')
+            .data(cards)
+            .enter()
+            .append('rect')
+            .attr('x', function(d,i) { return xScale(i); } )
+            .attr('y', function(d,i) { return yScale(expCard); } )
+            .attr('height', function(d,i){ return hScale(expCard);} )
+            .attr('width', function(d,i){ return xScale.rangeBand();})
+            .attr('fill', 'blue')
+            .on("click", cardClick);
+
+            function cardClick(d,i)
+            {
+               if ( i == lastCardIndex + 1 )
+               {
+                   lastCardIndex = lastCardIndex + 1;
+                   var bar = d3.select(this);
+                   bar.transition(2000)
+                   .attr("width", 0)
+                   .transition(2000)
+                   .attr("width", xScale.rangeBand())
+                   .style("fill", "red")
+                   .transition(2000)
+                   .attr("y", yScale(d))
+                   .attr("height", hScale(d));
+
+                   if ( i <= cards.length - 2 )
+                   {
+                       var p = probOfNextCardHigher(cards, i);
+                       var message = "";
+                       if ( p >= .5 )
+                       {
+                           message = "Please click the next card, which is higher with probability: " + p;
+                       }
+                       else
+                       {
+                           message = "Please click the next card, which is lower with probability: " + (1-p);
+                       }
+                       d3.select("#messagePara")
+                       .text(message)
+                       .style("font-weight", "bold");
+                   }
+
+                   if ( i == cards.length - 1 )
+                   {
+                       d3.select("#messagePara")
+                       .text("This run is finished! press the restart button to play again.")
+                       .style("font-weight", "bold");
+                   }
+
+                   
+
+                   svgText.attr("y", function(d, j)
+                   {
+                       if ( j <= i )
+                       {
+                          return yScale(d)-5;
+                       }
+                       else
+                       {
+                          return yScale(.3);
+                       }
+                   });
+               }
+
+            }
+
+
+            var svgText = svg.selectAll("text")
+            .data(cards)
+            .enter()
+            .append("text")
+            .attr("x", function(d,i) { return xScale(i) + xScale.rangeBand()/2; } )
+            .attr("y", function(d,i) { return yScale(.3); } )
+            .text(function(d) { return d; } )
+            .attr("text-anchor", "middle")
+            .attr("fill", "blue");
+        }
+
+        function reset()
+        {
+            var nCards = 13;
+            runGraphicalGame(nCards);
+        }
+
+        function simulate()
+        {
+            reset()
+            var nGames = document.getElementById("nGamesField").value;
+            if ( nGames > 100000 )
+            {
+                nGames = 100000;
+            }
+            if ( nGames <= 0 )
+            {
+                nGames = 1;
+            }
+            document.getElementById("nGamesField").value = nGames;
+
+            var nCards = 13;
+            var wins = runOfGames(nGames, nCards);
+            var p = (wins*100.0/nGames);
+            d3.select(document.getElementById("probPara"))
+            .text(wins + " out of " + nGames + " games won. Porbability of win = " + p + "%." )
+            .style("font-weight", "bold");
+        }
+
+        runGraphicalGame(13);
+
+        </script>
+         
+          <!-- FOOTER -->
+          <div class="container-fluid">
+              <div class="row">
+                  
+                  <div class="col-xs-1">
+                  </div>
+                  
+                  <div class="col-xs-10">
+                  <br> <br> 
+                     <footer>
+                         <p class="pull-right"><a href="#">Back to top</a></p>
+                         <p>Mohsin Javed &middot; 2016</span></p>
+                     </footer>
+                  </div>
+                  
+                  <div class="col-xs-1">
+                  </div>
+                  
+              </div>
+          </div> 
+ 
+    <!-- bootstrap core javascript
+    ================================================== -->
+    <!-- placed at the end of the document so the pages load faster -->
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <!-- just to make our placeholder images work. don't actually copy the next line! -->
+    <!--<script src="js/vendor/holder.min.js"></script> -->
+    <script src="./js/holder.min.js"></script>
+    <!-- ie10 viewport hack for surface/desktop windows 8 bug: 
+    I am not includeing the following line, windows, oh my dear windows and ie
+    <script src="./js/ie10-viewport-bug-workaround.js"></script>
+    -->
+  </body>
+  </html>
