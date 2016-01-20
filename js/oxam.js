@@ -241,9 +241,9 @@ function simulate()
 {
     reset()
     var nGames = document.getElementById("nGamesField").value;
-    if ( nGames > 100000 )
+    if ( nGames > 1000000 )
     {
-        nGames = 100000;
+        nGames = 1000000;
     }
     if ( nGames <= 0 )
     {
