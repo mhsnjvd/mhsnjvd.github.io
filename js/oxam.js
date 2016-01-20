@@ -110,7 +110,6 @@ function playGame(nCards)
 
         cardIndex = cardIndex + 1;
     }
-    console.log('how did this happen');
 }
 
 function runOfGames(nGames, nCards)
@@ -119,7 +118,6 @@ function runOfGames(nGames, nCards)
     for ( var i = 0; i < nGames; i++ )
     {
         var thisGameStatus = playGame(nCards);
-        console.log(thisGameStatus);
         if ( thisGameStatus == 'win' )
         {
             wins = wins + 1;
