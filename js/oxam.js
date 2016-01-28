@@ -1,4 +1,4 @@
-// Shuffles integers in cards
+// Shuffles integers in the array CARDS
 // in linear time
 function shuffle(cards) 
 {
@@ -20,8 +20,8 @@ function shuffle(cards)
      return cards;
 }
 
-// Returns an array of integers
-// from 1 to nCards
+// Returns an array of ordered sequence 
+// of integers from 1 to nCards 
 function getCards(nCards)
 {
     var cards = [];
@@ -32,6 +32,8 @@ function getCards(nCards)
     return cards;
 }
 
+// Given an INDEX find the probability that the 
+// next card is higher
 function probOfNextCardHigher(cards, index)
 {
     var currentCard = cards[index];
@@ -45,6 +47,7 @@ function probOfNextCardHigher(cards, index)
     var p = numOfHigherCards/numOfHiddenCards;
     return p;
 }
+
 // Returns 1 if the probability of next card 
 // being higher than the current card is >= .5
 // and returns 0 otherwise
@@ -112,6 +115,8 @@ function playGame(nCards)
     }
 }
 
+
+// Simulate the game NGAMES number of times
 function runOfGames(nGames, nCards)
 {
     var wins = 0;
@@ -127,7 +132,7 @@ function runOfGames(nGames, nCards)
 }
 
 
-
+// Function to run the graphical version of the game
 function runGraphicalGame(nCards)
 {
     var svg = d3.select(document.getElementById("SVG01"));
@@ -231,12 +236,15 @@ function runGraphicalGame(nCards)
     .attr("fill", "blue");
 }
 
+// Reset graphical game
 function reset()
 {
     var nCards = 13;
     runGraphicalGame(nCards);
 }
 
+// Simulate a number of games 
+// after taking user input
 function simulate()
 {
     reset()
