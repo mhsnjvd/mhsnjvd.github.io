@@ -7,6 +7,7 @@ dashBoardData.impactData = {};
 dashBoardData.financialsData = {};
 dashBoardData.bizDevData = {};
 dashBoardData.peopleBizModelData = {};
+dashBoardData.marketData = {};
 
 
 dashBoardData.impactData.clickedData = {};
@@ -61,6 +62,14 @@ dashBoardData.bizDevData.files = [
                     { name: "008_Pipeline_Opportunities.csv", propertyName: "pipeLineOpportunities"}
 ];
 
+dashBoardData.marketData.files = [
+                    { name: "csDataCymru.csv",     propertyName: "csDataCymru"},
+                    { name: "csDataEngland.csv",     propertyName: "csDataEngland"},
+                    { name: "csDataNI.csv",     propertyName: "csDataNI"},
+                    { name: "csDataScotland.csv",     propertyName: "csDataScotland"},
+                    { name: "marketDataUK.csv",     propertyName: "marketDataUK"}
+];
+
 // Define heirarchies:
 dashBoardData.impactData.hierarchicalProperties = ["Nation", "R/N or BL", "Locality"];
 dashBoardData.impactData.nationProperty = dashBoardData.impactData.hierarchicalProperties[0];
@@ -68,7 +77,7 @@ dashBoardData.impactData.nationList = ["Business Lines", "Celtic Nations", "Engl
 dashBoardData.impactData.regionProperty = dashBoardData.impactData.hierarchicalProperties[1];
 dashBoardData.impactData.localityProperty = dashBoardData.impactData.hierarchicalProperties[2];
 
-dashBoardData.financialsData.hierarchicalProperties = ["Nation", "R/N/BL", "Locality", "CC"];
+dashBoardData.financialsData.hierarchicalProperties = ["Nation", "Region", "Locality", "CC"];
 dashBoardData.financialsData.nationProperty = dashBoardData.financialsData.hierarchicalProperties[0];
 dashBoardData.financialsData.nationList = ["Business Lines", "Celtic Nations", "England", "Pan Regional", "Other"];
 dashBoardData.financialsData.regionProperty = dashBoardData.financialsData.hierarchicalProperties[1];
@@ -87,6 +96,14 @@ dashBoardData.bizDevData.nationProperty = dashBoardData.bizDevData.hierarchicalP
 dashBoardData.bizDevData.nationList = ["Business Lines", "Celtic Nations", "England", "Pan Regional", "Other"];
 dashBoardData.bizDevData.regionProperty = dashBoardData.bizDevData.hierarchicalProperties[1];
 dashBoardData.bizDevData.localityProperty = dashBoardData.bizDevData.hierarchicalProperties[2];
+
+
+dashBoardData.marketData.hierarchicalProperties = ["Nation", "Region", "Locality"];
+dashBoardData.marketData.nationProperty = dashBoardData.marketData.hierarchicalProperties[0];
+dashBoardData.marketData.nationList = ["Business Lines", "Celtic Nations", "England", "Pan Regional", "Other"];
+dashBoardData.marketData.regionProperty = dashBoardData.marketData.hierarchicalProperties[1];
+dashBoardData.marketData.localityProperty = dashBoardData.marketData.hierarchicalProperties[2];
+
 /***************************************************
 /***************************************************
  *  Definitions for Regions and Nations

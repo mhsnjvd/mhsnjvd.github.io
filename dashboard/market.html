@@ -107,6 +107,7 @@
     <script type="text/javascript" src="./js/globals.js"></script>
     <script type="text/javascript" src="./js/utils.js"></script>
     <script type="text/javascript" src="./js/plots.js"></script>
+    <script type="text/javascript" src="./js/financials.js"></script>
     <script type="text/javascript" src="./js/market.js"></script>
 
     <div class="container-fluid">
@@ -230,12 +231,12 @@
 
 
             // Upload the data file and process it:
-            /*
             d3.csv( dashBoardSettings.dataDir + dashBoardData.marketData.files[dashBoardData.marketData.files.length - 1].name, function(d)
             { 
               // TODO: How to avoid reading this file again:
               dashBoardData.marketData["lastFile"] = d;
               console.log("Done reading " + dashBoardData.marketData.files[dashBoardData.marketData.files.length - 1].name);
+              console.log(d.length + " entries read.");
 
               resetMarket();
 
@@ -247,7 +248,7 @@
               var nationSelector = document.getElementById("marketNationSelector");
               initVisualisation(data, marketSelectFunction, nationSelector);
             }
-            */
+
          </script>
          
           <!-- FOOTER -->
