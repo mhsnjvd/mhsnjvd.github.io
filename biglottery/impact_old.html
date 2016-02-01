@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="favicon.jpg">
+
+  <title>Aleron | </title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="./css/dashboard.css" rel="stylesheet">
+
+  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+  <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+  <!-- <script src="js/ie-emulation-modes-warning.js"></script> -->
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <![endif]-->
+
+<style>
+/*
+body{
+    width:1060px;
+    margin:50px auto;
+}
+*/
+path {  
+        stroke: pink; 
+        stroke-width: 2;
+        fill: none; 
+}
+path:hover {  opacity:0.5; }
+rect:hover {  fill:blue; }
+.axis {  font: 10px sans-serif; }
+.legend tr{    border-bottom:1px solid grey; }
+.legend tr:first-child{    border-top:1px solid grey; }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {  display: none; }
+.legend{
+    margin-bottom:76px;
+    display:inline-block;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+.legend td{
+    padding:4px 5px;
+    vertical-align:bottom;
+}
+.legendFreq, .legendPerc{
+    align:right;
+    width:50px;
+}
+
+</style>
+
+<style>
+.axis path,
+.axis line {
+       fill: none;
+     stroke: black;
+     shape-rendering: crispEdges;
+   }
+.axis text {
+    font-family: sans-serif;
+        font-size: 11px;
+}
+</style>
+
+
+
+
+
+</head>
+    <body>
+     <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Aleron Dashboard</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+              <li class="active"><a href="http://www.aleron.org">Home</a></li>
+                <li><a href="./dashboard.html">Dashboard</a></li>
+	            <li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
+	            <li><a href="http://www.aleron.org/contact-us/">Help</a></li>
+                <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<span class="caret"></span></a>
+	                  <ul class="dropdown-menu">
+	            		<li><a href="./dashboard.html">Dashboard</a></li>
+	            		<li><a href="#">Settings</a></li>
+	            		<li><a href="#">Profile</a></li>
+	            		<li><a href="http://www.aleron.org/contact-us/">Contact</a></li>
+	            		<li><a href="#">Help</a></li>
+	                  </ul>
+                </li>         
+          </ul>
+          <!--
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+          -->
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+          <div class="col-xs-1">
+          </div>
+          
+          <div class="col-xs-10" id='network'>
+              <h3 class="page-header">The Impact Network: <i>who is affecting who?</i></h3>
+          </div>
+          
+          <div class="col-xs-1">
+          </div>
+      </div>
+
+          
+      <div class="row">
+          <div class="col-xs-1">
+          </div>
+          
+          <div class="col-xs-10" >
+               <!-- FOOTER -->
+              <footer>
+                <p class="pull-right"><a href="#">Back to top</a></p>
+                    <p>&copy; <span id="idFooter"> 2015, Inc.</span> &middot;
+                    <a id="idURL" href="#">Privacy</a> &middot; <a href="idURL">Terms</a></p>
+               </footer>
+
+           </div>
+
+          <div class="col-xs-1">
+          </div>
+      </div>
+               <!-- Javascript + D3 code for the graphs: 
+         ****************************************
+         ****************************************
+         **************************************** -->
+<script src="./js/d3.min.js"></script>
+<script type="text/javascript">
+      //Width and height
+      var w = 700;
+      var h = 400;
+      //Original data
+      var dataset = {
+        nodes: [
+          { name: "Ali" },
+          { name: "Bilal" },
+          { name: "Stephanie" },
+          { name: "David" },
+          { name: "Ehsan" },
+          { name: "Nicolas" },
+          { name: "Mohsin" },
+          { name: "Hugh" },
+          { name: "Lena" },
+          { name: "Christine" }
+        ],
+        edges: [
+          { source: 0, target: 1 },
+          { source: 0, target: 2 },
+          { source: 0, target: 3 },
+          { source: 0, target: 4 },
+          { source: 1, target: 5 },
+          { source: 2, target: 5 },
+          { source: 2, target: 5 },
+          { source: 3, target: 4 },
+          { source: 5, target: 8 },
+          { source: 5, target: 9 },
+          { source: 6, target: 7 },
+          { source: 7, target: 8 },
+          { source: 8, target: 9 }
+        ]
+      };
+      //Initialize a default force layout, using the nodes and edges in dataset
+      var force = d3.layout.force()
+                 .nodes(dataset.nodes)
+                 .links(dataset.edges)
+                 .size([w, h])
+                 .linkDistance([50])
+                 .charge([-100])
+                 .start();
+      var colors = d3.scale.category10();
+      //Create SVG element
+      var svg = d3.select(document.getElementById("network"))
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+      
+      //Create edges as lines
+      var edges = svg.selectAll("line")
+        .data(dataset.edges)
+        .enter()
+        .append("line")
+        .style("stroke", "#ccc")
+        .style("stroke-width", 1);
+      
+      //Create nodes as circles
+      var nodes = svg.selectAll("circle")
+        .data(dataset.nodes)
+        .enter()
+        .append("circle")
+        .attr("r", function(d) { return 5 + 2*d.name.length; })
+        .style("fill", function(d, i) {
+          return colors(i);
+        })
+        .call(force.drag)
+        .on( "mouseover", function(d) {
+             d3.select(this)
+             .transition()
+             .duration(500)
+             .attr("r", function(d) { return 15 + 5*d.name.length;});
+        } )
+        .on("mouseout", function(d) { 
+             d3.select(this)
+             .transition()
+             .duration(1000)
+             .attr("r", function(d) { return 5 + 2*d.name.length;});
+             });
+                   
+      //Every time the simulation "ticks", this will be called
+      force.on("tick", function() {
+        edges.attr("x1", function(d) { return d.source.x; })
+           .attr("y1", function(d) { return d.source.y; })
+           .attr("x2", function(d) { return d.target.x; })
+           .attr("y2", function(d) { return d.target.y; });
+      
+        nodes.attr("cx", function(d) { return d.x; })
+           .attr("cy", function(d) { return d.y; });
+  
+      });
+</script>
+
+
+
+
+
+          <script src="./js/defs.js"></script>
+          <script type="text/javascript">
+               document.getElementById("idFooter").innerHTML =
+               companyName + " 2015";
+               document.getElementById("idURL").href =
+               companyURL;
+          </script>
+ 
+    <!-- bootstrap core javascript
+    ================================================== -->
+    <!-- placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <!-- just to make our placeholder images work. don't actually copy the next line! -->
+    <!--<script src="js/vendor/holder.min.js"></script> -->
+    <script src="./js/holder.min.js"></script>
+    <!-- ie10 viewport hack for surface/desktop windows 8 bug -->
+    <script src="./js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+  </html>
