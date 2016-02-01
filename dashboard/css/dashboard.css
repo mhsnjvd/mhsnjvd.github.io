@@ -103,3 +103,14 @@ body {
   display: inline-block;
   border-radius: 50%;
 }
+
+/*  ***********************************
+/* Adding some custom styles and classes:
+/*  *********************************** */
+
+.verdana{
+    font-family: "Verdana";
+}
+
+
+
