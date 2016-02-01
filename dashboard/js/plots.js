@@ -1295,12 +1295,10 @@ function stackObjectConstructor(svg, stackedData, stackSettings)
         .enter()
         .append("text")
         .attr("x", function(d) { return x(d.y0 + d.y/1.1);} )
-        //.attr("x", function(d) { return width/2;} )
         .attr("y", function(d, i)
         {
             return y(d.label) + y.rangeBand()/2;
         })
-        //.attr("y", function(d) { return height/2;} )
         .attr("text-anchor", "middle")
         .text( function(d, i) 
                 { 
@@ -1313,15 +1311,38 @@ function stackObjectConstructor(svg, stackedData, stackSettings)
                         return dashBoardSettings.stackNumberFormat(d.y); 
                     }
                 })
-        .style("fill", "black" );
+        .style("fill", "black" )
+        .attr("id", function(d) { return d.label + d.y;} )
+        .style("visibility", "hidden");
     }
 
-    function stackMouseOver(d)
+    function stackMouseOver(d, i)
     {
         var currentBar = d3.select(this);
         var currentData = d;
         stackLayer.clickedData.object = currentBar;
         stackLayer.clickedData.data = currentData;
+
+        textLayer.selectAll("text")
+        .style( "visibility", function(textData, dataIndex){
+            if ( textData.label + textData.y == d.label + d.y )
+            {
+                return "visible";
+            }
+            else
+            {
+                return "hidden";
+            }
+        });
+
+
+        return;
+    }
+
+    function stackMouseOut(d, i)
+    {
+        textLayer.selectAll("text")
+        .style( "visibility", function(dd) { return "hidden"; } );
         return;
     }
 
