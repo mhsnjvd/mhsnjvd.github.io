@@ -836,7 +836,7 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
     pieStyle.percentageEnabled = pieStyle.percentageEnable || 0;
     this.percentageEnabled = pieStyle.percentageEnabled;
 
-    pieStyle.tipEnabled = pieStyle.tipEnable || 0;
+    pieStyle.tipEnabled = pieStyle.tipEnable || 1;
     this.tipEnabled = pieStyle.tipEnabled;
 
     pieStyle.textColor = pieStyle.textColor || "black";
@@ -880,8 +880,7 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
        .attr('class', 'd3-tip')
        .offset([-10, 0])
        .html(function(d, i) {
-            var percent = d.percent;                
-            var displayText = "<span style='color:red'>" + i + "</span>" + " value: " + percent + " (" + dashBoardSettings.numberFormat(percent) + "%)";
+            var displayText = "<span style='color:red'>" + dataSet[i].label + "</span>" + " value: " + dashBoardSettings.numberFormat(dataSet[i].value);
                 return displayText;
            });        
      
