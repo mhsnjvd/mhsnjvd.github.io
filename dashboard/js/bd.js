@@ -17,7 +17,7 @@
             var data = dashBoardData.bizDevData
             addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
             console.log(fileName + " read successfully.");
-            console.log( dashBoardData.impactData[propertyName].length + " entries read.");
+            console.log( dashBoardData.bizDevData[propertyName].length + " entries read.");
      }); // end of d3.csv()                                
  })();
 
@@ -36,7 +36,7 @@
             var data = dashBoardData.bizDevData
             addNationProperty(data[propertyName], data.regionProperty, data.nationProperty);
             console.log(fileName + " read successfully.");
-            console.log( dashBoardData.impactData[propertyName].length + " entries read.");
+            console.log( dashBoardData.bizDevData[propertyName].length + " entries read.");
      }); // end of d3.csv()                                
  })();
 // *******************************************************

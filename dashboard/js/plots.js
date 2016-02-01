@@ -1239,8 +1239,11 @@ function stackObjectConstructor(svg, stackedData, stackSettings)
     var height = +svg.attr("height");
     var margin = stackSettings.margin || defineMargins(height, width);
 
-    stackSettings.textEnabled = stackSettings.textEnabled || 1;
+    stackSettings.textEnabled = stackSettings.textEnabled || 0;
     this.textEnabled = stackSettings.textEnabled;
+
+    stackSettings.tipEnabled = stackSettings.tipEnabled || 1;
+    this.tipEnabled = stackSettings.tipEnabled;
     // Optional settings:
     stackSettings = stackSettings || {};
 
@@ -1274,7 +1277,8 @@ function stackObjectConstructor(svg, stackedData, stackSettings)
           .attr("y", function(d, i) { return y(d.label); })
           .attr("width", function(d) { return x(d.y) ; })
           .attr("height", y.rangeBand())
-          .on("mouseover", stackMouseOver);
+          .on("mouseover", stackMouseOver)
+          .on("mouseout", stackMouseOut);
     stackLayer.clickedData = {};
     stackLayer.clickedData.object = {};
     stackLayer.clickedData.data = {};
@@ -1286,6 +1290,16 @@ function stackObjectConstructor(svg, stackedData, stackSettings)
         .data(stackedData)
         .enter().append("g")
         .attr("class", "layer");
+
+    var tip = d3.tip()
+       .attr('class', 'd3-tip')
+       .offset([-10, 0])
+       .html(function(d, i) {
+            var displayText = "<span style='color:red'>" + d.label + "</span>" + " value: " + dashBoardSettings.numberFormat(d.y);
+                return displayText;
+           });        
+     
+    stackLayer.call(tip);
 
     if ( stackSettings.textEnabled )
     {
@@ -1312,7 +1326,7 @@ function stackObjectConstructor(svg, stackedData, stackSettings)
                 })
         .style("fill", "black" )
         .attr("id", function(d) { return d.label + d.y;} )
-        .style("visibility", "hidden");
+        .style("visibility", "visible");
     }
 
     function stackMouseOver(d, i)
@@ -1322,26 +1336,19 @@ function stackObjectConstructor(svg, stackedData, stackSettings)
         stackLayer.clickedData.object = currentBar;
         stackLayer.clickedData.data = currentData;
 
-        textLayer.selectAll("text")
-        .style( "visibility", function(textData, dataIndex){
-            if ( textData.label + textData.y == d.label + d.y )
-            {
-                return "visible";
-            }
-            else
-            {
-                return "hidden";
-            }
-        });
-
-
+        if ( stackSettings.tipEnabled )
+        {
+            tip.show(d, i);
+        }
         return;
     }
 
     function stackMouseOut(d, i)
     {
-        textLayer.selectAll("text")
-        .style( "visibility", function(dd) { return "hidden"; } );
+        if ( stackSettings.tipEnabled )
+        {
+            tip.hide();
+        }
         return;
     }
 

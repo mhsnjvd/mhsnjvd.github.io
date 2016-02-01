@@ -152,6 +152,11 @@ function addNationProperty(data, regionProperty, nationProperty)
 }
 
 
+
+
+
+dashBoardSettings.colors = {};
+dashBoardSettings.colors.greenString = "rgb(0, 150, 0)";
 // Function for defining colors for RAG
 //
 dashBoardSettings.ragColors = function (d)
@@ -165,11 +170,62 @@ dashBoardSettings.ragColors = function (d)
        //return "#FF9900"
     if ( d == 2 )
         // Green
-       return "rgb(0, 128, 0)";
+       return dashBoardSettings.colors.greenString;
     if ( d ==  3)
         // Grey
        return "rgb(128, 128, 128)";
 
+}
+
+dashBoardSettings.goodBadColors = function (d)
+{
+    if ( d == 0 )
+        // Red if bad i.e 0
+       return "rgb(255, 0, 0)";
+    if ( d == 1 )
+        // Green if good i.e. 1
+       return dashBoardSettings.colors.greenString;
+}
+
+dashBoardSettings.extInspectionsColors = function (i)
+{
+    /*
+    Properties for colors:
+    ["Performance Unscored", "Unsatisfactory", "Satisfactory/Requires Improvement", "Good/Very Good", "Outstanding"];
+    */
+
+    if ( i == 0 )
+    {
+        // Grey
+        return "rgb(128, 128, 128)";
+    }
+
+    if ( i == 1 )
+    {
+        // Red 
+       return "rgb(255, 0, 0)";
+    }
+
+    if ( i == 2 )
+    {
+        // Amber
+       return "rgb(255, 153, 0)";
+    }
+
+    if ( i == 3 )
+    {
+        // Green
+        return dashBoardSettings.colors.greenString;
+    }
+
+    if ( i == 4 )
+    {
+        // Greeeeeeeen
+        return "rgb(0, 255, 0)";
+    }
+
+    // Otherwise tell what happened:
+    console.log("Could not resolve color from index");
 }
 
 dashBoardData.impactData.impactColorToImpactProperty = function (d)
@@ -186,7 +242,7 @@ dashBoardData.impactData.impactColorToImpactProperty = function (d)
         }
         else
         {
-            if ( d == "rgb(0, 128, 0)" )
+            if ( d == dashBoardSettings.colors.greenString )
             {
                 return "G";
             }
@@ -213,7 +269,7 @@ dashBoardData.bizDevData.bizDevColorToBizDevProperty = function (d)
         }
         else
         {
-            if ( d == "rgb(0, 128, 0)" )
+            if ( d == dashBoardSettings.colors.greenString )
             {
                 return "successful";
             }
