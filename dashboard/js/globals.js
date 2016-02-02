@@ -71,7 +71,7 @@ dashBoardData.marketData.files = [
 ];
 
 // Define heirarchies:
-dashBoardData.impactData.hierarchicalProperties = ["Nation", "R/N or BL", "Locality"];
+dashBoardData.impactData.hierarchicalProperties = ["Nation", "Region", "Locality"];
 dashBoardData.impactData.nationProperty = dashBoardData.impactData.hierarchicalProperties[0];
 dashBoardData.impactData.nationList = ["Business Lines", "Celtic Nations", "England", "Pan Regional", "Other"];
 dashBoardData.impactData.regionProperty = dashBoardData.impactData.hierarchicalProperties[1];
@@ -84,7 +84,7 @@ dashBoardData.financialsData.regionProperty = dashBoardData.financialsData.hiera
 dashBoardData.financialsData.localityProperty = dashBoardData.financialsData.hierarchicalProperties[2];
 dashBoardData.financialsData.costCentreProperty = dashBoardData.financialsData.hierarchicalProperties[3];
 
-dashBoardData.peopleBizModelData.hierarchicalProperties = ["Nation", "R/N/BL", "Locality", "CC"];
+dashBoardData.peopleBizModelData.hierarchicalProperties = ["Nation", "Region", "Locality", "CC"];
 dashBoardData.peopleBizModelData.nationProperty = dashBoardData.peopleBizModelData.hierarchicalProperties[0];
 dashBoardData.peopleBizModelData.nationList = ["Business Lines", "Celtic Nations", "England", "Pan Regional", "Other"];
 dashBoardData.peopleBizModelData.regionProperty = dashBoardData.peopleBizModelData.hierarchicalProperties[1];

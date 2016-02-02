@@ -355,7 +355,7 @@ function plotQuarterlyBizDevData(svg, data)
       var bars = plotMultiHistogram( svg, margin, xData, yData, xScale, yScale, hScale, histColors);          
 
       plotXAxis(svg, margin, xData, xScale );
-      plotXLabel(svg, margin, "Quarterly Contracts and Opportunities");
+      addTitle(svg, "Quarterly Contracts and Opportunities");
       plotYAxis(svg, margin, yScale);
       plotYLabel(svg, margin, "£K");         
 
