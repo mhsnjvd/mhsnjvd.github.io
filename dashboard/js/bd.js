@@ -225,7 +225,8 @@ function plotBizDevVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     stackSettings.color = dashBoardSettings.ragColors;
     plotStack(svg, subLevelData, propertyName, subLevelList, stackSettings, areaProperty, area, subAreaProperty);
     addTitle(svg, "Next Level Breakdown"); 
-
+    margin = defineMargins(height, width);
+    plotXLabel(svg, margin, "£M");
     return;
 }
 
@@ -253,7 +254,8 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
         {
             var thisArray = data[j][layerNames[i]];
             var latestQuarterIndex = 1; // for quarter 2
-            layeredData[i][j] = {label: nameList[j], y:thisArray[latestQuarterIndex] };
+            // Extra divide by 1000.0 to convert to million
+            layeredData[i][j] = {label: nameList[j], y:thisArray[latestQuarterIndex]/1000.0 };
         }
     }
 
@@ -274,6 +276,7 @@ function plotStack(svg, data, layerNames, nameList, stackSettings, areaProperty,
         openTablePage(subData);
         return;
     }
+
     
 }
 
@@ -323,7 +326,8 @@ function plotQuarterlyBizDevData(svg, data)
       {
           for ( var j = 0; j < yTransposedData.length; j++ )
           {
-             yData[i][j] = yTransposedData[j][i];
+             // Another divide by 1000 to convert to millions:
+             yData[i][j] = yTransposedData[j][i]/1000.0;
           }
       }
 
@@ -357,7 +361,7 @@ function plotQuarterlyBizDevData(svg, data)
       plotXAxis(svg, margin, xData, xScale );
       addTitle(svg, "Quarterly Contracts and Opportunities");
       plotYAxis(svg, margin, yScale);
-      plotYLabel(svg, margin, "£K");         
+      plotYLabel(svg, margin, "£M");         
 
       // Legend:
       var legendRectSize = 18;
