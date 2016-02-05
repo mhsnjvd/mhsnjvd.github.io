@@ -836,7 +836,7 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
     pieStyle.percentageEnabled = pieStyle.percentageEnable || 0;
     this.percentageEnabled = pieStyle.percentageEnabled;
 
-    pieStyle.tipEnabled = pieStyle.tipEnable || 0;
+    pieStyle.tipEnabled = pieStyle.tipEnable || 1;
     this.tipEnabled = pieStyle.tipEnabled;
 
     pieStyle.textColor = pieStyle.textColor || "black";
@@ -880,8 +880,7 @@ function pieObjectConstructor(svg, dataSet, pieStyle)
        .attr('class', 'd3-tip')
        .offset([-10, 0])
        .html(function(d, i) {
-            var percent = d.percent;                
-            var displayText = "<span style='color:red'>" + i + "</span>" + " value: " + percent + " (" + dashBoardSettings.numberFormat(percent) + "%)";
+            var displayText = "<span style='color:red'>" + dataSet[i].label + "</span>" + " value: " + dashBoardSettings.numberFormat(dataSet[i].value);
                 return displayText;
            });        
      
@@ -1240,8 +1239,11 @@ function stackObjectConstructor(svg, stackedData, stackSettings)
     var height = +svg.attr("height");
     var margin = stackSettings.margin || defineMargins(height, width);
 
-    stackSettings.textEnabled = stackSettings.textEnabled || 1;
+    stackSettings.textEnabled = stackSettings.textEnabled || 0;
     this.textEnabled = stackSettings.textEnabled;
+
+    stackSettings.tipEnabled = stackSettings.tipEnabled || 1;
+    this.tipEnabled = stackSettings.tipEnabled;
     // Optional settings:
     stackSettings = stackSettings || {};
 
@@ -1275,7 +1277,8 @@ function stackObjectConstructor(svg, stackedData, stackSettings)
           .attr("y", function(d, i) { return y(d.label); })
           .attr("width", function(d) { return x(d.y) ; })
           .attr("height", y.rangeBand())
-          .on("mouseover", stackMouseOver);
+          .on("mouseover", stackMouseOver)
+          .on("mouseout", stackMouseOut);
     stackLayer.clickedData = {};
     stackLayer.clickedData.object = {};
     stackLayer.clickedData.data = {};
@@ -1288,6 +1291,16 @@ function stackObjectConstructor(svg, stackedData, stackSettings)
         .enter().append("g")
         .attr("class", "layer");
 
+    var tip = d3.tip()
+       .attr('class', 'd3-tip')
+       .offset([-10, 0])
+       .html(function(d, i) {
+            var displayText = "<span style='color:red'>" + d.label + "</span>" + " value: " + dashBoardSettings.numberFormat(d.y);
+                return displayText;
+           });        
+     
+    stackLayer.call(tip);
+
     if ( stackSettings.textEnabled )
     {
         textLayer.selectAll("text")
@@ -1295,12 +1308,10 @@ function stackObjectConstructor(svg, stackedData, stackSettings)
         .enter()
         .append("text")
         .attr("x", function(d) { return x(d.y0 + d.y/1.1);} )
-        //.attr("x", function(d) { return width/2;} )
         .attr("y", function(d, i)
         {
             return y(d.label) + y.rangeBand()/2;
         })
-        //.attr("y", function(d) { return height/2;} )
         .attr("text-anchor", "middle")
         .text( function(d, i) 
                 { 
@@ -1313,15 +1324,31 @@ function stackObjectConstructor(svg, stackedData, stackSettings)
                         return dashBoardSettings.stackNumberFormat(d.y); 
                     }
                 })
-        .style("fill", "black" );
+        .style("fill", "black" )
+        .attr("id", function(d) { return d.label + d.y;} )
+        .style("visibility", "visible");
     }
 
-    function stackMouseOver(d)
+    function stackMouseOver(d, i)
     {
         var currentBar = d3.select(this);
         var currentData = d;
         stackLayer.clickedData.object = currentBar;
         stackLayer.clickedData.data = currentData;
+
+        if ( stackSettings.tipEnabled )
+        {
+            tip.show(d, i);
+        }
+        return;
+    }
+
+    function stackMouseOut(d, i)
+    {
+        if ( stackSettings.tipEnabled )
+        {
+            tip.hide();
+        }
         return;
     }
 

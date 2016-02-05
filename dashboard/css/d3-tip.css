@@ -18,6 +18,8 @@
   content: "\25BC";
   position: absolute;
   text-align: center;
+  /* Hide the triangle:*/
+  visibility: hidden;
 }
 
 /* Style northward tooltips differently */
@@ -25,4 +27,6 @@
   margin: -1px 0 0 0;
   top: 100%;
   left: 0;
+  /* Hide the triangle:*/
+  visibility: hidden;
 }

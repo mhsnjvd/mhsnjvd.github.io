@@ -197,8 +197,8 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     //pieStyle.cy = height/4;
     //pieStyle.outerRadius = width/6;
     //pieStyle.innerRadius = pieStyle.outerRadius/1.4;
-    pieStyle.textEnabled = 1;
-    pieStyle.tipEnabled = 0;
+    pieStyle.textEnabled = 0;
+    pieStyle.tipEnabled = 1;
 
     var rayStyle = initRaySettings(pieStyle);
     var legendStyle = initLegendSettings(pieStyle);
@@ -257,7 +257,8 @@ function plotPeopleBizModelVisualisation(data, subLevelData, subLevelList, subAr
     pieStyle.outerRadius = width/6;
     pieStyle.innerRadius = pieStyle.outerRadius/1.4;
     */
-    pieStyle.textEnabled = 1;
+    pieStyle.textEnabled = 0;
+    pieStyle.tipEnabled = 1;
 
     var rayStyle = initRaySettings(pieStyle);
     var legendStyle = initLegendSettings(pieStyle);

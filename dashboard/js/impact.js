@@ -365,6 +365,11 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
         pieData.push( {label: legendData[i], value: data[propertyName[i]][currentQuarter], propertyName: propertyTable[propertyName[i]], propertyValue: values[i]});
     }
 
+    // Re-initialize color scheme
+    pieStyle = initPieSettings(svg.attr("width"), svg.attr("height"), dashBoardSettings.goodBadColors);
+    rayStyle = initRaySettings(pieStyle);
+    legendStyle = initLegendSettings(pieStyle);
+
     var pie7 = plotPie(svg, pieData, dashBoardData.impactData[fileName], areaProperty, area, legendData, pieStyle, rayStyle, legendStyle);
     var title7 = addTitle(svg, "Beneficiary Feedback Contracts (%)");
 
@@ -391,7 +396,7 @@ function plotImpactVisualisation(data, subLevelData, subAreaProperty, subLevelLi
     pieData = [];
     propertyName = ["Performance Unscored", "Unsatisfactory", "Satisfactory/Requires Improvement", "Good/Very Good", "Outstanding"];
     legendData = ["Unscored", "Unsatisfactory","Satisfactory", "Good", "Outstanding"];
-    pieStyle.color = d3.scale.category20();
+    pieStyle.color = dashBoardSettings.extInspectionsColors;
     legendStyle.color = pieStyle.color;
     rayStyle.color = pieStyle.color;
     for ( var i = 0; i < propertyName.length; i++ )
