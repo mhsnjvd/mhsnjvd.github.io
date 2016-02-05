@@ -246,9 +246,7 @@ function computeQuarterlyFinancialsData(data)
     dataOut.previousYear.quarterly[2] = sumArrayProperty(quarterlyData, "Q3_Inc_YTD") / unitDivisor;
     dataOut.previousYear.quarterly[3] = sumArrayProperty(quarterlyData, "Q4_Inc_YTD") / unitDivisor;
 
-    // This data is not cumulative, so accumulate it:
-    dataOut.previousYear.quarterly = cumsumArray(dataOut.previousYear.quarterly);
-    dataOut.previousYear.FY = dataOut.previousYear.quarterly[3]; //This is the same as the final cumulative quarter
+    dataOut.previousYear.FY = sumArrayProperty(quarterlyData, "FY_Inc")/ unitDivisor;
     dataOut.previousYear.FYBudget = sumArrayProperty(data[files[0].propertyName], "FY_BUD_Inc") / unitDivisor;
     dataOut.previousYear.variation = dataOut.previousYear.FY - dataOut.previousYear.FYBudget;
     dataOut.previousYear.variationPercentage = (dataOut.previousYear.variation / dataOut.previousYear.FYBudget * 100) || 0.0;
