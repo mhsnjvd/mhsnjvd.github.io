@@ -15,7 +15,7 @@ function sumArrayProperty( data, property)
         s = data[i][property];
         if ( isNaN(s) )
         {
-            s = s.replace(",","");
+            s = s.replace(/,/g, '');
         }
         s = Number(s);
         // check for NaNs:
